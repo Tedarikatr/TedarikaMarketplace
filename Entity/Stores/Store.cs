@@ -1,4 +1,5 @@
-﻿using Entity.Orders;
+﻿using Entity.Auth;
+using Entity.Orders;
 
 namespace Entity.Stores
 {
@@ -6,7 +7,7 @@ namespace Entity.Stores
     {
         public int StoreId { get; set; }
         public int OwnerId { get; set; }
-        public User Owner { get; set; }
+        public SellerUser Owner { get; set; }
         public string StoreName { get; set; }
         public bool IsApproved { get; set; }
         public string AccountingIntegration { get; set; } 
