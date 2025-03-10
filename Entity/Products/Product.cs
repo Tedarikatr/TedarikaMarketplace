@@ -5,19 +5,16 @@ namespace Entity.Products
 {
     public class Product
     {
+        public int Id { get; set; }
+
         public int ProductId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal BasePrice { get; set; }
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
-        public ICollection<StoreProduct> StoreProducts { get; set; }
 
 
-
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
         public string UnitTypes { get; set; }
         public UnitType UnitType { get; set; }
 

@@ -10,7 +10,14 @@ namespace Entity.Stores
         public SellerUser Owner { get; set; }
         public string StoreName { get; set; }
         public bool IsApproved { get; set; }
-        public string AccountingIntegration { get; set; } 
+        public string AccountingIntegration { get; set; }
+
+        // Mağazanın bulunduğu lokasyon
+        public string Country { get; set; }
+        public string City { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
         public ICollection<StoreMarket> StoreMarkets { get; set; }
         public ICollection<StoreProduct> StoreProducts { get; set; }
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
