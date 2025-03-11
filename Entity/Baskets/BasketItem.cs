@@ -1,6 +1,6 @@
-﻿namespace Entity.Stores
+﻿namespace Entity.Baskets
 {
-    public class StoreBasketItem
+    public class BasketItem
     {
         public int Id { get; set; }
         public int BuyerId { get; set; }

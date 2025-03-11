@@ -1,11 +1,10 @@
-﻿using Entity.Stores;
-
-namespace Entity.Carrier
+﻿namespace Entity.Carriers
 {
     public class Carrier
     {
-        public int CarrierId { get; set; }
-        public string Name { get; set; }
-        public ICollection<StoreCarrier> StoreCarriers { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }  // Örn: "DHL", "UPS", "MNG Kargo"
+
+        public ICollection<MarketCarrier> MarketCarriers { get; set; }
     }
 }

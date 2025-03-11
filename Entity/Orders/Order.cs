@@ -1,4 +1,6 @@
-﻿using Entity.Stores;
+﻿using Entity.Auth;
+using Entity.Carriers;
+using Entity.Stores;
 
 namespace Entity.Orders
 {
@@ -6,7 +8,7 @@ namespace Entity.Orders
     {
         public int OrderId { get; set; }
         public int BuyerId { get; set; }
-        public User Buyer { get; set; }
+        public BuyerUser Buyer { get; set; }
         public int StoreId { get; set; }
         public Store Store { get; set; }
         public DateTime OrderDate { get; set; }

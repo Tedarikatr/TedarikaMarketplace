@@ -19,7 +19,10 @@ namespace Entity.Stores
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
 
+        // Ürünün hangi marketlerde listelendiği
+        public virtual ICollection<ProductMarket> ProductMarkets { get; set; }
+
         // Ürünün hangi ülke/şehirlere gönderilebileceği
-        public virtual ICollection<ProductShippingRegion> ShippingRegions { get; set; }
+        public virtual ICollection<StoreProductShippingRegion> ShippingRegions { get; set; }
     }
 }

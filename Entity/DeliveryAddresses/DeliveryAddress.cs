@@ -10,6 +10,7 @@ namespace Entity.DeliveryAddresses
 
         public string BuyerUserNumber { get; set; }
         public string Country { get; set; }
+        public string State { get; set; }
         public string City { get; set; }
         public string Town { get; set; }
         public string Neighborhood { get; set; }
