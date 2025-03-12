@@ -1,4 +1,6 @@
-﻿namespace Entity.Carriers
+﻿using Entity.Markets;
+
+namespace Entity.Carriers
 {
     public class Carrier
     {

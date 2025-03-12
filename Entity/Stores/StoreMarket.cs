@@ -2,7 +2,7 @@
 {
     public class StoreMarket
     {
-        public int StoreId { get; set; }
+        public int Id { get; set; }
         public Store Store { get; set; }
     }
 }

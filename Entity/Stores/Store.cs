@@ -1,16 +1,20 @@
 ﻿using Entity.Auth;
+using Entity.Companys;
 using Entity.Orders;
 
 namespace Entity.Stores
 {
     public class Store
     {
-        public int StoreId { get; set; }
+        public int Id { get; set; }
         public int OwnerId { get; set; }
         public SellerUser Owner { get; set; }
         public string StoreName { get; set; }
         public bool IsApproved { get; set; }
         public string AccountingIntegration { get; set; }
+
+        public int CompanyId { get; set; } // Mağazanın bağlı olduğu şirket
+        public virtual Company Company { get; set; }
 
         // Mağazanın bulunduğu lokasyon
         public string Country { get; set; }

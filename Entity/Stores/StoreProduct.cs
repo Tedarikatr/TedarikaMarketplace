@@ -4,6 +4,8 @@ namespace Entity.Stores
 {
     public class StoreProduct
     {
+        public int Id { get; set; }
+
         public int StoreId { get; set; }
         public Store Store { get; set; }
 
