@@ -20,6 +20,7 @@ namespace Entity.Companys
 
         public CompanyType Type { get; set; } // Alıcı mı? Satıcı mı?
 
+        public ICollection<CompanyUser> CompanyUsers { get; set; } // Şirket kullanıcıları
         public ICollection<Store> Stores { get; set; } // Şirketin sahip olduğu mağazalar
     }
 

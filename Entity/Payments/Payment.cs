@@ -9,6 +9,7 @@ namespace Entity.Payments
         public Order Order { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public decimal Amount { get; set; }
+        public string Currency { get; set; } = "TRY"; 
         public DateTime PaymentDate { get; set; }
         public PaymentStatus Status { get; set; }
     }
