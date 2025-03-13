@@ -10,8 +10,13 @@ namespace Entity.Companys
         public virtual Company Company { get; set; }
 
         public int UserId { get; set; }
-        public virtual SellerUser User { get; set; }
+        public UserType UserType { get; set; }  
 
-        public bool IsAdmin { get; set; } // Şirketin sahibi mi?
+    }
+
+    public enum UserType
+    {
+        Buyer = 1,
+        Seller = 2
     }
 }

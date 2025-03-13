@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Repository.Auth.IRepositorys;
+using Repository.Auth.Repositorys;
 using Serilog;
 using Services.Auth.Helper;
 using Services.Auth.IServices;
@@ -21,7 +23,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // ?? **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
+builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
+builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
 
 // AutoMapper Konfigürasyonu
 var config = new MapperConfiguration(cfg =>
