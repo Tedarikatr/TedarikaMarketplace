@@ -1,8 +1,11 @@
+using API.Mappings;
+using AutoMapper;
 using Data.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Services.Auth.Helper;
 using Services.Auth.IServices;
 using Services.Auth.Services;
@@ -20,8 +23,28 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 
+// AutoMapper Konfigürasyonu
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<MappingProfile>(); // Mapping profili ekleniyor
+});
+
+try
+{
+    config.AssertConfigurationIsValid(); // Konfigürasyon hatalarýný kontrol et
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "AutoMapper konfigurasyon hatasý");
+    Console.WriteLine("AutoMapper konfigurasyon hatasý:");
+    Console.WriteLine(ex.Message);
+    Console.WriteLine(ex.StackTrace);
+}
 // ?? **AutoMapper Entegrasyonu**
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddSingleton(config.CreateMapper()); // AutoMapper'ý servislere ekleyelim.
+
 
 // ?? **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
 builder.Services.AddSwaggerGen(c =>
