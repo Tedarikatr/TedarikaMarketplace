@@ -1,4 +1,4 @@
-﻿using Entity.Companys;
+﻿using Entity.Companies;
 using Entity.Orders;
 
 namespace Entity.Stores

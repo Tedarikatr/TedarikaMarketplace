@@ -1,4 +1,4 @@
-﻿using Entity.Auth;
+﻿using Entity.Auths;
 
 namespace Entity.DeliveryAddresses
 {

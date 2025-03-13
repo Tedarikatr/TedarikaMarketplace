@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Data.Dto.Auth;
+using Data.Dtos.Auths;
 
 namespace API.Validators.Auth
 {

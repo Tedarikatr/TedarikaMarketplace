@@ -1,5 +1,5 @@
-﻿using Entity.Auth;
-using Entity.Companys;
+﻿using Entity.Auths;
+using Entity.Companies;
 using Entity.Orders;
 
 namespace Entity.Stores

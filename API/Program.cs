@@ -1,16 +1,16 @@
 using API.Mappings;
 using AutoMapper;
-using Data.Database;
+using Data.Databases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Repository.Auth.IRepositorys;
-using Repository.Auth.Repositorys;
+using Repository.Auths.IRepositorys;
+using Repository.Auths.Repositorys;
 using Serilog;
-using Services.Auth.Helper;
-using Services.Auth.IServices;
-using Services.Auth.Services;
+using Services.Auths.Helper;
+using Services.Auths.IServices;
+using Services.Auths.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

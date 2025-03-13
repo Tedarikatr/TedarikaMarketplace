@@ -1,6 +1,6 @@
-﻿using Entity.Auth;
+﻿using Entity.Auths;
 using Entity.Carriers;
-using Entity.Companys;
+using Entity.Companies;
 using Entity.Stores;
 
 namespace Entity.Orders

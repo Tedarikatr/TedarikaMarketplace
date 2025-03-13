@@ -1,7 +1,7 @@
-﻿using Data.Dto.Auth;
+﻿using Data.Dtos.Auths;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Auth.IServices;
+using Services.Auths.IServices;
 
 namespace API.Controllers
 {
