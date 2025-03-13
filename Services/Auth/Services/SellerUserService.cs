@@ -4,12 +4,8 @@ using Microsoft.Extensions.Logging;
 using Repository.Auth.IRepositorys;
 using Services.Auth.Helper;
 using Services.Auth.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Auth.Services
 {
@@ -48,7 +44,6 @@ namespace Services.Auth.Services
             };
 
             await _sellerUserRepository.AddAsync(sellerUser);
-            await _sellerUserRepository.SaveChangesAsync();
 
             _logger.LogInformation("Satıcı başarıyla kayıt oldu: " + sellerRegisterDto.Email);
             return "Kayıt başarılı!";
