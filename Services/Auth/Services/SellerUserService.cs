@@ -1,107 +1,202 @@
-﻿using Data.Dto.Auth;
+﻿using AutoMapper;
+using Data.Dto.Auth;
 using Entity.Auth;
 using Microsoft.Extensions.Logging;
 using Repository.Auth.IRepositorys;
+using Repository.Auth.Repositorys;
 using Services.Auth.Helper;
 using Services.Auth.IServices;
-using System.Security.Cryptography;
-using System.Text;
+using System;
 
 namespace Services.Auth.Services
 {
     public class SellerUserService : ISellerUserService
     {
         private readonly ISellerUserRepository _sellerUserRepository;
+        private readonly IMapper _mapper;
         private readonly IJwtService _jwtService;
         private readonly ILogger<SellerUserService> _logger;
 
-        public SellerUserService(ISellerUserRepository sellerUserRepository, IJwtService jwtService, ILogger<SellerUserService> logger)
+        public SellerUserService(ISellerUserRepository sellerUserRepository, IMapper mapper, IJwtService jwtService, ILogger<SellerUserService> logger)
         {
             _sellerUserRepository = sellerUserRepository;
+            _mapper = mapper;
             _jwtService = jwtService;
             _logger = logger;
         }
 
-        public async Task<string> RegisterSellerUser(SellerRegisterDto sellerRegisterDto)
+        public async Task<string> RegisterSellerUserAsync(SellerRegisterDto sellerRegisterDto)
         {
-            _logger.LogInformation("Yeni satıcı kaydı yapılıyor: " + sellerRegisterDto.Email);
-
-            if (await _sellerUserRepository.EmailExistsAsync(sellerRegisterDto.Email))
+            try
             {
-                throw new Exception("Bu e-posta adresi zaten kayıtlı.");
+                _logger.LogInformation("Yeni satıcı kaydı yapılıyor: {Email}", sellerRegisterDto.Email);
+
+                var existingUser = await _sellerUserRepository.FindAsync(u => u.Email == sellerRegisterDto.Email);
+                if (existingUser.Any())
+                {
+                    throw new Exception("Bu e-posta adresi zaten kayıtlı.");
+                }
+
+                var sellerUser = _mapper.Map<SellerUser>(sellerRegisterDto);
+                sellerUser.Password = BCrypt.Net.BCrypt.HashPassword(sellerRegisterDto.Password);
+                sellerUser.GuidNumber = Guid.NewGuid();
+                sellerUser.Status = true;
+
+                await _sellerUserRepository.AddAsync(sellerUser);
+                _logger.LogInformation("Satıcı başarıyla kayıt oldu: {Email}", sellerRegisterDto.Email);
+
+                return "Kayıt başarılı!";
             }
-
-            var sellerUser = new SellerUser
+            catch (Exception ex)
             {
-                Name = sellerRegisterDto.Name,
-                LastName = sellerRegisterDto.LastName,
-                Email = sellerRegisterDto.Email,
-                Phone = sellerRegisterDto.Phone,
-                Password = HashPassword(sellerRegisterDto.Password),
-                UserNumber = GenerateUserNumber(),
-                GuidNumber = Guid.NewGuid(),
-                Status = true
-            };
-
-            await _sellerUserRepository.AddAsync(sellerUser);
-
-            _logger.LogInformation("Satıcı başarıyla kayıt oldu: " + sellerRegisterDto.Email);
-            return "Kayıt başarılı!";
-        }
-
-        public async Task<AuthResponseDto> LoginSellerUser(SellerLoginDto sellerLoginDto)
-        {
-            var sellerUser = await _sellerUserRepository.GetUserByEmailAsync(sellerLoginDto.Email);
-
-            if (sellerUser == null || !VerifyPassword(sellerLoginDto.Password, sellerUser.Password))
-            {
-                _logger.LogWarning("Geçersiz giriş denemesi: " + sellerLoginDto.Email);
-                throw new Exception("Geçersiz e-posta veya şifre.");
+                _logger.LogError(ex, "Satıcı kaydı sırasında hata oluştu: {Email}", sellerRegisterDto.Email);
+                throw;
             }
-
-            _logger.LogInformation("Satıcı giriş yaptı: " + sellerLoginDto.Email);
-            var token = _jwtService.GenerateJwtToken(sellerUser);
-
-            return new AuthResponseDto
-            {
-                Token = token
-            };
         }
 
-        public async Task<SellerUserDto> GetSellerByEmail(string email)
+        public async Task<AuthResponseDto> AuthenticateSellerUserAsync(string emailOrPhone, string password)
         {
-            var sellerUser = await _sellerUserRepository.GetUserByEmailAsync(email);
-            if (sellerUser == null)
+            try
             {
-                throw new Exception("Kullanıcı bulunamadı.");
+                var sellerUser = await _sellerUserRepository.SingleOrDefaultAsync(u => u.Email == emailOrPhone || u.Phone == emailOrPhone);
+                if (sellerUser == null || !BCrypt.Net.BCrypt.Verify(password, sellerUser.Password))
+                {
+                    _logger.LogWarning("Geçersiz giriş denemesi: {Email}", emailOrPhone);
+                    throw new Exception("Geçersiz e-posta veya şifre.");
+                }
+
+                _logger.LogInformation("Satıcı giriş yaptı: {Email}", emailOrPhone);
+                var token = _jwtService.GenerateJwtToken(sellerUser);
+
+                return new AuthResponseDto
+                {
+                    Token = token,
+                    Email = sellerUser.Email,
+                    UserNumber = sellerUser.UserNumber
+                };
             }
-
-            return new SellerUserDto
+            catch (Exception ex)
             {
-                Id = sellerUser.Id,
-                Name = sellerUser.Name,
-                LastName = sellerUser.LastName,
-                Email = sellerUser.Email,
-                Phone = sellerUser.Phone,
-                UserNumber = sellerUser.UserNumber
-            };
+                _logger.LogError(ex, "Satıcı giriş sırasında hata oluştu: {Email}", emailOrPhone);
+                throw;
+            }
         }
 
-        private string HashPassword(string password)
+        public async Task<bool> UpdateSellerUserAsync(SellerUserDto userDto)
         {
-            using var sha256 = SHA256.Create();
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
+            try
+            {
+                var sellerUser = await _sellerUserRepository.GetByIdAsync(userDto.Id);
+                if (sellerUser == null)
+                {
+                    _logger.LogWarning("Güncellenmek istenen satıcı bulunamadı: {UserId}", userDto.Id);
+                    return false;
+                }
+
+                _mapper.Map(userDto, sellerUser);
+                var isUpdated = await _sellerUserRepository.UpdateBoolAsync(sellerUser);
+
+                if (isUpdated)
+                {
+                    _logger.LogInformation("Satıcı başarıyla güncellendi: {UserId}", userDto.Id);
+                }
+                else
+                {
+                    _logger.LogWarning("Satıcı güncelleme başarısız: {UserId}", userDto.Id);
+                }
+
+                return isUpdated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcı güncelleme sırasında hata oluştu: {UserId}", userDto.Id);
+                return false;
+            }
         }
 
-        private bool VerifyPassword(string password, string hashedPassword)
+        public async Task<bool> DeleteSellerUserAsync(int id)
         {
-            return HashPassword(password) == hashedPassword;
+            try
+            {
+                var sellerUser = await _sellerUserRepository.GetByIdAsync(id);
+                if (sellerUser == null)
+                {
+                    _logger.LogWarning("Silinmek istenen satıcı bulunamadı: {UserId}", id);
+                    return false;
+                }
+
+                var isDeleted = await _sellerUserRepository.RemoveBoolAsync(sellerUser);
+                if (isDeleted)
+                {
+                    _logger.LogInformation("Satıcı başarıyla silindi: {UserId}", id);
+                }
+                else
+                {
+                    _logger.LogWarning("Satıcı silme işlemi başarısız: {UserId}", id);
+                }
+
+                return isDeleted;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcı silme sırasında hata oluştu: {UserId}", id);
+                return false;
+            }
         }
 
-        private string GenerateUserNumber()
+        public async Task<SellerUserDto> GetSellerUserByIdAsync(int userId)
         {
-            return "SU-" + new Random().Next(100000, 999999);
+            try
+            {
+                var sellerUser = await _sellerUserRepository.GetByIdAsync(userId);
+                if (sellerUser == null)
+                {
+                    _logger.LogWarning("Kullanıcı bulunamadı: {UserId}", userId);
+                    throw new Exception("Satıcı bulunamadı.");
+                }
+
+                return _mapper.Map<SellerUserDto>(sellerUser);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcı bilgisi getirilirken hata oluştu: {UserId}", userId);
+                throw;
+            }
+        }
+
+        public async Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            try
+            {
+                var user = await _sellerUserRepository.GetByIdAsync(userId);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(oldPassword, user.Password))
+                {
+                    return false;
+                }
+
+                user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                await _sellerUserRepository.UpdateAsync(user);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Alıcı şifre değiştirme sırasında hata oluştu: {UserId}", userId);
+                return false;
+            }
+        }
+
+        public async Task<BuyerUserInfoDto> GetUserInfoAsync(int userId)
+        {
+            try
+            {
+                var user = await _sellerUserRepository.GetByIdAsync(userId);
+                return _mapper.Map<BuyerUserInfoDto>(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Alıcı bilgisi getirme sırasında hata oluştu: {UserId}", userId);
+                throw;
+            }
         }
     }
 }

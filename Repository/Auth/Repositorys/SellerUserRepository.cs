@@ -10,14 +10,6 @@ namespace Repository.Auth.Repositorys
     {
         public SellerUserRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<SellerUser> GetUserByEmailAsync(string email)
-        {
-            return await _context.SellerUsers.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<bool> EmailExistsAsync(string email)
-        {
-            return await _context.SellerUsers.AnyAsync(u => u.Email == email);
-        }
+      
     }
 }

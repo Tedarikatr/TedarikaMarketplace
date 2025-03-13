@@ -19,5 +19,8 @@ namespace Data.Repository
         Task RemoveAsync(T entity);
 
         Task UpdateAsync(T entity);
+        Task<bool> RemoveBoolAsync(T entity);
+        Task<bool> UpdateBoolAsync(T entity); 
+        Task<int> SaveChangesAsync();
     }
 }

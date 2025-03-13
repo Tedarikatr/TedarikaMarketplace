@@ -57,5 +57,28 @@ namespace Data.Repository
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> RemoveBoolAsync(T entity)
+        {
+            if (entity == null) return false;
+
+            _dbSet.Remove(entity);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateBoolAsync(T entity)
+        {
+            if (entity == null) return false;
+
+            _dbSet.Update(entity);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+
     }
 }

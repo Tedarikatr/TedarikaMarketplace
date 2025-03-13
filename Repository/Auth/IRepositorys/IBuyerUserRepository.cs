@@ -3,8 +3,7 @@ using Entity.Auth;
 
 namespace Repository.Auth.IRepositorys
 {
-    public interface ISellerUserRepository : IGenericRepository<SellerUser>
+    public interface IBuyerUserRepository : IGenericRepository<BuyerUser>
     {
-        
     }
 }
