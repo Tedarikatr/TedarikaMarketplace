@@ -4,6 +4,8 @@ namespace Services.Auths.Helper
 {
     public interface IJwtService
     {
-        string GenerateJwtToken(UserBase user);
+        string GenerateBuyerToken(BuyerUser user);
+        string GenerateSellerToken(SellerUser user);
+        string GenerateAdminToken(AdminUser user);
     }
 }

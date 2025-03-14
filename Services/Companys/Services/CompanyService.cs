@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Companys;
+using Entity.Auths;
 using Entity.Companies;
 using Microsoft.Extensions.Logging;
 using Repository.Companys.IRepositorys;
@@ -20,26 +21,55 @@ namespace Services.Companys.Services
             _logger = logger;
         }
 
-        public async Task<string> RegisterCompanyAsync(CompanyCreateDto companyCreateDto)
+        public async Task<string> RegisterCompanyAsync(CompanyCreateDto companyCreateDto, int userId, Entity.Auths.UserType userType)
         {
             try
             {
                 _logger.LogInformation("Yeni şirket kaydı başlatıldı: {CompanyNumber}", companyCreateDto.CompanyNumber);
 
                 var existingCompany = await _companyRepository.FindAsync(c => c.CompanyNumber == companyCreateDto.CompanyNumber);
+
                 if (existingCompany.Any())
                 {
-                    throw new Exception("Bu şirket numarası zaten kayıtlı.");
+                    var company = existingCompany.First();
+
+                    // Eğer şirket Buyer tarafından eklenmişse ve şimdi bir Seller tarafından ekleniyorsa onaylanmalı
+                    if (company.BuyerAccount && userType == UserType.Seller)
+                    {
+                        company.SellerUserId = userId;
+                        company.SellerAccount = true;
+                        company.IsVerified = true; // Otomatik onay
+                        await _companyRepository.UpdateAsync(company);
+                        return "Şirket zaten bir alıcı tarafından eklenmişti, şimdi satıcı olarak onaylandı.";
+                    }
+                    // Eğer şirket Seller tarafından eklenmişse ve şimdi bir Buyer tarafından ekleniyorsa hata ver
+                    else if (company.SellerAccount && userType == UserType.Buyer)
+                    {
+                        throw new Exception("Bu şirket bir satıcı tarafından eklenmiş, alıcı olarak ekleyemezsiniz.");
+                    }
                 }
 
-                var company = _mapper.Map<Company>(companyCreateDto);
-                company.IsVerified = false;
-                company.IsActive = false;
+                // Yeni şirket ekleme işlemi
+                var newCompany = _mapper.Map<Company>(companyCreateDto);
+                newCompany.IsVerified = false;
+                newCompany.IsActive = false;
 
-                await _companyRepository.AddAsync(company);
-                _logger.LogInformation("Şirket kaydı başarıyla tamamlandı: {CompanyNumber}", company.CompanyNumber);
+                if (userType == UserType.Buyer)
+                {
+                    newCompany.BuyerUserId = userId;
+                    newCompany.BuyerAccount = true;
+                }
+                else if (userType == UserType.Seller)
+                {
+                    newCompany.SellerUserId = userId;
+                    newCompany.SellerAccount = true;
+                    newCompany.IsVerified = true; 
+                }
 
-                return "Şirket kaydı başarılı! Admin onayı bekleniyor.";
+                await _companyRepository.AddAsync(newCompany);
+                _logger.LogInformation("Şirket kaydı başarıyla tamamlandı: {CompanyNumber}", newCompany.CompanyNumber);
+
+                return "Şirket kaydı başarılı!";
             }
             catch (Exception ex)
             {
@@ -108,11 +138,11 @@ namespace Services.Companys.Services
             }
         }
 
-        public async Task<bool> VerifyCompanyAsync(int companyId, bool isVerified)
+        public async Task<bool> VerifyCompanyAsync(int companyId)
         {
             try
             {
-                _logger.LogInformation("Şirket onay durumu değiştiriliyor. ID: {CompanyId}", companyId);
+                _logger.LogInformation("Şirket onaylanıyor. ID: {CompanyId}", companyId);
 
                 var company = await _companyRepository.GetByIdAsync(companyId);
                 if (company == null)
@@ -120,19 +150,19 @@ namespace Services.Companys.Services
                     throw new Exception("Şirket bulunamadı.");
                 }
 
-                company.IsVerified = isVerified;
+                company.IsVerified = true;
                 var isUpdated = await _companyRepository.UpdateBoolAsync(company);
 
                 return isUpdated;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Şirket onay işlemi sırasında hata oluştu. ID: {CompanyId}", companyId);
+                _logger.LogError(ex, "Şirket onaylama işlemi sırasında hata oluştu. ID: {CompanyId}", companyId);
                 return false;
             }
         }
 
-        public async Task<bool> ChangeCompanyStatusAsync(int companyId, bool isActive)
+        public async Task<bool> ToggleCompanyStatusAsync(int companyId)
         {
             try
             {
@@ -144,14 +174,14 @@ namespace Services.Companys.Services
                     throw new Exception("Şirket bulunamadı.");
                 }
 
-                company.IsActive = isActive;
+                company.IsActive = !company.IsActive; 
                 var isUpdated = await _companyRepository.UpdateBoolAsync(company);
 
                 return isUpdated;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Şirket durumu değiştirilirken hata oluştu. ID: {CompanyId}", companyId);
+                _logger.LogError(ex, "Şirket aktiflik durumu değiştirilirken hata oluştu. ID: {CompanyId}", companyId);
                 return false;
             }
         }

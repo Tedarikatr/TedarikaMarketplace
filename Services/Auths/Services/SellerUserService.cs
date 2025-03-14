@@ -39,6 +39,7 @@ namespace Services.Auths.Services
                 sellerUser.Password = BCrypt.Net.BCrypt.HashPassword(sellerRegisterDto.Password);
                 sellerUser.UserGuidNumber = Guid.NewGuid();
                 sellerUser.Status = true;
+                sellerUser.UserType = UserType.Seller;
 
                 await _sellerUserRepository.AddAsync(sellerUser);
                 _logger.LogInformation("Satıcı başarıyla kayıt oldu: {Email}", sellerRegisterDto.Email);
@@ -64,7 +65,7 @@ namespace Services.Auths.Services
                 }
 
                 _logger.LogInformation("Satıcı giriş yaptı: {Email}", emailOrPhone);
-                var token = _jwtService.GenerateJwtToken(sellerUser);
+                var token = _jwtService.GenerateSellerToken(sellerUser);
 
                 return new AuthResponseDto
                 {

@@ -1,4 +1,6 @@
-﻿namespace Entity.Companies
+﻿using Entity.Auths;
+
+namespace Entity.Companies
 {
     public class CompanyUser
     {
@@ -10,11 +12,5 @@
         public int UserId { get; set; }
         public UserType UserType { get; set; }
 
-    }
-
-    public enum UserType
-    {
-        Buyer = 1,
-        Seller = 2
     }
 }

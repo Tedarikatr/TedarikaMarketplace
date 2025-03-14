@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Repository.Auths.IRepositorys;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
+using System;
 
 namespace Services.Auths.Services
 {
@@ -39,6 +40,7 @@ namespace Services.Auths.Services
                 buyerUser.Password = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
                 buyerUser.UserGuidNumber = Guid.NewGuid();
                 buyerUser.Status = true;
+                buyerUser.UserType = UserType.Buyer;
 
                 await _buyerUserRepository.AddAsync(buyerUser);
                 _logger.LogInformation("Alıcı başarıyla kayıt oldu: {Email}", createUserDto.Email);
@@ -64,7 +66,7 @@ namespace Services.Auths.Services
                 }
 
                 _logger.LogInformation("Alıcı giriş yaptı: {Email}", emailOrPhone);
-                var token = _jwtService.GenerateJwtToken(buyerUser);
+                var token = _jwtService.GenerateBuyerToken(buyerUser);
 
                 return new AuthResponseDto
                 {

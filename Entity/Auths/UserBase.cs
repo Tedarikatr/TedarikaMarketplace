@@ -1,6 +1,4 @@
-﻿using Entity.Companies;
-
-namespace Entity.Auths
+﻿namespace Entity.Auths
 {
     public abstract class UserBase
     {
@@ -15,7 +13,7 @@ namespace Entity.Auths
 
         public bool Status { get; set; }
 
-        public int? CompanyId { get; set; }
-        public Company Company { get; set; }
+        public UserType UserType { get; set; } 
+
     }
 }
