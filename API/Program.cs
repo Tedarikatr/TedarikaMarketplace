@@ -7,14 +7,23 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
 using Repository.Auths.Repositorys;
+using Repository.Companys.IRepositorys;
+using Repository.Companys.Repositorys;
 using Serilog;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
 using Services.Auths.Services;
+using Services.Companys.IServices;
+using Services.Companys.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
+builder.Host.UseSerilog();
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 // ?? **Database Baðlantýsý**
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -26,16 +35,16 @@ builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
-// AutoMapper Konfigürasyonu
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile<MappingProfile>(); // Mapping profili ekleniyor
-});
+// **AutoMapper Konfigürasyonu**
+builder.Services.AddAutoMapper(typeof(MappingProfile)); 
 
 try
 {
-    config.AssertConfigurationIsValid(); // Konfigürasyon hatalarýný kontrol et
+    var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+    config.AssertConfigurationIsValid();
 }
 catch (Exception ex)
 {
@@ -43,12 +52,8 @@ catch (Exception ex)
     Console.WriteLine("AutoMapper konfigurasyon hatasý:");
     Console.WriteLine(ex.Message);
     Console.WriteLine(ex.StackTrace);
+    throw;
 }
-// ?? **AutoMapper Entegrasyonu**
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.AddSingleton(config.CreateMapper()); // AutoMapper'ý servislere ekleyelim.
-
 
 // ?? **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
 builder.Services.AddSwaggerGen(c =>
