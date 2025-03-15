@@ -1,7 +1,6 @@
 ﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Carriers;
-using Entity.Categorys;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Markets;
@@ -20,43 +19,50 @@ namespace Data.Databases
         }
 
         // Kullanıcılar
+        public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<BuyerUser> BuyerUsers { get; set; }
         public DbSet<SellerUser> SellerUsers { get; set; }
 
-        // Şirketler
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<CompanyUser> CompanyUsers { get; set; }
-
-        // Mağaza & Marketler
-        public DbSet<Store> Stores { get; set; }
-        public DbSet<Market> Markets { get; set; }
-        public DbSet<StoreMarket> StoreMarkets { get; set; }
-
-        // Ürünler & Kategoriler
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductMarket> ProductMarkets { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<CategorySub> CategorySubs { get; set; }
-
-        // Sepet & Siparişler
+        // Sepet
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+
+        // Kargo 
+        public DbSet<Carrier> Carriers { get; set; }
+
+        // Category
+        public DbSet<Company> Companies { get; set; }
+
+        //Ekbilgiler
+        public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
+
+        //Market
+        public DbSet<Market> Markets { get; set; }
+        public DbSet<MarketCarrier> MarketCarriers { get; set; }
+
+        //Siparişler
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
 
         // Ödemeler & Faturalar
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<StoreInvoice> Invoices { get; set; }
 
-        // Kargo & Teslimat
-        public DbSet<Carrier> Carriers { get; set; }
-        public DbSet<MarketCarrier> MarketCarriers { get; set; }
+        // Ürünler
+        public DbSet<Product> Products { get; set; }
+
+        // Mağaza & Marketler
+        public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
-        public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
+        public DbSet<StoreInvoice> StoreInvoices { get; set; }
+        public DbSet<StoreMarket> StoreMarkets { get; set; }
+        public DbSet<StoreProduct> StoreProducts { get; set; }
+        public DbSet<StoreProductMarket> StoreProductMarkets { get; set; }
+        public DbSet<StoreProductShippingRegion> StoreProductShippingRegions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            ModelCreatingConfigurations.ApplyAllConfigurations(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

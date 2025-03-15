@@ -16,15 +16,10 @@ namespace Entity.Stores
         public int StockQuantity { get; set; }
         public bool IsActive { get; set; }
 
-
-        // Ürünün hangi pazarlara açık olduğu (Yurtiçi/Yurtdışı)
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
 
-        // Ürünün hangi marketlerde listelendiği
-        public virtual ICollection<ProductMarket> ProductMarkets { get; set; }
-
-        // Ürünün hangi ülke/şehirlere gönderilebileceği
+        public virtual ICollection<StoreProductMarket> ProductMarkets { get; set; }
         public virtual ICollection<StoreProductShippingRegion> ShippingRegions { get; set; }
     }
 }

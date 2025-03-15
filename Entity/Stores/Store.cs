@@ -13,10 +13,10 @@ namespace Entity.Stores
         public bool IsApproved { get; set; }
         public string AccountingIntegration { get; set; }
 
-        public int CompanyId { get; set; } // Mağazanın bağlı olduğu şirket
+        public int CompanyId { get; set; } 
         public virtual Company Company { get; set; }
 
-        // Mağazanın bulunduğu lokasyon
+
         public string Country { get; set; }
         public string City { get; set; }
         public double Latitude { get; set; }

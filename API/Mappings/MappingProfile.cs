@@ -82,9 +82,7 @@ namespace API.Mappings
             {
                 // Company <-> CompanyDto
                 profile.CreateMap<Company, CompanyDto>()
-                    .ForMember(dest => dest.UserCount, opt => opt.MapFrom(src => src.CompanyUsers.Count))
                     .ReverseMap()
-                    .ForMember(dest => dest.CompanyUsers, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
                 // CompanyCreateDto -> Company
@@ -93,7 +91,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsVerified, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())
                     .ForMember(dest => dest.TaxDocument, opt => opt.Ignore())  // Eksik olan TaxDocument eklendi
-                    .ForMember(dest => dest.CompanyUsers, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
@@ -115,7 +112,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
-                    .ForMember(dest => dest.CompanyUsers, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
                 // Şirketin aktiflik durumu değiştirme (Admin)
@@ -141,7 +137,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
-                    .ForMember(dest => dest.CompanyUsers, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
                 // Şirketin onay durumu değiştirme (Admin)
@@ -167,7 +162,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
-                    .ForMember(dest => dest.CompanyUsers, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
             }
         }

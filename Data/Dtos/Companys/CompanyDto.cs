@@ -17,7 +17,6 @@
         public bool BuyerAccount { get; set; }
         public bool SellerAccount { get; set; }
         public string Industry { get; set; }
-        public int UserCount { get; set; }
     }
 
     public class CompanyCreateDto

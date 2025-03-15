@@ -27,7 +27,7 @@ namespace Entity.Companies
 
         public CompanyType Type { get; set; }
 
-        public ICollection<CompanyUser> CompanyUsers { get; set; }
+
         public ICollection<Store> Stores { get; set; }
 
 

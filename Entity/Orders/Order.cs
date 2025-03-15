@@ -1,6 +1,7 @@
 ﻿using Entity.Auths;
 using Entity.Carriers;
 using Entity.Companies;
+using Entity.Payments;
 using Entity.Stores;
 
 namespace Entity.Orders
@@ -14,6 +15,9 @@ namespace Entity.Orders
 
         public int? BuyerCompanyId { get; set; }
         public Company BuyerCompany { get; set; }
+
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
 
         public int StoreId { get; set; }
         public Store Store { get; set; }
