@@ -61,26 +61,27 @@ namespace Services.Auths.Services
                 var buyerUser = await _buyerUserRepository.SingleOrDefaultAsync(u => u.Email == emailOrPhone || u.Phone == emailOrPhone);
                 if (buyerUser == null || !BCrypt.Net.BCrypt.Verify(password, buyerUser.Password))
                 {
-                    _logger.LogWarning("Geçersiz giriş denemesi: {Email}", emailOrPhone);
+                    _logger.LogWarning("Geçersiz giriş denemesi: {EmailOrPhone}", emailOrPhone);
                     throw new Exception("Geçersiz e-posta veya şifre.");
                 }
 
-                _logger.LogInformation("Alıcı giriş yaptı: {Email}", emailOrPhone);
+                _logger.LogInformation("Alıcı giriş yaptı: {EmailOrPhone}", emailOrPhone);
                 var token = _jwtService.GenerateBuyerToken(buyerUser);
 
                 return new AuthResponseDto
                 {
                     Token = token,
                     Email = buyerUser.Email,
-                    UserNumber = buyerUser.UserNumber
+                    UserNumber = buyerUser.UserNumber,
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Alıcı giriş sırasında hata oluştu: {Email}", emailOrPhone);
+                _logger.LogError(ex, "Alıcı giriş sırasında hata oluştu: {EmailOrPhone}", emailOrPhone);
                 throw;
             }
         }
+
 
         public async Task<bool> UpdateBuyerUserAsync(BuyerUserDto userDto)
         {

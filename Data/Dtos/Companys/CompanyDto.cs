@@ -31,8 +31,6 @@
         public string Phone { get; set; }
         public string CompanyNumber { get; set; }
         public string Industry { get; set; }
-        public bool BuyerAccount { get; set; }
-        public bool SellerAccount { get; set; }
     }
 
     public class CompanyUpdateDto

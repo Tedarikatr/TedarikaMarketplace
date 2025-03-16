@@ -96,7 +96,9 @@ namespace API.Mappings
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
-                    .ForMember(dest => dest.Type, opt => opt.Ignore());
+                    .ForMember(dest => dest.Type, opt => opt.Ignore())
+                    .ForMember(dest => dest.BuyerAccount, opt => opt.Ignore())
+                    .ForMember(dest => dest.SellerAccount, opt => opt.Ignore());
 
                 // CompanyUpdateDto -> Company
                 profile.CreateMap<CompanyUpdateDto, Company>()

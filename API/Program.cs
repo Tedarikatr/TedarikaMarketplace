@@ -1,8 +1,10 @@
+using API.Filter;
 using API.Mappings;
 using AutoMapper;
 using Data.Databases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
@@ -25,11 +27,22 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
 
-// ?? **Database Baðlantýsý**
+// **MemoryCache ve Distributed Cache Eklenmesi**
+builder.Services.AddMemoryCache();
+builder.Services.AddDistributedMemoryCache();
+
+// **Environment ve JSON Config Eklenmesi**
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+// **Database Baðlantýsý**
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-// ?? **Dependency Injection - Repository & Services**
+// **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
@@ -38,8 +51,21 @@ builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 
+// **FluentValidation Eklenmesi**
+//builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateDtoValidator>();
+//builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserLoginDtoValidator>();
+
+// **MediatR Kullanýmý**
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+// **HttpContextAccessor Eklenmesi**
+builder.Services.AddHttpContextAccessor();
+
+// **SignalR Eklenmesi**
+builder.Services.AddSignalR();
+
 // **AutoMapper Konfigürasyonu**
-builder.Services.AddAutoMapper(typeof(MappingProfile)); 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 try
 {
@@ -55,37 +81,49 @@ catch (Exception ex)
     throw;
 }
 
-// ?? **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
+// **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
 builder.Services.AddSwaggerGen(c =>
 {
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+
+
+    c.OperationFilter<EnumOperationFilter>();
+
     c.SwaggerDoc("seller", new OpenApiInfo { Title = "Seller API", Version = "v1" });
     c.SwaggerDoc("buyer", new OpenApiInfo { Title = "Buyer API", Version = "v1" });
     c.SwaggerDoc("admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
 
-    var securityScheme = new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Description = "Bearer token ile giriþ yapýn. 'Bearer {your token}' formatýnda giriniz.",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT"
-    };
+    //c.EnableAnnotations();
 
-    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            securityScheme,
-            new string[] {}
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+            },
+            new List<string>()
         }
     });
 });
 
-// ?? **CORS Ayarlarý**
+// **CORS Politikasý Güncellemesi**
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("CorsPolicy", builder =>
     {
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
@@ -93,30 +131,50 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ?? **JWT Authentication Konfigurasyonu**
-var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+// **JWT Authentication Konfigurasyonu**
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Audience"]
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+    };
+});
 
-builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+    //.AddNewtonsoftJson(options =>
+    //{
+    //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    //    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+    //    options.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
+    //}); 
+
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// ?? **Hata Yönetimi**
+// **Veritabaný Baþlangýç Verileri (Seeder)**
+//using (var scope = app.Services.CreateScope())
+//{
+//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+//    await seeder.SeedAsync();
+//}
+
+// **Swagger UI Route Güncellemesi**
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -125,12 +183,13 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/seller/swagger.json", "Seller API V1");
         c.SwaggerEndpoint("/swagger/buyer/swagger.json", "Buyer API V1");
         c.SwaggerEndpoint("/swagger/admin/swagger.json", "Admin API V1");
+        c.RoutePrefix = "swagger";
     });
 }
 
-// ?? **Middleware'ler**
+// **Middleware'ler**
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
