@@ -2,6 +2,7 @@ using API.Filter;
 using API.Mappings;
 using AutoMapper;
 using Data.Databases;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ using Services.Auths.Services;
 using Services.Companys.IServices;
 using Services.Companys.Services;
 using System.Text;
+using static API.Validators.Auth.AuthValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -52,8 +54,10 @@ builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 // **FluentValidation Eklenmesi**
-//builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateDtoValidator>();
-//builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserLoginDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BuyerLoginValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SellerRegisterValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SellerLoginValidator>();
 
 // **MediatR Kullanýmý**
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
