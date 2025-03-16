@@ -63,6 +63,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Name, opt => opt.Ignore())
                     .ForMember(dest => dest.LastName, opt => opt.Ignore())
+                    .ForMember(dest => dest.Email, opt => opt.Ignore())
                     .ForMember(dest => dest.Phone, opt => opt.Ignore())
                     .ForMember(dest => dest.UserNumber, opt => opt.Ignore())
                     .ForMember(dest => dest.UserGuidNumber, opt => opt.Ignore())
@@ -90,7 +91,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.IsVerified, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())
-                    .ForMember(dest => dest.TaxDocument, opt => opt.Ignore())  // Eksik olan TaxDocument eklendi
+                    .ForMember(dest => dest.TaxDocument, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Stores, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
@@ -103,7 +104,7 @@ namespace API.Mappings
                 // CompanyUpdateDto -> Company
                 profile.CreateMap<CompanyUpdateDto, Company>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.TaxDocument, opt => opt.Ignore())  // Eksik olan TaxDocument eklendi
+                    .ForMember(dest => dest.TaxDocument, opt => opt.Ignore()) 
                     .ForMember(dest => dest.CompanyNumber, opt => opt.Ignore())
                     .ForMember(dest => dest.IsVerified, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())

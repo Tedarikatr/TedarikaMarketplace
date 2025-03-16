@@ -41,13 +41,13 @@ namespace API.Controllers.Auth
         {
             try
             {
-                _logger.LogInformation("Satıcı giriş yapıyor: {Email}", sellerLoginDto.Email);
-                var token = await _sellerUserService.AuthenticateSellerUserAsync(sellerLoginDto.Email, sellerLoginDto.Password);
+                _logger.LogInformation("Satıcı giriş yapıyor: {Email}", sellerLoginDto.EmailOrPhone);
+                var token = await _sellerUserService.AuthenticateSellerUserAsync(sellerLoginDto.EmailOrPhone, sellerLoginDto.Password);
                 return Ok(new { Token = token });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Satıcı giriş sırasında hata oluştu: {Email}", sellerLoginDto.Email);
+                _logger.LogError(ex, "Satıcı giriş sırasında hata oluştu: {Email}", sellerLoginDto.EmailOrPhone);
                 return Unauthorized("Geçersiz giriş.");
             }
         }

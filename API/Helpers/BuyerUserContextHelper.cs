@@ -6,7 +6,14 @@ namespace API.Helpers
     {
         public static int GetBuyerId(ClaimsPrincipal user)
         {
-            return int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException("Buyer ID bulunamadı."));
+            var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
+            if (claim == null)
+                throw new UnauthorizedAccessException("Buyer ID bulunamadı.");
+
+            if (!int.TryParse(claim.Value, out int userId))
+                throw new UnauthorizedAccessException("Geçersiz Buyer ID.");
+
+            return userId;
         }
 
         public static string GetBuyerNumber(ClaimsPrincipal user)

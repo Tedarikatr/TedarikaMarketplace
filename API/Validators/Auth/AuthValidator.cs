@@ -46,7 +46,7 @@ namespace API.Validators.Auth
         {
             public SellerLoginValidator()
             {
-                RuleFor(x => x.Email).NotEmpty().WithMessage("E-posta alanı boş olamaz.");
+                RuleFor(x => x.EmailOrPhone).NotEmpty().WithMessage("E-posta alanı boş olamaz.");
                 RuleFor(x => x.Password).NotEmpty().WithMessage("Şifre gereklidir.");
             }
         }

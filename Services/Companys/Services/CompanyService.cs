@@ -27,29 +27,41 @@ namespace Services.Companys.Services
             {
                 _logger.LogInformation("Yeni şirket kaydı başlatıldı: {CompanyNumber}", companyCreateDto.CompanyNumber);
 
-                var existingCompany = await _companyRepository.FindAsync(c => c.CompanyNumber == companyCreateDto.CompanyNumber);
+                var existingCompany = await _companyRepository.SingleOrDefaultAsync(c => c.TaxNumber == companyCreateDto.TaxNumber);
 
-                if (existingCompany.Any())
+                if (existingCompany != null)
                 {
-                    var company = existingCompany.First();
-
-                    // Eğer şirket Buyer tarafından eklenmişse ve şimdi bir Seller tarafından ekleniyorsa onaylanmalı
-                    if (company.BuyerAccount && userType == UserType.Seller)
+                    if (existingCompany.BuyerAccount && userType == UserType.Seller)
                     {
-                        company.SellerUserId = userId;
-                        company.SellerAccount = true;
-                        company.IsVerified = true; // Otomatik onay
-                        await _companyRepository.UpdateAsync(company);
+                        if (existingCompany.SellerUserId.HasValue && existingCompany.SellerAccount)
+                        {
+                            throw new Exception("Bu şirket zaten kayıtlı.");
+                        }
+
+                        existingCompany.SellerUserId = userId;
+                        existingCompany.SellerAccount = true;
+                        await _companyRepository.UpdateAsync(existingCompany);
+
                         return "Şirket zaten bir alıcı tarafından eklenmişti, şimdi satıcı olarak onaylandı.";
                     }
-                    // Eğer şirket Seller tarafından eklenmişse ve şimdi bir Buyer tarafından ekleniyorsa hata ver
-                    else if (company.SellerAccount && userType == UserType.Buyer)
+
+                    else if (existingCompany.SellerAccount && userType == UserType.Buyer)
                     {
-                        throw new Exception("Bu şirket bir satıcı tarafından eklenmiş, alıcı olarak ekleyemezsiniz.");
+                        if (existingCompany.BuyerUserId.HasValue && existingCompany.BuyerAccount)
+                        {
+                            throw new Exception("Bu şirket zaten kayıtlı.");
+                        }
+
+                        existingCompany.BuyerUserId = userId;
+                        existingCompany.BuyerAccount = true;
+                        await _companyRepository.UpdateAsync(existingCompany);
+
+                        return "Şirket zaten bir satıcı tarafından eklenmişti, şimdi alıcı olarak onaylandı.";
                     }
+
+                    throw new Exception("Bu şirket zaten kayıtlı.");
                 }
 
-                // Yeni şirket ekleme işlemi
                 var newCompany = _mapper.Map<Company>(companyCreateDto);
                 newCompany.IsVerified = false;
                 newCompany.IsActive = false;
@@ -63,7 +75,7 @@ namespace Services.Companys.Services
                 {
                     newCompany.SellerUserId = userId;
                     newCompany.SellerAccount = true;
-                    newCompany.IsVerified = true; 
+                    newCompany.IsVerified = true;
                 }
 
                 await _companyRepository.AddAsync(newCompany);
