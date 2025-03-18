@@ -67,40 +67,5 @@ namespace API.Controllers.Auth
                 return StatusCode(500, "Sunucu hatası.");
             }
         }
-
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> UpdateBuyer(int id, [FromBody] BuyerUserDto userDto)
-        {
-            try
-            {
-                _logger.LogInformation("Alıcı güncelleniyor. ID: {UserId}", id);
-                userDto.Id = id;
-                var result = await _buyerUserService.UpdateBuyerUserAsync(userDto);
-                return result ? Ok("Güncelleme başarılı.") : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Alıcı güncellenirken hata oluştu. ID: {UserId}", id);
-                return StatusCode(500, "Sunucu hatası.");
-            }
-        }
-
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteBuyer(int id)
-        {
-            try
-            {
-                _logger.LogInformation("Alıcı siliniyor. ID: {UserId}", id);
-                var result = await _buyerUserService.DeleteBuyerUserAsync(id);
-                return result ? Ok("Kullanıcı silindi.") : NotFound("Kullanıcı bulunamadı.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Alıcı silinirken hata oluştu. ID: {UserId}", id);
-                return StatusCode(500, "Sunucu hatası.");
-            }
-        }
     }
 }
