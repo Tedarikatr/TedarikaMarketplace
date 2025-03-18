@@ -1,15 +1,13 @@
 ﻿using Data.Dtos.Auths;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Services.Auths.IServices;
-using System;
-using System.Threading.Tasks;
 
 namespace API.Controllers.Auth
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     public class AdminUserController : ControllerBase
     {
         private readonly IAdminUserService _adminUserService;

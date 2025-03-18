@@ -72,6 +72,7 @@ namespace Services.Auths.Services
                     Token = token,
                     Email = sellerUser.Email,
                     UserNumber = sellerUser.UserNumber,
+                    Role = UserType.Seller
                 };
             }
             catch (Exception ex)

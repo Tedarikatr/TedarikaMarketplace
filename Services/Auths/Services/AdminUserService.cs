@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 using Repository.Auths.IRepositorys;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
+using System;
+using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace Services.Auths.Services
 {
@@ -29,74 +32,115 @@ namespace Services.Auths.Services
 
         public async Task<string> RegisterSuperAdminAsync(AdminRegisterDto adminRegisterDto)
         {
-            if (await _adminUserRepository.IsSuperAdminExistsAsync())
+            try
             {
-                throw new Exception("Super Admin zaten kayıtlı.");
+                _logger.LogInformation("SuperAdmin kaydı başlatıldı: {Email}", adminRegisterDto.Email);
+
+                if (await _adminUserRepository.IsSuperAdminExistsAsync())
+                {
+                    _logger.LogWarning("SuperAdmin zaten kayıtlı: {Email}", adminRegisterDto.Email);
+                    throw new Exception("Super Admin zaten mevcut.");
+                }
+
+                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(adminRegisterDto.Password, salt);
+
+                var superAdmin = new AdminUser
+                {
+                    Name = adminRegisterDto.Name,
+                    LastName = adminRegisterDto.LastName,
+                    Email = adminRegisterDto.Email,
+                    Phone = adminRegisterDto.Phone,
+                    PasswordHash = hashedPassword,
+                    PasswordSalt = salt,
+                    IsSuperAdmin = true,
+                    UserType = UserType.Admin,
+                    Role = AdminRole.SuperAdmin
+                };
+
+                await _adminUserRepository.AddAsync(superAdmin);
+
+                _logger.LogInformation("SuperAdmin başarıyla oluşturuldu: {Email}", adminRegisterDto.Email);
+                return "Super Admin başarıyla oluşturuldu.";
             }
-
-            var salt = BCrypt.Net.BCrypt.GenerateSalt();
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(adminRegisterDto.Password, salt);
-
-            var admin = new AdminUser
+            catch (Exception ex)
             {
-                Name = adminRegisterDto.Name,
-                LastName = adminRegisterDto.LastName,
-                Email = adminRegisterDto.Email,
-                Phone = adminRegisterDto.Phone,
-                PasswordHash = hashedPassword,
-                PasswordSalt = salt,
-                IsSuperAdmin = true,
-                Role = AdminRole.SuperAdmin
-            };
-
-            await _adminUserRepository.AddAsync(admin);
-            return "Super Admin başarıyla oluşturuldu.";
+                _logger.LogError(ex, "SuperAdmin kaydı sırasında hata oluştu: {Email}", adminRegisterDto.Email);
+                throw;
+            }
         }
 
         public async Task<string> RegisterAdminAsync(AdminRegisterDto adminRegisterDto, string superAdminPassword)
         {
-            var superAdmin = await _adminUserRepository.GetAdminByEmailAsync(adminRegisterDto.SuperAdminEmail);
-
-            if (superAdmin == null || !BCrypt.Net.BCrypt.Verify(superAdminPassword, superAdmin.PasswordHash))
+            try
             {
-                throw new Exception("Super Admin doğrulaması başarısız.");
+                _logger.LogInformation("Admin kaydı başlatıldı: {Email}", adminRegisterDto.Email);
+
+                var superAdmin = await _adminUserRepository.GetSuperAdminAsync();
+                if (superAdmin == null || !BCrypt.Net.BCrypt.Verify(superAdminPassword, superAdmin.PasswordHash))
+                {
+                    _logger.LogWarning("SuperAdmin doğrulaması başarısız: {Email}", adminRegisterDto.Email);
+                    throw new Exception("SuperAdmin doğrulaması başarısız.");
+                }
+
+                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(adminRegisterDto.Password, salt);
+
+                var admin = new AdminUser
+                {
+                    Name = adminRegisterDto.Name,
+                    LastName = adminRegisterDto.LastName,
+                    Email = adminRegisterDto.Email,
+                    Phone = adminRegisterDto.Phone,
+                    PasswordHash = hashedPassword,
+                    PasswordSalt = salt,
+                    IsSuperAdmin = false,
+                    UserType = UserType.Admin,
+                    Role = AdminRole.StandardAdmin
+                };
+
+                await _adminUserRepository.AddAsync(admin);
+
+                _logger.LogInformation("Admin başarıyla oluşturuldu: {Email}", adminRegisterDto.Email);
+                return "Admin başarıyla oluşturuldu.";
             }
-
-            var salt = BCrypt.Net.BCrypt.GenerateSalt();
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(adminRegisterDto.Password, salt);
-
-            var admin = new AdminUser
+            catch (Exception ex)
             {
-                Name = adminRegisterDto.Name,
-                LastName = adminRegisterDto.LastName,
-                Email = adminRegisterDto.Email,
-                Phone = adminRegisterDto.Phone,
-                PasswordHash = hashedPassword,
-                PasswordSalt = salt,
-                IsSuperAdmin = false,
-                Role = AdminRole.StandardAdmin
-            };
-
-            await _adminUserRepository.AddAsync(admin);
-            return "Admin başarıyla oluşturuldu.";
+                _logger.LogError(ex, "Admin kaydı sırasında hata oluştu: {Email}", adminRegisterDto.Email);
+                throw;
+            }
         }
 
         public async Task<AuthResponseDto> AuthenticateAdminAsync(string email, string password)
         {
-            var admin = await _adminUserRepository.GetAdminByEmailAsync(email);
-
-            if (admin == null || !BCrypt.Net.BCrypt.Verify(password, admin.PasswordHash))
+            try
             {
-                throw new Exception("Geçersiz e-posta veya şifre.");
+                _logger.LogInformation("Admin girişi başlatıldı: {Email}", email);
+
+                var admin = await _adminUserRepository.GetAdminByEmailAsync(email);
+
+                if (admin == null || !BCrypt.Net.BCrypt.Verify(password, admin.PasswordHash))
+                {
+                    _logger.LogWarning("Geçersiz giriş denemesi: {Email}", email);
+                    throw new Exception("Geçersiz e-posta veya şifre.");
+                }
+
+                var token = _jwtService.GenerateAdminToken(admin);
+
+                _logger.LogInformation("Admin girişi başarılı: {Email}", email);
+
+                return new AuthResponseDto
+                {
+                    Token = token,
+                    Email = admin.Email,
+                    Role = UserType.Admin
+                };
             }
-
-            var token = _jwtService.GenerateAdminToken(admin);
-
-            return new AuthResponseDto
+            catch (Exception ex)
             {
-                Token = token,
-                Email = admin.Email
-            };
+                _logger.LogError(ex, "Admin giriş sırasında hata oluştu: {Email}", email);
+                throw;
+            }
         }
     }
 }

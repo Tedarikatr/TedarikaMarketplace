@@ -1,11 +1,10 @@
 using API.Filter;
 using API.Mappings;
 using AutoMapper;
+using Data.Context;
 using Data.Databases;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
@@ -46,6 +45,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddScoped<IAdminUserService, AdminUserService>();
+builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
@@ -172,11 +174,11 @@ builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 // **Veritabaný Baþlangýç Verileri (Seeder)**
-//using (var scope = app.Services.CreateScope())
-//{
-//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-//    await seeder.SeedAsync();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
+}
 
 // **Swagger UI Route Güncellemesi**
 if (app.Environment.IsDevelopment())

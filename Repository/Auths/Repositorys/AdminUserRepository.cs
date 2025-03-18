@@ -15,6 +15,11 @@ namespace Repository.Auths.Repositorys
             return await _dbSet.FirstOrDefaultAsync(a => a.Email == email);
         }
 
+        public async Task<AdminUser> GetSuperAdminAsync()
+        {
+            return await _dbSet.FirstOrDefaultAsync(a => a.IsSuperAdmin);
+        }
+
         public async Task<bool> IsSuperAdminExistsAsync()
         {
             return await _dbSet.AnyAsync(a => a.IsSuperAdmin);
