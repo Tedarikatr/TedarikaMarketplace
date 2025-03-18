@@ -1,0 +1,32 @@
+﻿namespace Entity.Products
+{
+    public enum UnitType
+    {
+        Adet,
+        Ambalaj,
+        Bidon,
+        Çuval,
+        Düzine,
+        Galon,
+        Gram,
+        Gramaj,
+        Karat,
+        Kasa,
+        kg,
+        Koli,
+        Litre,
+        Metre,
+        Metrekare,
+        Metreküp,
+        Mililitre,
+        Paket,
+        Palet,
+        Rulo,
+        Sandık,
+        Santimetre,
+        Şişe,
+        Tane,
+        Takım,
+        Ton
+    }
+}
