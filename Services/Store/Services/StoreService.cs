@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Data.Dtos.Store;
-using Entity.Stores;
 using Microsoft.Extensions.Logging;
 using Repository.Store.IRepositorys;
 using Services.Store.IServices;
@@ -97,82 +96,5 @@ namespace Services.Store.Services
             }
         }
 
-        public async Task<string> AddPaymentMethodAsync(StorePaymentMethodDto paymentMethodDto, int storeId)
-        {
-            try
-            {
-                _logger.LogInformation("Mağazaya ödeme yöntemi ekleniyor. Mağaza ID: {StoreId}", storeId);
-
-                var store = await _storeRepository.GetByIdAsync(storeId);
-                if (store == null)
-                {
-                    throw new Exception("Mağaza bulunamadı.");
-                }
-
-                var newPaymentMethod = _mapper.Map<StorePaymentMethod>(paymentMethodDto);
-                newPaymentMethod.StoreId = storeId;
-
-                await _storeRepository.AddPaymentMethodAsync(newPaymentMethod);
-                _logger.LogInformation("Ödeme yöntemi eklendi. Mağaza ID: {StoreId}", storeId);
-                return "Ödeme yöntemi başarıyla eklendi.";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ödeme yöntemi eklerken hata oluştu.");
-                throw;
-            }
-        }
-
-        public async Task<string> AddDeliveryOptionAsync(StoreDeliveryOptionDto deliveryOptionDto, int storeId)
-        {
-            try
-            {
-                _logger.LogInformation("Teslimat seçeneği ekleniyor. Mağaza ID: {StoreId}", storeId);
-
-                var store = await _storeRepository.GetByIdAsync(storeId);
-                if (store == null)
-                {
-                    throw new Exception("Mağaza bulunamadı.");
-                }
-
-                var newDeliveryOption = _mapper.Map<StoreCarrier>(deliveryOptionDto);
-                newDeliveryOption.StoreId = storeId;
-
-                await _storeRepository.AddDeliveryOptionAsync(newDeliveryOption);
-                _logger.LogInformation("Teslimat seçeneği eklendi. Mağaza ID: {StoreId}", storeId);
-                return "Teslimat seçeneği başarıyla eklendi.";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Teslimat seçeneği eklerken hata oluştu.");
-                throw;
-            }
-        }
-
-        public async Task<string> AddMarketAsync(StoreMarketDto marketDto, int storeId)
-        {
-            try
-            {
-                _logger.LogInformation("Mağazaya market ekleniyor. Mağaza ID: {StoreId}", storeId);
-
-                var store = await _storeRepository.GetByIdAsync(storeId);
-                if (store == null)
-                {
-                    throw new Exception("Mağaza bulunamadı.");
-                }
-
-                var newMarket = _mapper.Map<StoreMarket>(marketDto);
-                newMarket.StoreId = storeId;
-
-                await _storeRepository.AddMarketAsync(newMarket);
-                _logger.LogInformation("Market eklendi. Mağaza ID: {StoreId}", storeId);
-                return "Market başarıyla eklendi.";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Market eklerken hata oluştu.");
-                throw;
-            }
-        }
     }
 }

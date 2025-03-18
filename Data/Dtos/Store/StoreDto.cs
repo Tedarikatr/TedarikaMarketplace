@@ -7,7 +7,6 @@
     public class StoreCreateDto
     {
         public string StoreName { get; set; }
-        public int CompanyId { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
         public double Latitude { get; set; }
