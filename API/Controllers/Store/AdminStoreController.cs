@@ -1,0 +1,57 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Services.Store.IServices;
+
+namespace API.Controllers.Store
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Roles = "Admin,SuperAdmin")]
+    public class AdminStoreController : ControllerBase
+    {
+        private readonly IStoreService _storeService;
+        private readonly ILogger<AdminStoreController> _logger;
+
+        public AdminStoreController(IStoreService storeService, ILogger<AdminStoreController> logger)
+        {
+            _storeService = storeService;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Tüm mağazaları getirir.
+        /// </summary>
+        [HttpGet("list-all-stores")]
+        public async Task<IActionResult> GetAllStores()
+        {
+            try
+            {
+                var result = await _storeService.GetAllStoresAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağazalar getirilirken hata oluştu.");
+                return StatusCode(500, new { Error = "Mağazalar getirilirken hata oluştu." });
+            }
+        }
+
+        /// <summary>
+        /// Admin mağazayı onaylar veya onaydan kaldırır.
+        /// </summary>
+        [HttpPut("approve-store/{storeId}")]
+        public async Task<IActionResult> ApproveStore(int storeId, [FromQuery] bool isApproved)
+        {
+            try
+            {
+                var result = await _storeService.ApproveStoreAsync(storeId, isApproved);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağaza onay durumu değiştirilirken hata oluştu.");
+                return StatusCode(500, new { Error = "Mağaza onay durumu değiştirilirken hata oluştu." });
+            }
+        }
+    }
+}

@@ -34,6 +34,7 @@ namespace Services.Store.Services
                 var newStore = _mapper.Map<Entity.Stores.Store>(storeCreateDto);
                 newStore.OwnerId = sellerId;
                 newStore.IsApproved = false;
+                newStore.IsActive = false;
 
                 await _storeRepository.AddAsync(newStore);
                 _logger.LogInformation("Yeni mağaza oluşturuldu. Mağaza ID: {StoreId}", newStore.Id);
@@ -83,7 +84,7 @@ namespace Services.Store.Services
                     throw new UnauthorizedAccessException("Bu mağazayı yönetme yetkiniz yok.");
                 }
 
-                store.IsApproved = isActive;
+                store.IsActive = isActive;
                 await _storeRepository.UpdateAsync(store);
 
                 _logger.LogInformation("Mağaza durumu değiştirildi. Mağaza ID: {StoreId}", storeId);
@@ -91,10 +92,53 @@ namespace Services.Store.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Mağaza durumu değiştirirken hata oluştu.");
+                _logger.LogError(ex, "Mağaza durumu değiştirilirken hata oluştu.");
                 throw;
             }
         }
 
+        public async Task<IEnumerable<StoreDto>> GetAllStoresAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Tüm mağazalar getiriliyor.");
+
+                var stores = await _storeRepository.GetAllAsync();
+                var storeDtos = _mapper.Map<IEnumerable<StoreDto>>(stores);
+
+                _logger.LogInformation("Tüm mağazalar başarıyla getirildi.");
+                return storeDtos;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Tüm mağazalar getirilirken hata oluştu.");
+                throw;
+            }
+        }
+
+        public async Task<string> ApproveStoreAsync(int storeId, bool isApproved)
+        {
+            try
+            {
+                _logger.LogInformation("Mağaza onay durumu değiştiriliyor. Mağaza ID: {StoreId}, Yeni Durum: {IsApproved}", storeId, isApproved);
+
+                var store = await _storeRepository.GetByIdAsync(storeId);
+                if (store == null)
+                {
+                    throw new Exception("Mağaza bulunamadı.");
+                }
+
+                store.IsApproved = isApproved;
+                await _storeRepository.UpdateAsync(store);
+
+                _logger.LogInformation("Mağaza onay durumu değiştirildi. Mağaza ID: {StoreId}", storeId);
+                return isApproved ? "Mağaza onaylandı." : "Mağaza onayı kaldırıldı.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağaza onay durumu değiştirilirken hata oluştu.");
+                throw;
+            }
+        }
     }
 }

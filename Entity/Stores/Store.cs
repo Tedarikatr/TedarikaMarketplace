@@ -11,6 +11,7 @@ namespace Entity.Stores
         public SellerUser Owner { get; set; }
         public string StoreName { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsActive { get; set; }
         public string AccountingIntegration { get; set; }
 
         public int CompanyId { get; set; } 
