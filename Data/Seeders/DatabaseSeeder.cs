@@ -3,7 +3,7 @@ using Entity.Auths;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Data.Context
+namespace Data.Seeders
 {
     public class DatabaseSeeder
     {

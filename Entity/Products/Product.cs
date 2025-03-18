@@ -1,4 +1,4 @@
-﻿using Entity.Categorys;
+﻿using Entity.Categories;
 using Entity.Stores;
 
 namespace Entity.Products
