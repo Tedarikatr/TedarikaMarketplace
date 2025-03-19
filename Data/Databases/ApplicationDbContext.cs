@@ -1,6 +1,7 @@
 ﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Carriers;
+using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Markets;
@@ -29,8 +30,11 @@ namespace Data.Databases
 
         // Kargo 
         public DbSet<Carrier> Carriers { get; set; }
+        //Category
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<CategorySub> CategoriesSubs { get; set; }
 
-        // Category
+        // Company
         public DbSet<Company> Companies { get; set; }
 
         //Ekbilgiler
