@@ -1,5 +1,4 @@
 ﻿using Entity.Categories;
-using Entity.Stores;
 
 namespace Entity.Products
 {
@@ -9,10 +8,6 @@ namespace Entity.Products
 
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal BasePrice { get; set; }
-        public bool AllowedDomestic { get; set; }
-        public bool AllowedInternational { get; set; }
-
 
         public string UnitTypes { get; set; }
         public UnitType UnitType { get; set; }
@@ -20,13 +15,13 @@ namespace Entity.Products
         public string ProductNumber { get; set; }
         public string Barcode { get; set; }
         public string Brand { get; set; }
+        public string ImageUrl { get; set; }
+
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? PreparationTime { get; set; }
         public DateTime? ExpirationDate { get; set; }
-
-        public string ImageUrl { get; set; }
 
         public int? CategoryId { get; set; }
         public string CategoryName { get; set; }

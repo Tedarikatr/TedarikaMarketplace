@@ -1,0 +1,127 @@
+﻿using API.Helpers;
+using Data.Dtos.Categories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Services.Categories.IServices;
+
+namespace API.Controllers.Categories
+{
+    [Route("api/admin/category")]
+    [ApiController]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public class AdminCategoryController : ControllerBase
+    {
+        private readonly ICategoryService _categoryService;
+        private readonly ILogger<AdminCategoryController> _logger;
+
+        public AdminCategoryController(ICategoryService categoryService, ILogger<AdminCategoryController> logger)
+        {
+            _categoryService = categoryService;
+            _logger = logger;
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            try
+            {
+                _logger.LogInformation("Tüm kategoriler listeleniyor.");
+                var categories = await _categoryService.GetAllCategoriesAsync();
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Tüm kategorileri listeleme sırasında hata oluştu.");
+                return StatusCode(500, new { Error = "Kategorileri listelerken bir hata oluştu." });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryById(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Kategori detayları alınıyor. Kategori ID: {CategoryId}", id);
+                var category = await _categoryService.GetCategoryByIdAsync(id);
+                return Ok(category);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kategori bilgileri alınırken hata oluştu. ID: {CategoryId}", id);
+                return StatusCode(500, new { Error = "Kategori bilgileri alınırken bir hata oluştu." });
+            }
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto categoryCreateDto, [FromForm] IFormFile categoryImage)
+        {
+            try
+            {
+                int adminId = AdminUserContextHelper.GetAdminId(User);
+                _logger.LogInformation("Yeni kategori ekleniyor. Admin ID: {AdminId}, Kategori Adı: {CategoryName}", adminId, categoryCreateDto.CategoryName);
+
+                var result = await _categoryService.CreateCategoryAsync(categoryCreateDto, categoryImage);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kategori ekleme işlemi sırasında hata oluştu.");
+                return StatusCode(500, new { Error = "Kategori ekleme işlemi sırasında bir hata oluştu." });
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto categoryUpdateDto)
+        {
+            try
+            {
+                int adminId = AdminUserContextHelper.GetAdminId(User);
+                _logger.LogInformation("Kategori güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
+
+                var result = await _categoryService.UpdateCategoryAsync(id, categoryUpdateDto);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kategori güncelleme sırasında hata oluştu. ID: {CategoryId}", id);
+                return StatusCode(500, new { Error = "Kategori güncelleme sırasında bir hata oluştu." });
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                int adminId = AdminUserContextHelper.GetAdminId(User);
+                _logger.LogInformation("Kategori siliniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
+
+                var result = await _categoryService.DeleteCategoryAsync(id);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kategori silme işlemi sırasında hata oluştu. ID: {CategoryId}", id);
+                return StatusCode(500, new { Error = "Kategori silme işlemi sırasında bir hata oluştu." });
+            }
+        }
+
+        [HttpPut("update-image/{id}")]
+        public async Task<IActionResult> UpdateCategoryImage(int id, [FromForm] IFormFile categoryImage)
+        {
+            try
+            {
+                int adminId = AdminUserContextHelper.GetAdminId(User);
+                _logger.LogInformation("Kategori resmi güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
+
+                var result = await _categoryService.UpdateCategoryImageAsync(id, categoryImage);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kategori resmi güncellenirken hata oluştu. ID: {CategoryId}", id);
+                return StatusCode(500, new { Error = "Kategori resmi güncellenirken bir hata oluştu." });
+            }
+        }
+    }
+}

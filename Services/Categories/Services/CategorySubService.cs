@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
+using Data.Dtos.Categories;
 using Entity.Categories;
 using Microsoft.Extensions.Logging;
+using Repository.Categories.IRepositorys;
 using Services.Categories.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Categories.Services
 {
