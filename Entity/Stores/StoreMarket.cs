@@ -6,6 +6,8 @@ namespace Entity.Stores
     {
         public int Id { get; set; }
 
+        public bool IsActive { get; set; }
+
         public int StoreId { get; set; }
         public Store Store { get; set; }
 

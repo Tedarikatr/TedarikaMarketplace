@@ -9,6 +9,5 @@ namespace Services.Markets.IServices
         Task<string> CreateMarketAsync(MarketCreateDto marketDto);
         Task<string> UpdateMarketAsync(int marketId, MarketUpdateDto marketDto);
         Task<string> SetMarketStatusAsync(int marketId, bool isActive);
-        Task<string> AddStoreToMarketAsync(int storeId, int marketId);
     }
 }

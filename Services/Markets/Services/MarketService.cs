@@ -21,17 +21,49 @@ namespace Services.Markets.Services
 
         public async Task<IEnumerable<MarketDto>> GetAllMarketsAsync()
         {
-            _logger.LogInformation("Tüm marketler listeleniyor.");
-            var markets = await _marketRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<MarketDto>>(markets);
+            try
+            {
+                _logger.LogInformation("Tüm marketler listeleniyor.");
+                var markets = await _marketRepository.GetAllAsync();
+
+                if (markets == null || !markets.Any())
+                {
+                    _logger.LogWarning("Sistemde kayıtlı hiçbir market bulunamadı.");
+                    throw new Exception("Sistemde kayıtlı market bulunamadı.");
+                }
+
+                _logger.LogInformation("{MarketCount} adet market bulundu.", markets.Count());
+                return _mapper.Map<IEnumerable<MarketDto>>(markets);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Marketleri çekerken hata oluştu.");
+                throw new Exception("Marketleri çekerken bir hata oluştu, lütfen tekrar deneyin.");
+            }
         }
 
         public async Task<MarketDto> GetMarketByIdAsync(int marketId)
         {
-            _logger.LogInformation("Market detayları alınıyor. Market ID: {MarketId}", marketId);
-            var market = await _marketRepository.GetByIdAsync(marketId);
-            if (market == null) throw new Exception("Market bulunamadı.");
-            return _mapper.Map<MarketDto>(market);
+            try
+            {
+                _logger.LogInformation("Market detayları alınıyor. Market ID: {MarketId}", marketId);
+
+                var market = await _marketRepository.GetByIdAsync(marketId);
+
+                if (market == null)
+                {
+                    _logger.LogWarning("Market bulunamadı. Market ID: {MarketId}", marketId);
+                    throw new Exception("Belirtilen market bulunamadı.");
+                }
+
+                _logger.LogInformation("Market bilgisi başarıyla getirildi. Market ID: {MarketId}", marketId);
+                return _mapper.Map<MarketDto>(market);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Market bilgisi alınırken hata oluştu. Market ID: {MarketId}", marketId);
+                throw new Exception("Market bilgisi alınırken bir hata oluştu, lütfen tekrar deneyin.");
+            }
         }
 
         public async Task<string> CreateMarketAsync(MarketCreateDto marketDto)
@@ -94,25 +126,6 @@ namespace Services.Markets.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Market durumu değiştirirken hata oluştu.");
-                throw;
-            }
-        }
-
-        public async Task<string> AddStoreToMarketAsync(int storeId, int marketId)
-        {
-            try
-            {
-                _logger.LogInformation("Mağaza markete ekleniyor. Store ID: {StoreId}, Market ID: {MarketId}", storeId, marketId);
-
-                var result = await _marketRepository.AddStoreToMarketAsync(storeId, marketId);
-                if (!result) throw new Exception("Mağaza markete eklenemedi.");
-
-                _logger.LogInformation("Mağaza markete başarıyla eklendi. Store ID: {StoreId}, Market ID: {MarketId}", storeId, marketId);
-                return "Mağaza başarıyla markete eklendi.";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mağaza markete eklenirken hata oluştu.");
                 throw;
             }
         }
