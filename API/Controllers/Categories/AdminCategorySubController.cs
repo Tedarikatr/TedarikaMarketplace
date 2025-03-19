@@ -6,8 +6,9 @@ using Services.Categories.IServices;
 
 namespace API.Controllers.Categories
 {
-    [Route("api/admin/category-sub")]
+    [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public class AdminCategorySubController : ControllerBase
     {
@@ -69,7 +70,7 @@ namespace API.Controllers.Categories
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateCategorySub([FromBody] CategorySubCreateDto categorySubCreateDto)
+        public async Task<IActionResult> CreateCategorySub([FromQuery] CategorySubCreateDto categorySubCreateDto)
         {
             try
             {
@@ -87,7 +88,7 @@ namespace API.Controllers.Categories
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateCategorySub(int id, [FromBody] CategorySubUpdateDto categorySubUpdateDto)
+        public async Task<IActionResult> UpdateCategorySub([FromQuery] int id, [FromBody] CategorySubUpdateDto categorySubUpdateDto)
         {
             try
             {

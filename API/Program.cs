@@ -5,18 +5,33 @@ using Data.Databases;
 using Data.Seeders;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
 using Repository.Auths.Repositorys;
+using Repository.Categories.IRepositorys;
+using Repository.Categories.Repositorys;
 using Repository.Companys.IRepositorys;
 using Repository.Companys.Repositorys;
+using Repository.Markets.IRepositorys;
+using Repository.Markets.Repositorys;
+using Repository.Stores.IRepositorys;
+using Repository.Stores.Repositorys;
 using Serilog;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
 using Services.Auths.Services;
+using Services.Categories.IServices;
+using Services.Categories.Services;
 using Services.Companys.IServices;
 using Services.Companys.Services;
+using Services.Files.IServices;
+using Services.Files.Services;
+using Services.Markets.IServices;
+using Services.Markets.Services;
+using Services.Stores.IServices;
+using Services.Stores.Services;
 using System.Text;
 using static API.Validators.Auth.AuthValidator;
 
@@ -46,14 +61,28 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+//Auth
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
 builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
+//Categories
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+//Company
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+//Files
+builder.Services.AddScoped<IFilesService, AzureBlobService>();
+builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
+//Markets
+builder.Services.AddScoped<IMarketRepository, MarketRepository>();
+builder.Services.AddScoped<IMarketService, MarketService>();
+//Stores
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+builder.Services.AddScoped<IStoreService, StoreService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();
@@ -92,14 +121,14 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
+    c.OperationFilter<SwaggerFileUploadOperationFilter>();
 
-    c.OperationFilter<EnumOperationFilter>();
+    c.EnableAnnotations();
 
     c.SwaggerDoc("seller", new OpenApiInfo { Title = "Seller API", Version = "v1" });
     c.SwaggerDoc("buyer", new OpenApiInfo { Title = "Buyer API", Version = "v1" });
     c.SwaggerDoc("admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
 
-    //c.EnableAnnotations();
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -167,7 +196,7 @@ builder.Services.AddControllers()
     //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     //    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
     //    options.SerializerSettings.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
-    //}); 
+    //});
 
 builder.Services.AddEndpointsApiExplorer();
 

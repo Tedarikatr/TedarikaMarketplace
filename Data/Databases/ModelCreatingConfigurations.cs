@@ -132,7 +132,6 @@ namespace Data.Databases
             modelBuilder.Entity<Order>().Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<OrderItem>().Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<Payment>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<Product>().Property(p => p.BasePrice).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreInvoice>().Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreProduct>().Property(sp => sp.Price).HasColumnType("decimal(18,2)");
         }

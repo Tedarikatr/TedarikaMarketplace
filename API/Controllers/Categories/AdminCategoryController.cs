@@ -3,21 +3,25 @@ using Data.Dtos.Categories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Categories.IServices;
+using Services.Files.IServices;
 
 namespace API.Controllers.Categories
 {
-    [Route("api/admin/category")]
+    [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public class AdminCategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
         private readonly ILogger<AdminCategoryController> _logger;
+        private readonly IFilesService _filesService;
 
-        public AdminCategoryController(ICategoryService categoryService, ILogger<AdminCategoryController> logger)
+        public AdminCategoryController(ICategoryService categoryService, ILogger<AdminCategoryController> logger, IFilesService filesService)
         {
             _categoryService = categoryService;
             _logger = logger;
+            _filesService = filesService;
         }
 
         [HttpGet("all")]
@@ -53,14 +57,20 @@ namespace API.Controllers.Categories
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto categoryCreateDto, [FromForm] IFormFile categoryImage)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto categoryCreateDto, [FromForm] IFormFile file)
         {
             try
             {
                 int adminId = AdminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Yeni kategori ekleniyor. Admin ID: {AdminId}, Kategori Adı: {CategoryName}", adminId, categoryCreateDto.CategoryName);
 
-                var result = await _categoryService.CreateCategoryAsync(categoryCreateDto, categoryImage);
+                if (file == null || file.Length == 0)
+                    return BadRequest("Dosya yüklenemedi.");
+
+                var fileUploadResult = await _filesService.UploadFileAsync(file, "sector");
+                categoryCreateDto.CategoryImage = fileUploadResult.Url;
+
+                var result = await _categoryService.CreateCategoryAsync(categoryCreateDto, file);
                 return Ok(new { Message = result });
             }
             catch (Exception ex)
@@ -107,14 +117,17 @@ namespace API.Controllers.Categories
         }
 
         [HttpPut("update-image/{id}")]
-        public async Task<IActionResult> UpdateCategoryImage(int id, [FromForm] IFormFile categoryImage)
+        public async Task<IActionResult> UpdateCategoryImage([FromQuery] int id, IFormFile file)
         {
             try
             {
                 int adminId = AdminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Kategori resmi güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
 
-                var result = await _categoryService.UpdateCategoryImageAsync(id, categoryImage);
+                if (file == null || file.Length == 0)
+                    return BadRequest("Dosya yüklenemedi.");
+                var result = await _categoryService.UpdateCategoryImageAsync(id, file);
+
                 return Ok(new { Message = result });
             }
             catch (Exception ex)

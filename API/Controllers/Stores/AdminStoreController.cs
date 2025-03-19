@@ -6,6 +6,7 @@ namespace API.Controllers.Stores
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     [Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminStoreController : ControllerBase
     {
@@ -18,9 +19,6 @@ namespace API.Controllers.Stores
             _logger = logger;
         }
 
-        /// <summary>
-        /// Tüm mağazaları getirir.
-        /// </summary>
         [HttpGet("list-all-stores")]
         public async Task<IActionResult> GetAllStores()
         {
@@ -36,9 +34,6 @@ namespace API.Controllers.Stores
             }
         }
 
-        /// <summary>
-        /// Admin mağazayı onaylar veya onaydan kaldırır.
-        /// </summary>
         [HttpPut("approve-store/{storeId}")]
         public async Task<IActionResult> ApproveStore(int storeId, [FromQuery] bool isApproved)
         {
