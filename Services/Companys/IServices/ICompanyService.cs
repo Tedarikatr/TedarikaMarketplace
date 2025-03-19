@@ -1,4 +1,4 @@
-﻿using Data.Dtos.Companys;
+﻿using Data.Dtos.Companies;
 using Entity.Auths;
 
 namespace Services.Companys.IServices

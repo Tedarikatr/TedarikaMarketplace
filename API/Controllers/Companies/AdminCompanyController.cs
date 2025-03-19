@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Companys.IServices;
 
-namespace API.Controllers.Company
+namespace API.Controllers.Companies
 {
     [Route("api/[controller]")]
     [ApiController]

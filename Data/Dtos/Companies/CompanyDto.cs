@@ -1,4 +1,4 @@
-﻿namespace Data.Dtos.Companys
+﻿namespace Data.Dtos.Companies
 {
     public class CompanyDto
     {

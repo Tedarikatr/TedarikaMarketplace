@@ -1,4 +1,4 @@
-﻿namespace Data.Dtos.Store
+﻿namespace Data.Dtos.Stores
 {
     public class StoreDto
     {

@@ -1,11 +1,11 @@
 ﻿using API.Helpers;
-using Data.Dtos.Companys;
+using Data.Dtos.Companies;
 using Entity.Auths;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Companys.IServices;
 
-namespace API.Controllers.Company
+namespace API.Controllers.Companies
 {
     [Route("api/[controller]")]
     [ApiController]

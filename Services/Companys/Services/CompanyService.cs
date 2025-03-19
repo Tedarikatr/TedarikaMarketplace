@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Data.Dtos.Companys;
+using Data.Dtos.Companies;
 using Entity.Auths;
 using Entity.Companies;
 using Microsoft.Extensions.Logging;

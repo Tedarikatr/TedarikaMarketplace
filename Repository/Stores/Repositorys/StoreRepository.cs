@@ -2,7 +2,7 @@
 using Data.Repository;
 using Entity.Stores;
 using Microsoft.EntityFrameworkCore;
-using Repository.Store.IRepositorys;
+using Repository.Stores.IRepositorys;
 
 namespace Repository.Stores.Repositorys
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Auths;
-using Data.Dtos.Companys;
+using Data.Dtos.Companies;
 using Entity.Auths;
 using Entity.Companies;
 

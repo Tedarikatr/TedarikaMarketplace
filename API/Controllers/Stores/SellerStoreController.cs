@@ -1,10 +1,10 @@
-﻿using Data.Dtos.Store;
+﻿using Data.Dtos.Stores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Store.IServices;
+using Services.Stores.IServices;
 using System.Security.Claims;
 
-namespace API.Controllers.Store
+namespace API.Controllers.Stores
 {
     [Route("api/[controller]")]
     [ApiController]

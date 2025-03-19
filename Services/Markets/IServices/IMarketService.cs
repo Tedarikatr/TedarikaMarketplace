@@ -1,6 +1,6 @@
 ﻿using Data.Dtos.Markets;
 
-namespace Repository.Markets.IRepositorys
+namespace Services.Markets.IServices
 {
     public interface IMarketService
     {

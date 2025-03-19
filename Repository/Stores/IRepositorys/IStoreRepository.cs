@@ -1,11 +1,11 @@
 ﻿using Data.Repository;
 using Entity.Stores;
 
-namespace Repository.Store.IRepositorys
+namespace Repository.Stores.IRepositorys
 {
-    public interface IStoreRepository : IGenericRepository<Entity.Stores.Store>
+    public interface IStoreRepository : IGenericRepository<Store>
     {
-        Task<Entity.Stores.Store> GetStoreBySellerIdAsync(int sellerId);
+        Task<Store> GetStoreBySellerIdAsync(int sellerId);
         Task<bool> AddPaymentMethodAsync(StorePaymentMethod paymentMethod);
         Task<bool> AddDeliveryOptionAsync(StoreCarrier deliveryOption);
         Task<bool> AddMarketAsync(StoreMarket market);

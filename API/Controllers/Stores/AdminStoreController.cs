@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Store.IServices;
+using Services.Stores.IServices;
 
-namespace API.Controllers.Store
+namespace API.Controllers.Stores
 {
     [Route("api/[controller]")]
     [ApiController]

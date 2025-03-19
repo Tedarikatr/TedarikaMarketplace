@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Data.Dtos.Store;
+using Data.Dtos.Stores;
 using Microsoft.Extensions.Logging;
-using Repository.Store.IRepositorys;
-using Services.Store.IServices;
+using Repository.Stores.IRepositorys;
+using Services.Stores.IServices;
 
-namespace Services.Store.Services
+namespace Services.Stores.Services
 {
     public class StoreService : IStoreService
     {

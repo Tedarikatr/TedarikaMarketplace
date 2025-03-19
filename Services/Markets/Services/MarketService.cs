@@ -2,8 +2,9 @@
 using Data.Dtos.Markets;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
+using Services.Markets.IServices;
 
-namespace Services.Market.Services
+namespace Services.Markets.Services
 {
     public class MarketService : IMarketService
     {
