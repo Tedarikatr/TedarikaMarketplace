@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.ComponentModel;
 
 namespace API.Filter
 {
@@ -7,9 +8,8 @@ namespace API.Filter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var fileParams = context.MethodInfo
-                .GetParameters()
-                .Where(p => p.ParameterType == typeof(IFormFile))
+            var fileParams = context.MethodInfo.GetParameters()
+                .Where(p => p.ParameterType == typeof(IFormFile) || p.ParameterType == typeof(IEnumerable<IFormFile>))
                 .ToList();
 
             if (!fileParams.Any()) return;

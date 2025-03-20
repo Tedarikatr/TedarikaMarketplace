@@ -37,7 +37,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-ıd")]
         public async Task<IActionResult> GetCategorySubById(int id)
         {
             try
@@ -53,7 +53,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpGet("by-category/{categoryId}")]
+        [HttpGet("by-category")]
         public async Task<IActionResult> GetCategorySubsByMainCategoryId(int categoryId)
         {
             try
@@ -87,7 +87,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateCategorySub([FromQuery] int id, [FromBody] CategorySubUpdateDto categorySubUpdateDto)
         {
             try
@@ -105,7 +105,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteCategorySub(int id)
         {
             try

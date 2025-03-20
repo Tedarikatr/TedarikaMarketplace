@@ -121,14 +121,16 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
-    c.OperationFilter<SwaggerFileUploadOperationFilter>();
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tedarika MarketPlace API", Version = "v1" });
 
-    c.EnableAnnotations();
+    c.OperationFilter<SwaggerFileUploadOperationFilter>();
 
     c.SwaggerDoc("seller", new OpenApiInfo { Title = "Seller API", Version = "v1" });
     c.SwaggerDoc("buyer", new OpenApiInfo { Title = "Buyer API", Version = "v1" });
     c.SwaggerDoc("admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
 
+
+    c.EnableAnnotations();
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -215,6 +217,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TedarikaMarketplace API v1");
         c.SwaggerEndpoint("/swagger/seller/swagger.json", "Seller API V1");
         c.SwaggerEndpoint("/swagger/buyer/swagger.json", "Buyer API V1");
         c.SwaggerEndpoint("/swagger/admin/swagger.json", "Admin API V1");

@@ -40,7 +40,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             try
@@ -56,31 +56,31 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto categoryCreateDto, [FromForm] IFormFile file)
-        {
-            try
-            {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
-                _logger.LogInformation("Yeni kategori ekleniyor. Admin ID: {AdminId}, Kategori Adı: {CategoryName}", adminId, categoryCreateDto.CategoryName);
+        //[HttpPost("create")]
+        //public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDto categoryCreateDto, [FromForm] IFormFile file)
+        //{
+        //    try
+        //    {
+        //        int adminId = AdminUserContextHelper.GetAdminId(User);
+        //        _logger.LogInformation("Yeni kategori ekleniyor. Admin ID: {AdminId}, Kategori Adı: {CategoryName}", adminId, categoryCreateDto.CategoryName);
 
-                if (file == null || file.Length == 0)
-                    return BadRequest("Dosya yüklenemedi.");
+        //        if (file == null || file.Length == 0)
+        //            return BadRequest("Dosya yüklenemedi.");
 
-                var fileUploadResult = await _filesService.UploadFileAsync(file, "sector");
-                categoryCreateDto.CategoryImage = fileUploadResult.Url;
+        //        var fileUploadResult = await _filesService.UploadFileAsync(file, "sector");
+        //        categoryCreateDto.CategoryImage = fileUploadResult.Url;
 
-                var result = await _categoryService.CreateCategoryAsync(categoryCreateDto, file);
-                return Ok(new { Message = result });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Kategori ekleme işlemi sırasında hata oluştu.");
-                return StatusCode(500, new { Error = "Kategori ekleme işlemi sırasında bir hata oluştu." });
-            }
-        }
+        //        var result = await _categoryService.CreateCategoryAsync(categoryCreateDto, file);
+        //        return Ok(new { Message = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Kategori ekleme işlemi sırasında hata oluştu.");
+        //        return StatusCode(500, new { Error = "Kategori ekleme işlemi sırasında bir hata oluştu." });
+        //    }
+        //}
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
             try
@@ -98,7 +98,7 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try
@@ -116,25 +116,25 @@ namespace API.Controllers.Categories
             }
         }
 
-        [HttpPut("update-image/{id}")]
-        public async Task<IActionResult> UpdateCategoryImage([FromQuery] int id, IFormFile file)
-        {
-            try
-            {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
-                _logger.LogInformation("Kategori resmi güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
+        //[HttpPut("update-image")]
+        //public async Task<IActionResult> UpdateCategoryImage([FromQuery] int id, IFormFile file)
+        //{
+        //    try
+        //    {
+        //        int adminId = AdminUserContextHelper.GetAdminId(User);
+        //        _logger.LogInformation("Kategori resmi güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
 
-                if (file == null || file.Length == 0)
-                    return BadRequest("Dosya yüklenemedi.");
-                var result = await _categoryService.UpdateCategoryImageAsync(id, file);
+        //        if (file == null || file.Length == 0)
+        //            return BadRequest("Dosya yüklenemedi.");
+        //        var result = await _categoryService.UpdateCategoryImageAsync(id, file);
 
-                return Ok(new { Message = result });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Kategori resmi güncellenirken hata oluştu. ID: {CategoryId}", id);
-                return StatusCode(500, new { Error = "Kategori resmi güncellenirken bir hata oluştu." });
-            }
-        }
+        //        return Ok(new { Message = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Kategori resmi güncellenirken hata oluştu. ID: {CategoryId}", id);
+        //        return StatusCode(500, new { Error = "Kategori resmi güncellenirken bir hata oluştu." });
+        //    }
+        //}
     }
 }
