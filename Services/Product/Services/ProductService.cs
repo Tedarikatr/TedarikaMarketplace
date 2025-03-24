@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using Data.Dtos.Products;
+using Data.Dtos.Product;
 using Entity.Products;
 using Microsoft.Extensions.Logging;
 using Repository.Categories.IRepositorys;
 using Repository.Product.IRepositorys;
 using Services.Files.IServices;
-using Services.Products.IServices;
+using Services.Product.IServices;
 
-namespace Services.Products.Services
+namespace Services.Product.Services
 {
     public class ProductService : IProductService
     {
@@ -34,7 +34,7 @@ namespace Services.Products.Services
             {
                 _logger.LogInformation("Yeni ürün oluşturma işlemi başlatıldı.");
 
-                var product = _mapper.Map<Product>(dto);
+                var product = _mapper.Map<Entity.Products.Product>(dto);
                 product.CreatedAt = DateTime.UtcNow;
 
                 if (dto.Image != null && dto.Image.Length > 0)

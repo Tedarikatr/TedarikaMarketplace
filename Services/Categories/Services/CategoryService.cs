@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Data.Dtos.Categories;
+using Domain.Categories.Events;
 using Entity.Categories;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Repository.Categories.IRepositorys;
@@ -15,13 +17,15 @@ namespace Services.Categories.Services
         private readonly IFilesService _filesService;
         private readonly IMapper _mapper;
         private readonly ILogger<CategoryService> _logger;
+        private readonly IMediator _mediator;
 
-        public CategoryService(ICategoryRepository categoryRepository, IFilesService filesService, IMapper mapper, ILogger<CategoryService> logger)
+        public CategoryService(ICategoryRepository categoryRepository, IFilesService filesService, IMapper mapper, ILogger<CategoryService> logger, IMediator mediator)
         {
             _categoryRepository = categoryRepository;
             _filesService = filesService;
             _mapper = mapper;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
@@ -88,10 +92,24 @@ namespace Services.Categories.Services
                 var category = await _categoryRepository.GetByIdAsync(categoryId);
                 if (category == null) throw new Exception("Kategori bulunamadı.");
 
+                var oldCategoryName = category.CategoryName;
+
                 _mapper.Map(categoryUpdateDto, category);
                 await _categoryRepository.UpdateAsync(category);
 
                 _logger.LogInformation("Kategori başarıyla güncellendi. ID: {CategoryId}", categoryId);
+
+                if (!string.Equals(oldCategoryName, category.CategoryName, StringComparison.OrdinalIgnoreCase))
+                {
+                    await _mediator.Publish(new ProductCategoryUpdatedEvent
+                    {
+                        CategoryId = categoryId,
+                        NewCategoryName = category.CategoryName
+                    });
+
+                    _logger.LogInformation("Kategori adı değiştiği için ProductCategoryUpdatedEvent tetiklendi.");
+                }
+
                 return "Kategori başarıyla güncellendi.";
             }
             catch (Exception ex)

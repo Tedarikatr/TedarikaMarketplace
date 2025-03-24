@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Data.Dtos.Products
+namespace Data.Dtos.Product
 {
     public class ProductDto
     {
@@ -34,7 +34,7 @@ namespace Data.Dtos.Products
         public DateTime? PreparationTime { get; set; }
         public DateTime? ExpirationDate { get; set; }
 
-        public IFormFile? Image { get; set; }
+        public IFormFile Image { get; set; }
 
         public int? CategoryId { get; set; }
         public int? CategorySubId { get; set; }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Data.Dtos.Categories;
+using Domain.Categories.Events;
 using Entity.Categories;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Categories.IRepositorys;
 using Services.Categories.IServices;
@@ -12,12 +14,14 @@ namespace Services.Categories.Services
         private readonly ICategorySubRepository _categorySubRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<CategorySubService> _logger;
+        private readonly IMediator _mediator;
 
-        public CategorySubService(ICategorySubRepository categorySubRepository, IMapper mapper, ILogger<CategorySubService> logger)
+        public CategorySubService(ICategorySubRepository categorySubRepository, IMapper mapper, ILogger<CategorySubService> logger, IMediator mediator)
         {
             _categorySubRepository = categorySubRepository;
             _mapper = mapper;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public async Task<string> AddCategorySubAsync(CategorySubCreateDto categorySubCreateDto)
@@ -51,10 +55,24 @@ namespace Services.Categories.Services
                     throw new Exception("Alt kategori bulunamadı.");
                 }
 
+                var oldName = categorySub.Name;
+
                 _mapper.Map(categorySubUpdateDto, categorySub);
                 await _categorySubRepository.UpdateAsync(categorySub);
 
                 _logger.LogInformation("Alt kategori güncellendi. ID: {CategorySubId}", id);
+
+                if (!string.Equals(oldName, categorySub.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    await _mediator.Publish(new ProductCategorySubUpdatedEvent
+                    {
+                        CategorySubId = categorySub.Id,
+                        NewSubCategoryName = categorySub.Name
+                    });
+
+                    _logger.LogInformation("Alt kategori adı değiştiği için ProductCategorySubUpdatedEvent tetiklendi.");
+                }
+
                 return "Alt kategori başarıyla güncellendi.";
             }
             catch (Exception ex)

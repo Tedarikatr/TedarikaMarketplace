@@ -1,9 +1,9 @@
-﻿using Data.Dtos.Products;
+﻿using Data.Dtos.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Products.IServices;
+using Services.Product.IServices;
 
-namespace API.Controllers.Products
+namespace API.Controllers.Product
 {
     [Route("api/[controller]")]
     [ApiController]

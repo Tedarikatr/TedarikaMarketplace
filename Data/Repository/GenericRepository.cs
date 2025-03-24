@@ -79,6 +79,10 @@ namespace Data.Repository
             return await _context.SaveChangesAsync();
         }
 
-
+        public async Task UpdateRangeAsync(IEnumerable<T> entities)
+        {
+            _dbSet.UpdateRange(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }
