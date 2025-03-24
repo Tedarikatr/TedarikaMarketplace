@@ -120,6 +120,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 //Stores
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IStoreMarketRepository, StoreMarketRepository>();
+builder.Services.AddScoped<IStoreMarketService, StoreMarketService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();

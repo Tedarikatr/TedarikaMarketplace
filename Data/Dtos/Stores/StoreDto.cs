@@ -34,18 +34,13 @@
     public class StorePaymentMethodDto
     {
         public int StoreId { get; set; }
-        public string PaymentMethod { get; set; } // "CreditCard", "Cash", "BankTransfer" gibi değerler alabilir
+        public string PaymentMethod { get; set; } 
     }
 
     public class StoreDeliveryOptionDto
     {
         public int StoreId { get; set; }
-        public string DeliveryOption { get; set; } // "Standard", "Express", "SameDay" gibi değerler alabilir
+        public string DeliveryOption { get; set; } 
         public int EstimatedDeliveryDays { get; set; }
-    }
-    public class StoreMarketDto
-    {
-        public int StoreId { get; set; }
-        public int MarketId { get; set; } // Market tablosundaki ID ile eşleşecek
     }
 }
