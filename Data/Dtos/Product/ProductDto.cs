@@ -1,4 +1,6 @@
-﻿namespace Data.Dtos.Products
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Data.Dtos.Products
 {
     public class ProductDto
     {
@@ -31,6 +33,8 @@
         public string Description { get; set; }
         public DateTime? PreparationTime { get; set; }
         public DateTime? ExpirationDate { get; set; }
+
+        public IFormFile? Image { get; set; }
 
         public int? CategoryId { get; set; }
         public int? CategorySubId { get; set; }

@@ -7,7 +7,7 @@ namespace API.Controllers.Stores
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    //[Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminStoreController : ControllerBase
     {
         private readonly IStoreService _storeService;

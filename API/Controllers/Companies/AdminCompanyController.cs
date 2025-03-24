@@ -8,7 +8,7 @@ namespace API.Controllers.Companies
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize]
+    //[Authorize]
     public class AdminCompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;

@@ -10,7 +10,7 @@ namespace API.Controllers.Categories
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize(Roles = "SuperAdmin, Admin")]
+    //[Authorize(Roles = "SuperAdmin, Admin")]
     public class AdminCategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
