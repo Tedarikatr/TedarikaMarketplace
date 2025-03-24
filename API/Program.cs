@@ -5,7 +5,6 @@ using Data.Databases;
 using Data.Seeders;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
@@ -42,6 +41,12 @@ builder.Host.UseSerilog();
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly); 
+
+});
 
 // **AutoMapper Konfigürasyonu**
 builder.Services.AddAutoMapper(typeof(MappingProfile));

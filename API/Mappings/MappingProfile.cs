@@ -3,11 +3,13 @@ using Data.Dtos.Auths;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.Markets;
+using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.Markets;
+using Entity.Products;
 using Entity.Stores;
 
 namespace API.Mappings
@@ -21,6 +23,7 @@ namespace API.Mappings
             CategoryMappings.RegisterMappings(this);
             MarketMappings.RegisterMappings(this);
             StoreMappings.RegisterMappings(this);
+            ProductMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -299,5 +302,40 @@ namespace API.Mappings
             }
         }
         #endregion
+
+        #region 6️⃣ PRODUCT Mappings
+        private static class ProductMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<ProductCreateDto, Product>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.UnitType, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.Category, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.CategorySub, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.CategoryName, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore()); 
+
+                profile.CreateMap<ProductUpdateDto, Product>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.UnitType, opt => opt.Ignore())
+                    .ForMember(dest => dest.Category, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoryName, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore());
+
+                profile.CreateMap<Product, ProductDto>()
+                    .ForMember(dest => dest.UnitTypes, opt => opt.MapFrom(src => src.UnitTypes));
+            }
+        }
+
+
+        #endregion
+
+
     }
 }

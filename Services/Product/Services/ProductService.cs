@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Data.Dtos.Product;
-using Entity.Products;
 using Microsoft.Extensions.Logging;
 using Repository.Categories.IRepositorys;
 using Repository.Product.IRepositorys;

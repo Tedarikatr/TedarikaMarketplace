@@ -1,5 +1,4 @@
 ﻿using Data.Dtos.Product;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Product.IServices;
 
