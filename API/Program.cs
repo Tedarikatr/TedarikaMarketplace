@@ -15,6 +15,8 @@ using Repository.Companys.IRepositorys;
 using Repository.Companys.Repositorys;
 using Repository.Markets.IRepositorys;
 using Repository.Markets.Repositorys;
+using Repository.Product.IRepositorys;
+using Repository.Product.Repositorys;
 using Repository.Stores.IRepositorys;
 using Repository.Stores.Repositorys;
 using Serilog;
@@ -29,6 +31,8 @@ using Services.Files.IServices;
 using Services.Files.Services;
 using Services.Markets.IServices;
 using Services.Markets.Services;
+using Services.Product.IServices;
+using Services.Product.Services;
 using Services.Stores.IServices;
 using Services.Stores.Services;
 using System.Text;
@@ -90,18 +94,29 @@ builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
+
 //Categories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategorySubRepository, CategorySubRepository>();
+builder.Services.AddScoped<ICategorySubService, CategorySubService>();
+
 //Company
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+
 //Files
 builder.Services.AddScoped<IFilesService, AzureBlobService>();
 builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
+
 //Markets
 builder.Services.AddScoped<IMarketRepository, MarketRepository>();
 builder.Services.AddScoped<IMarketService, MarketService>();
+
+//Products
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
 //Stores
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
