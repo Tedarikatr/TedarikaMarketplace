@@ -8,7 +8,7 @@ namespace API.Controllers.Markets
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize(Roles = "SuperAdmin")]
+    //[Authorize(Roles = "SuperAdmin")]
     public class AdminMarketController : ControllerBase
     {
         private readonly IMarketService _marketService;

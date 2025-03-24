@@ -43,6 +43,23 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
 
+// **AutoMapper Konfigürasyonu**
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+try
+{
+    var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+    config.AssertConfigurationIsValid();
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "AutoMapper konfigurasyon hatasý");
+    Console.WriteLine("AutoMapper konfigurasyon hatasý:");
+    Console.WriteLine(ex.Message);
+    Console.WriteLine(ex.StackTrace);
+    throw;
+}
+
 // **MemoryCache ve Distributed Cache Eklenmesi**
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
@@ -98,23 +115,6 @@ builder.Services.AddHttpContextAccessor();
 
 // **SignalR Eklenmesi**
 builder.Services.AddSignalR();
-
-// **AutoMapper Konfigürasyonu**
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-try
-{
-    var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-    config.AssertConfigurationIsValid();
-}
-catch (Exception ex)
-{
-    Log.Error(ex, "AutoMapper konfigurasyon hatasý");
-    Console.WriteLine("AutoMapper konfigurasyon hatasý:");
-    Console.WriteLine(ex.Message);
-    Console.WriteLine(ex.StackTrace);
-    throw;
-}
 
 // **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
 builder.Services.AddSwaggerGen(c =>

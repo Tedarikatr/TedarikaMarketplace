@@ -1,8 +1,14 @@
 ﻿using AutoMapper;
 using Data.Dtos.Auths;
+using Data.Dtos.Categories;
 using Data.Dtos.Companies;
+using Data.Dtos.Markets;
+using Data.Dtos.Stores;
 using Entity.Auths;
+using Entity.Categories;
 using Entity.Companies;
+using Entity.Markets;
+using Entity.Stores;
 
 namespace API.Mappings
 {
@@ -12,6 +18,9 @@ namespace API.Mappings
         {
             AuthMappings.RegisterMappings(this);
             CompanyMappings.RegisterMappings(this);
+            CategoryMappings.RegisterMappings(this);
+            MarketMappings.RegisterMappings(this);
+            StoreMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -170,5 +179,125 @@ namespace API.Mappings
         }
         #endregion
 
+        #region 3️⃣ CATEGORY Mappings
+        private static class CategoryMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Category, CategoryDto>().ReverseMap();
+
+                profile.CreateMap<CategoryCreateDto, Category>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoriesSubs, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<CategoryUpdateDto, Category>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoryImage, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoriesSubs, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<CategorySub, CategorySubDto>().ReverseMap();
+
+                profile.CreateMap<CategorySubCreateDto, CategorySub>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.MainCategory, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<CategorySubUpdateDto, CategorySub>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.MainCategoryId, opt => opt.Ignore())
+                    .ForMember(dest => dest.MainCategory, opt => opt.Ignore())
+                    .ReverseMap();
+            }
+        }
+        #endregion
+
+        #region 4️⃣ MARKET Mappings
+        private static class MarketMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Market, MarketDto>().ReverseMap();
+
+                profile.CreateMap<MarketCreateDto, Market>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsLocal, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsRegional, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
+                    .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketCities, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketCarriers, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<MarketUpdateDto, Market>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsLocal, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsRegional, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
+                    .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketCities, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketCarriers, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ReverseMap();
+            }
+        }
+        #endregion
+
+        #region 5️⃣ STORE Mappings
+        private static class StoreMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Store, StoreDto>().ReverseMap();
+
+                profile.CreateMap<StoreCreateDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+                    .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Company, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
+                    .ForMember(dest => dest.Orders, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<StoreUpdateDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+                    .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Company, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
+                    .ForMember(dest => dest.Orders, opt => opt.Ignore())
+                    .ReverseMap();
+
+                profile.CreateMap<StoreStatusDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForAllMembers(opt => opt.Ignore());
+
+                profile.CreateMap<StorePaymentMethodDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForAllMembers(opt => opt.Ignore());
+
+                profile.CreateMap<StoreDeliveryOptionDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForAllMembers(opt => opt.Ignore());
+
+                profile.CreateMap<StoreMarketDto, Store>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForAllMembers(opt => opt.Ignore());
+            }
+        }
+        #endregion
     }
 }
