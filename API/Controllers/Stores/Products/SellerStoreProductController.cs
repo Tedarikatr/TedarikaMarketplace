@@ -7,7 +7,7 @@ namespace API.Controllers.Stores.Products
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Seller")]
+    [Authorize]
     [ApiExplorerSettings(GroupName = "seller")]
     public class SellerStoreProductController : ControllerBase
     {

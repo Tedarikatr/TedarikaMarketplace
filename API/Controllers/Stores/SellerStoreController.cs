@@ -9,7 +9,7 @@ namespace API.Controllers.Stores
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "seller")]
-    [Authorize(Roles = "Seller")]
+    [Authorize]
     public class SellerStoreController : ControllerBase
     {
         private readonly IStoreService _storeService;

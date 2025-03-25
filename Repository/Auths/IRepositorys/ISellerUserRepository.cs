@@ -5,6 +5,5 @@ namespace Repository.Auths.IRepositorys
 {
     public interface ISellerUserRepository : IGenericRepository<SellerUser>
     {
-
     }
 }

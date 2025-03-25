@@ -22,6 +22,11 @@ namespace Data.Databases
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await Helper.Companies.CompanyNumberGenerator.HandleNewCompanyNumbersAsync(this);
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
         // Kullanıcılar
         public DbSet<AdminUser> AdminUsers { get; set; }
@@ -65,6 +70,7 @@ namespace Data.Databases
         public DbSet<StoreMarket> StoreMarkets { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }
         public DbSet<StoreProductMarket> StoreProductMarkets { get; set; }
+        public DbSet<StoreProductRequest> StoreProductRequests { get; set; }
         public DbSet<StoreProductShippingRegion> StoreProductShippingRegions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

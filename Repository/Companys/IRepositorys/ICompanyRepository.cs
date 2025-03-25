@@ -5,6 +5,6 @@ namespace Repository.Companys.IRepositorys
 {
     public interface ICompanyRepository : IGenericRepository<Company>
     {
-
+        Task<Company> GetCompanyBySellerIdAsync(int sellerId);
     }
 }

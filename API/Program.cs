@@ -36,6 +36,8 @@ using Services.Product.Services;
 using Services.Stores;
 using Services.Stores.Markets.IServices;
 using Services.Stores.Markets.Services;
+using Services.Stores.Product.IServices;
+using Services.Stores.Product.Services;
 using System.Text;
 using static API.Validators.Auth.AuthValidator;
 
@@ -121,8 +123,15 @@ builder.Services.AddScoped<IProductService, ProductService>();
 //Stores
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+
 builder.Services.AddScoped<IStoreMarketRepository, StoreMarketRepository>();
 builder.Services.AddScoped<IStoreMarketService, StoreMarketService>();
+
+builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
+builder.Services.AddScoped<IStoreProductService, StoreProductService>();
+
+builder.Services.AddScoped<IStoreProductRequestRepository, StoreProductRequestRepository>();
+builder.Services.AddScoped<IStoreProductRequestService, StoreProductRequestService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();

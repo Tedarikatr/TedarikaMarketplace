@@ -9,9 +9,6 @@
         public string StoreName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public string AccountingIntegration { get; set; }
     }
 
     public class StoreUpdateDto
@@ -20,9 +17,6 @@
         public string StoreName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public string AccountingIntegration { get; set; }
     }
 
     public class StoreStatusDto

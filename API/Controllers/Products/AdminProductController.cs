@@ -1,4 +1,5 @@
 ﻿using Data.Dtos.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Product.IServices;
 
@@ -7,7 +8,7 @@ namespace API.Controllers.Product
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    //[Authorize(Roles = "SuperAdmin, Admin")]
+    [Authorize]
     public class AdminProductController : ControllerBase
     {
         private readonly IProductService _productService;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores;
 using Microsoft.Extensions.Logging;
+using Repository.Companys.IRepositorys;
 using Repository.Stores.IRepositorys;
 
 namespace Services.Stores
@@ -8,12 +9,14 @@ namespace Services.Stores
     public class StoreService : IStoreService
     {
         private readonly IStoreRepository _storeRepository;
+        private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<StoreService> _logger;
 
-        public StoreService(IStoreRepository storeRepository, IMapper mapper, ILogger<StoreService> logger)
+        public StoreService(IStoreRepository storeRepository, ICompanyRepository companyRepository, IMapper mapper, ILogger<StoreService> logger)
         {
             _storeRepository = storeRepository;
+            _companyRepository = companyRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -30,8 +33,13 @@ namespace Services.Stores
                     throw new Exception("Bu seller zaten bir mağaza açmış.");
                 }
 
+                var company = await _companyRepository.GetCompanyBySellerIdAsync(sellerId);
+                if (company == null)
+                    throw new Exception("Seller'a ait geçerli bir şirket ataması yapılmamış.");
+
                 var newStore = _mapper.Map<Entity.Stores.Store>(storeCreateDto);
                 newStore.OwnerId = sellerId;
+                newStore.CompanyId = company.Id;
                 newStore.IsApproved = false;
                 newStore.IsActive = false;
 

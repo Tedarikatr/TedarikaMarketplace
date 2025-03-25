@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Categories;
-using Domain.Categories.Events;
+using Domain.Products.Events;
 using Entity.Categories;
 using MediatR;
 using Microsoft.Extensions.Logging;
