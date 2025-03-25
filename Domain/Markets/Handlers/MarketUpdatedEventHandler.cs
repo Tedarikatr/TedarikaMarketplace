@@ -1,16 +1,16 @@
 ﻿using Domain.Markets.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Repository.Markets.IRepositorys;
+using Repository.Stores.IRepositorys;
 
 namespace Domain.Markets.Handlers
 {
     public class MarketUpdatedEventHandler : INotificationHandler<MarketUpdatedEvent>
     {
-        private readonly IMarketRepository _shopMarketRepository;
+        private readonly IStoreMarketRepository _shopMarketRepository;
         private readonly ILogger<MarketUpdatedEventHandler> _logger;
 
-        public MarketUpdatedEventHandler(IMarketRepository shopMarketRepository, ILogger<MarketUpdatedEventHandler> logger)
+        public MarketUpdatedEventHandler(IStoreMarketRepository shopMarketRepository, ILogger<MarketUpdatedEventHandler> logger)
         {
             _shopMarketRepository = shopMarketRepository;
             _logger = logger;
