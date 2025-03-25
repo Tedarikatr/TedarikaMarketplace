@@ -11,9 +11,10 @@ namespace Entity.Stores
     {
         public int Id { get; set; }
 
+        public string StoreName { get; set; }
+
         public int OwnerId { get; set; }
         public SellerUser Owner { get; set; }
-        public string StoreName { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

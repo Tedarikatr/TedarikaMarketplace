@@ -42,13 +42,6 @@ namespace Services.Stores.Product.Services
                     ImageUrl = product.ImageUrl,
                     CategoryName = product.CategoryName,
                     CategorySubName = product.CategorySubName,
-                    IsActive = true,
-                    IsOnSale = false,
-                    AllowedDomestic = true,
-                    AllowedInternational = false,
-                    Price = 0,
-                    MinOrderQuantity = 1,
-                    MaxOrderQuantity = 100
                 };
 
                 await _storeProductRepo.AddAsync(storeProduct);

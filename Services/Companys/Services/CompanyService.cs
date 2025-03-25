@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Companies;
-using Domain.Companies;
+using Domain.Companies.Events;
 using Entity.Auths;
 using Entity.Companies;
 using MediatR;
