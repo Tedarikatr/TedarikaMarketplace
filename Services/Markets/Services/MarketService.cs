@@ -15,7 +15,6 @@ namespace Services.Markets.Services
         private readonly ILogger<MarketService> _logger;
         private readonly IMediator _mediator;
 
-
         public MarketService(IMarketRepository marketRepository, IMapper mapper, ILogger<MarketService> logger)
         {
             _marketRepository = marketRepository;
