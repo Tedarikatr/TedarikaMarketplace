@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Data.Dtos.Markets;
+using Domain.Markets.Events;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
 using Services.Markets.IServices;
@@ -11,6 +13,8 @@ namespace Services.Markets.Services
         private readonly IMarketRepository _marketRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<MarketService> _logger;
+        private readonly IMediator _mediator;
+
 
         public MarketService(IMarketRepository marketRepository, IMapper mapper, ILogger<MarketService> logger)
         {
@@ -98,7 +102,11 @@ namespace Services.Markets.Services
                 _mapper.Map(marketDto, market);
                 await _marketRepository.UpdateAsync(market);
 
-                _logger.LogInformation("Market güncellendi. Market ID: {MarketId}", marketId);
+                // Event yayını
+                var @event = new MarketUpdatedEvent(market.Id, market.Name, market.RegionCode);
+                await _mediator.Publish(@event);
+
+                _logger.LogInformation("Market güncellendi ve event tetiklendi. Market ID: {MarketId}", marketId);
                 return "Market başarıyla güncellendi.";
             }
             catch (Exception ex)
