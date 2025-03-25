@@ -1,4 +1,4 @@
-﻿using Entity.Stores;
+﻿using Entity.Stores.Products;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 using Repository.Stores.IRepositorys;

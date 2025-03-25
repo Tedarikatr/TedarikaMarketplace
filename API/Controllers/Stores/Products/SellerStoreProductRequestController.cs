@@ -1,0 +1,41 @@
+﻿using API.Helpers;
+using Data.Dtos.Stores;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Services.Stores.Product.IServices;
+
+namespace API.Controllers.Stores.Products
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "seller")]
+    [Authorize(Roles = "Seller")]
+    public class SellerStoreProductRequestController : ControllerBase
+    {
+        private readonly IStoreProductRequestService _requestService;
+        private readonly ILogger<SellerStoreProductRequestController> _logger;
+
+        public SellerStoreProductRequestController(IStoreProductRequestService requestService, ILogger<SellerStoreProductRequestController> logger)
+        {
+            _requestService = requestService;
+            _logger = logger;
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateStoreProductRequest([FromForm] StoreProductRequestCreateDto dto)
+        {
+            try
+            {
+                dto.StoreId = SellerUserContextHelper.GetSellerId(User);
+
+                var result = await _requestService.CreateStoreProductRequestAsync(dto);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ürün başvurusu oluşturulurken hata oluştu.");
+                return StatusCode(500, new { Error = "Ürün başvurusu eklenemedi." });
+            }
+        }
+    }
+}
