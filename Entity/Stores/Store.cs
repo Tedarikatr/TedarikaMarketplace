@@ -2,7 +2,7 @@
 using Entity.Companies;
 using Entity.Orders;
 using Entity.Stores.Carriers;
-using Entity.Stores.Market;
+using Entity.Stores.Markets;
 using Entity.Stores.Products;
 
 namespace Entity.Stores

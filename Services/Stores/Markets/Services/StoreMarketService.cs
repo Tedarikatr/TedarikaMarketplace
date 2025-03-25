@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores;
-using Entity.Stores.Market;
+using Entity.Stores.Markets;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
 using Repository.Stores.IRepositorys;
-using Services.Stores.IServices;
+using Services.Stores.Markets.IServices;
 
-namespace Services.Stores.Services
+namespace Services.Stores.Markets.Services
 {
     public class StoreMarketService : IStoreMarketService
     {

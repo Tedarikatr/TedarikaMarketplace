@@ -1,7 +1,7 @@
 ﻿using Data.Databases;
 using Data.Repository;
 using Entity.Markets;
-using Entity.Stores;
+using Entity.Stores.Markets;
 using Microsoft.EntityFrameworkCore;
 using Repository.Markets.IRepositorys;
 

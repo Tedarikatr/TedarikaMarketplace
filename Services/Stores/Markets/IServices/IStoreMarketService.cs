@@ -1,6 +1,6 @@
 ﻿using Data.Dtos.Stores;
 
-namespace Services.Stores.IServices
+namespace Services.Stores.Markets.IServices
 {
     public interface IStoreMarketService
     {

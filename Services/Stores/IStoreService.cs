@@ -1,6 +1,6 @@
 ﻿using Data.Dtos.Stores;
 
-namespace Services.Stores.IServices
+namespace Services.Stores
 {
     public interface IStoreService
     {

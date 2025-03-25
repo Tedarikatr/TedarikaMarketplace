@@ -1,4 +1,4 @@
-﻿namespace Services.Stores.IServices
+﻿namespace Services.Stores.Product.IServices
 {
     public interface IStoreProductService
     {

@@ -2,9 +2,8 @@
 using Data.Dtos.Stores;
 using Microsoft.Extensions.Logging;
 using Repository.Stores.IRepositorys;
-using Services.Stores.IServices;
 
-namespace Services.Stores.Services
+namespace Services.Stores
 {
     public class StoreService : IStoreService
     {

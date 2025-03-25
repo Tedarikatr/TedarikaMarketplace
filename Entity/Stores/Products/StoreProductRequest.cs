@@ -1,6 +1,6 @@
 ﻿using Entity.Products;
 
-namespace Entity.Stores.Product
+namespace Entity.Stores.Products
 {
     public class StoreProductRequest
     {
@@ -14,6 +14,9 @@ namespace Entity.Stores.Product
         public string Brand { get; set; }
 
         public UnitType UnitType { get; set; }
+        public string UnitTypes { get; set; }
+
+
         public string Specifications { get; set; }
 
         public decimal Price { get; set; }
@@ -22,6 +25,7 @@ namespace Entity.Stores.Product
 
         public string ImageUrl { get; set; }
 
+        public bool IsApproved { get; set; }
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
 
@@ -29,10 +33,12 @@ namespace Entity.Stores.Product
         public int? CategorySubId { get; set; }
 
         public StoreProductRequestStatus Status { get; set; }
-        public string? AdminNote { get; set; }
+        public string AdminNote { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime? ReviewedAt { get; set; }
+        public DateTime? ApprovedAt { get; set; }
+
     }
 
     public enum StoreProductRequestStatus

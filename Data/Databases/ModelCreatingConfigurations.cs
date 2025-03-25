@@ -5,7 +5,7 @@ using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
-using Entity.Stores.Market;
+using Entity.Stores.Markets;
 using Entity.Stores.Payments;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Services.Stores.IServices;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Stores;
 
 namespace API.Controllers.Stores
 {

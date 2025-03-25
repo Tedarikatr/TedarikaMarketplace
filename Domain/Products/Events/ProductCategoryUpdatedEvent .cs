@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Domain.Categories.Events
+namespace Domain.Products.Events
 {
     public class ProductCategorySubUpdatedEvent : INotification
     {

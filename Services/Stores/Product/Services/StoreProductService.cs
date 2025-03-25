@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 using Repository.Stores.IRepositorys;
-using Services.Stores.IServices;
+using Services.Stores.Product.IServices;
 
-namespace Services.Stores.Services
+namespace Services.Stores.Product.Services
 {
     public class StoreProductService : IStoreProductService
     {

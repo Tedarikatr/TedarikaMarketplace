@@ -1,7 +1,4 @@
-﻿using Entity.Markets;
-using Entity.Products;
-
-namespace Entity.Stores.Products
+﻿namespace Entity.Stores.Products
 {
     public class StoreProductMarket
     {
@@ -11,6 +8,6 @@ namespace Entity.Stores.Products
         public virtual StoreProduct StoreProduct { get; set; }
 
         public int MarketId { get; set; }
-        public virtual Market Market { get; set; }
+        public virtual Entity.Markets.Market Market { get; set; }
     }
 }

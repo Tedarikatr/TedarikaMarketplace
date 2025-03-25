@@ -1,5 +1,5 @@
 ﻿using Data.Repository;
-using Entity.Stores.Market;
+using Entity.Stores.Markets;
 
 namespace Repository.Stores.IRepositorys
 {

@@ -1,6 +1,6 @@
 ﻿using Data.Databases;
 using Data.Repository;
-using Entity.Stores.Market;
+using Entity.Stores.Markets;
 using Repository.Stores.IRepositorys;
 
 namespace Repository.Stores.Repositorys

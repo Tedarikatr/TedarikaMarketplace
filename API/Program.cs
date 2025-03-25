@@ -33,8 +33,9 @@ using Services.Markets.IServices;
 using Services.Markets.Services;
 using Services.Product.IServices;
 using Services.Product.Services;
-using Services.Stores.IServices;
-using Services.Stores.Services;
+using Services.Stores;
+using Services.Stores.Markets.IServices;
+using Services.Stores.Markets.Services;
 using System.Text;
 using static API.Validators.Auth.AuthValidator;
 

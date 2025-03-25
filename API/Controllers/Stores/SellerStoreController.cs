@@ -1,7 +1,7 @@
 ﻿using Data.Dtos.Stores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Stores.IServices;
+using Services.Stores;
 using System.Security.Claims;
 
 namespace API.Controllers.Stores

@@ -1,9 +1,9 @@
-﻿using Domain.Categories.Events;
+﻿using Domain.Products.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 
-namespace Domain.Categories.Handlers
+namespace Domain.Products.Handlers
 {
     public class ProductCategoryUpdatedHandler : INotificationHandler<ProductCategoryUpdatedEvent>
     {
