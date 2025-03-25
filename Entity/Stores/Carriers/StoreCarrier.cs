@@ -1,6 +1,6 @@
 ﻿using Entity.Carriers;
 
-namespace Entity.Stores
+namespace Entity.Stores.Carriers
 {
     public class StoreCarrier
     {

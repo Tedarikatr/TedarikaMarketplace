@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entity.Stores
+namespace Entity.Stores.Payments
 {
     public class StorePaymentMethod
     {

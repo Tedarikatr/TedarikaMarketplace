@@ -1,4 +1,4 @@
-﻿using Entity.Stores;
+﻿using Entity.Stores.Market;
 
 namespace Entity.Markets
 {

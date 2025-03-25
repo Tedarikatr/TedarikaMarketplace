@@ -1,6 +1,6 @@
 ﻿using Entity.Markets;
 
-namespace Entity.Stores
+namespace Entity.Stores.Market
 {
     public class StoreMarket
     {

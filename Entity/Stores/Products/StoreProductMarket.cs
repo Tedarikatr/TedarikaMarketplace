@@ -1,7 +1,7 @@
 ﻿using Entity.Markets;
 using Entity.Products;
 
-namespace Entity.Stores
+namespace Entity.Stores.Products
 {
     public class StoreProductMarket
     {

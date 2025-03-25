@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores;
-using Entity.Stores;
+using Entity.Stores.Market;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
 using Repository.Stores.IRepositorys;

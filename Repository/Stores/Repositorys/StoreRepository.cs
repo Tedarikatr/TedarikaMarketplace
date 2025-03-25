@@ -1,6 +1,8 @@
 ﻿using Data.Databases;
 using Data.Repository;
-using Entity.Stores;
+using Entity.Stores.Carriers;
+using Entity.Stores.Market;
+using Entity.Stores.Payments;
 using Microsoft.EntityFrameworkCore;
 using Repository.Stores.IRepositorys;
 

@@ -83,6 +83,26 @@ namespace API.Controllers.Product
             }
         }
 
+        [HttpPut("update-image/{productId}")]
+        public async Task<IActionResult> UpdateProductImage(int productId, IFormFile image)
+        {
+            try
+            {
+                _logger.LogInformation("Ürün görseli güncelleme isteği alındı. ProductId: {ProductId}", productId);
+
+                if (image == null || image.Length == 0)
+                    return BadRequest(new { Error = "Geçerli bir görsel dosyası yüklenmedi." });
+
+                var result = await _productService.UpdateProductImageAsync(productId, image);
+                return Ok(new { Message = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ürün görseli güncellenirken hata oluştu. ProductId: {ProductId}", productId);
+                return StatusCode(500, new { Error = "Ürün görseli güncellenemedi." });
+            }
+        }
+
         [HttpDelete("delete/{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
