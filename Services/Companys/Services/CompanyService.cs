@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Data.Dtos.Companies;
+using Domain.Companies;
 using Entity.Auths;
 using Entity.Companies;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Companys.IRepositorys;
 using Services.Companys.IServices;
@@ -11,12 +13,14 @@ namespace Services.Companys.Services
     public class CompanyService : ICompanyService
     {
         private readonly ICompanyRepository _companyRepository;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger<CompanyService> _logger;
 
-        public CompanyService(ICompanyRepository companyRepository, IMapper mapper, ILogger<CompanyService> logger)
+        public CompanyService(ICompanyRepository companyRepository, IMediator mediator, IMapper mapper, ILogger<CompanyService> logger)
         {
             _companyRepository = companyRepository;
+            _mediator = mediator;
             _mapper = mapper;
             _logger = logger;
         }
@@ -80,6 +84,7 @@ namespace Services.Companys.Services
 
                 await _companyRepository.AddAsync(newCompany);
                 _logger.LogInformation("Şirket kaydı başarıyla tamamlandı: {CompanyNumber}", newCompany.CompanyNumber);
+                await _mediator.Publish(new CompanyCreatedEvent(newCompany.Id, userId, userType));
 
                 return "Şirket kaydı başarılı!";
             }

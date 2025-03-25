@@ -3,6 +3,9 @@ using API.Mappings;
 using AutoMapper;
 using Data.Databases;
 using Data.Seeders;
+using Domain.Companies.Events;
+using Domain.Markets.Events;
+using Domain.Products.Events;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -38,6 +41,7 @@ using Services.Stores.Markets.IServices;
 using Services.Stores.Markets.Services;
 using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
+using System.Reflection;
 using System.Text;
 using static API.Validators.Auth.AuthValidator;
 
@@ -51,8 +55,12 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly); 
-
+    cfg.RegisterServicesFromAssemblies(
+        Assembly.GetExecutingAssembly(),                  
+        typeof(CompanyCreatedEvent).Assembly,                
+        typeof(MarketUpdatedEvent).Assembly,                 
+        typeof(ProductCategoryUpdatedEvent).Assembly         
+    );
 });
 
 // **AutoMapper Konfigürasyonu**
