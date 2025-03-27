@@ -34,6 +34,9 @@ using Services.Files.IServices;
 using Services.Files.Services;
 using Services.Markets.IServices;
 using Services.Markets.Services;
+using Services.Notification.HelperService;
+using Services.Notification.IServices;
+using Services.Notification.Service;
 using Services.Product.IServices;
 using Services.Product.Services;
 using Services.Stores;
@@ -123,6 +126,13 @@ builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
 //Markets
 builder.Services.AddScoped<IMarketRepository, MarketRepository>();
 builder.Services.AddScoped<IMarketService, MarketService>();
+//Notifications
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<ISmsSender, SmsSender>();
+builder.Services.AddScoped<IPushSender, PushSender>();
+builder.Services.AddScoped<IWebSocketSender, WebSocketSender>();
+builder.Services.AddSignalR(); // SignalR gerekiyorsa
 
 //Products
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
