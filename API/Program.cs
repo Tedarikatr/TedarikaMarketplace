@@ -16,6 +16,8 @@ using Repository.Categories.IRepositorys;
 using Repository.Categories.Repositorys;
 using Repository.Companys.IRepositorys;
 using Repository.Companys.Repositorys;
+using Repository.DeliveryAddresses.IRepositorys;
+using Repository.DeliveryAddresses.Repositorys;
 using Repository.Markets.IRepositorys;
 using Repository.Markets.Repositorys;
 using Repository.Product.IRepositorys;
@@ -30,6 +32,8 @@ using Services.Categories.IServices;
 using Services.Categories.Services;
 using Services.Companys.IServices;
 using Services.Companys.Services;
+using Services.DeliveryAddress.IService;
+using Services.DeliveryAddress.Services;
 using Services.Files.IServices;
 using Services.Files.Services;
 using Services.Markets.IServices;
@@ -46,6 +50,10 @@ using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Store.PartnerCenter;
+using Microsoft.Store.PartnerCenter.Extensions;
+using Microsoft.Identity.Client;
 using static API.Validators.Auth.AuthValidator;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -119,6 +127,17 @@ builder.Services.AddScoped<ICategorySubService, CategorySubService>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 
+//DeliveryAddress
+builder.Services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
+builder.Services.AddScoped<IDeliveryAddressService, DeliveryAddressService>();
+
+builder.Services.AddScoped<IAddressValidationService, AddressValidationService>();
+
+builder.Services.AddHttpClient<IAddressValidationService, AddressValidationService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.partnercenter.microsoft.com/");
+});
+
 //Files
 builder.Services.AddScoped<IFilesService, AzureBlobService>();
 builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
@@ -126,13 +145,14 @@ builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
 //Markets
 builder.Services.AddScoped<IMarketRepository, MarketRepository>();
 builder.Services.AddScoped<IMarketService, MarketService>();
+
 //Notifications
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<ISmsSender, SmsSender>();
 builder.Services.AddScoped<IPushSender, PushSender>();
 builder.Services.AddScoped<IWebSocketSender, WebSocketSender>();
-builder.Services.AddSignalR(); // SignalR gerekiyorsa
+builder.Services.AddSignalR();
 
 //Products
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
