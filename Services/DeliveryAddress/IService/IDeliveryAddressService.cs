@@ -1,13 +1,15 @@
-﻿namespace Services.DeliveryAddress.IService
+﻿using Data.Dtos.DeliveryAddresses;
+
+namespace Services.DeliveryAddress.IService
 {
     public interface IDeliveryAddressService
     {
-        Task<IEnumerable<Entity.DeliveryAddresses.DeliveryAddress>> GetAddressesByBuyerAsync(int buyerUserId);
-        Task<Entity.DeliveryAddresses.DeliveryAddress> GetAddressByIdAsync(int id);
-        Task<Entity.DeliveryAddresses.DeliveryAddress> GetDefaultAddressAsync(int buyerUserId);
-        Task AddAddressAsync(Entity.DeliveryAddresses.DeliveryAddress address);
-        Task UpdateAddressAsync(Entity.DeliveryAddresses.DeliveryAddress address);
-        Task DeleteAddressAsync(int id);
-        Task SetAsDefaultAsync(int buyerUserId, int addressId);
+        Task<IEnumerable<DeliveryAddressDto>> GetAddressesByBuyerAsync(int buyerUserId);
+        Task<DeliveryAddressDto> GetAddressByIdAsync(int id);
+        Task<DeliveryAddressDto> GetDefaultAddressAsync(int buyerUserId);
+        Task<bool> AddAddressAsync(DeliveryAddressCreateDto dto, int buyerUserId);
+        Task<bool> UpdateAddressAsync(DeliveryAddressUpdateDto dto, int buyerUserId);
+        Task<bool> DeleteAddressAsync(int id, int buyerUserId);
+        Task<bool> SetAsDefaultAsync(int buyerUserId, int addressId);
     }
 }

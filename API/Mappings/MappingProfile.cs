@@ -2,12 +2,14 @@
 using Data.Dtos.Auths;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
+using Data.Dtos.DeliveryAddresses;
 using Data.Dtos.Markets;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
+using Entity.DeliveryAddresses;
 using Entity.Markets;
 using Entity.Products;
 using Entity.Stores;
@@ -24,6 +26,7 @@ namespace API.Mappings
             MarketMappings.RegisterMappings(this);
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
+            DeliveryAddressMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -332,6 +335,25 @@ namespace API.Mappings
 
         #endregion
 
+        #region 6️⃣ DeliveryAddress  Mappings
 
+        private static class DeliveryAddressMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
+               .ForMember(dest => dest.BuyerUser, opt => opt.Ignore());
+
+                profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore());
+
+                profile.CreateMap<DeliveryAddress, DeliveryAddressDto>();
+
+            }
+
+        }
+
+        #endregion
     }
 }
