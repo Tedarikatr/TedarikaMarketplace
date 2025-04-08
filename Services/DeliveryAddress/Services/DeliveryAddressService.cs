@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Data.Dtos.DeliveryAddresses;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Repository.DeliveryAddresses.IRepositorys;
 using Services.DeliveryAddress.IService;
 
@@ -8,59 +6,62 @@ namespace Services.DeliveryAddress.Services
 {
     public class DeliveryAddressService : IDeliveryAddressService
     {
-        private readonly IDeliveryAddressRepository _addressRepository;
-        private readonly IMapper _mapper;
-        private readonly IAddressValidationService _addressValidationService;
+        private readonly IDeliveryAddressRepository _repository;
         private readonly ILogger<DeliveryAddressService> _logger;
 
-        public DeliveryAddressService(IDeliveryAddressRepository addressRepository, IMapper mapper, IAddressValidationService addressValidationService, ILogger<DeliveryAddressService> logger)
+        public DeliveryAddressService(IDeliveryAddressRepository repository, ILogger<DeliveryAddressService> logger)
         {
-            _addressRepository = addressRepository;
-            _mapper = mapper;
-            _addressValidationService = addressValidationService;
+            _repository = repository;
             _logger = logger;
         }
 
-        public async Task<List<DeliveryAddressDto>> GetAddressesByBuyerIdAsync(int buyerId)
+        public async Task<IEnumerable<Entity.DeliveryAddresses.DeliveryAddress>> GetAddressesByBuyerAsync(int buyerUserId)
         {
-            var addresses = await _addressRepository.FindAsync(x => x.BuyerUserId == buyerId);
-            return _mapper.Map<List<DeliveryAddressDto>>(addresses);
+            return await _repository.GetAddressesByBuyerIdAsync(buyerUserId);
         }
 
-        public async Task<DeliveryAddressDto> AddAddressAsync(DeliveryAddressCreateDto dto)
+        public async Task<Entity.DeliveryAddresses.DeliveryAddress> GetAddressByIdAsync(int id)
         {
-            var entity = _mapper.Map<Entity.DeliveryAddresses.DeliveryAddress>(dto);
-            await _addressRepository.AddAsync(entity);
-            return _mapper.Map<DeliveryAddressDto>(entity);
+            return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<bool> UpdateAddressAsync(DeliveryAddressUpdateDto dto)
+        public async Task<Entity.DeliveryAddresses.DeliveryAddress> GetDefaultAddressAsync(int buyerUserId)
         {
-            var address = await _addressRepository.GetByIdAsync(dto.Id);
-            if (address == null) return false;
-
-            _mapper.Map(dto, address);
-            return await _addressRepository.UpdateBoolAsync(address);
+            return await _repository.GetDefaultAddressAsync(buyerUserId);
         }
 
-        public async Task<bool> DeleteAddressAsync(int id)
+        public async Task AddAddressAsync(Entity.DeliveryAddresses.DeliveryAddress address)
         {
-            var address = await _addressRepository.GetByIdAsync(id);
-            if (address == null) return false;
-
-            return await _addressRepository.RemoveBoolAsync(address);
+            await _repository.AddAsync(address);
+            _logger.LogInformation("Yeni teslimat adresi eklendi. BuyerId: {BuyerId}", address.BuyerUserId);
         }
 
-        public async Task<bool> SetDefaultAsync(int buyerId, int addressId)
+        public async Task UpdateAddressAsync(Entity.DeliveryAddresses.DeliveryAddress address)
         {
-            var allAddresses = await _addressRepository.FindAsync(x => x.BuyerUserId == buyerId);
-            foreach (var address in allAddresses)
+            await _repository.UpdateAsync(address);
+            _logger.LogInformation("Teslimat adresi güncellendi. AddressId: {Id}", address.Id);
+        }
+
+        public async Task DeleteAddressAsync(int id)
+        {
+            var address = await _repository.GetByIdAsync(id);
+            if (address != null)
             {
-                address.IsDefault = address.Id == addressId;
+                await _repository.RemoveAsync(address);
+                _logger.LogInformation("Teslimat adresi silindi. AddressId: {Id}", id);
             }
-
-            await _addressRepository.UpdateRangeAsync(allAddresses);
-            return true;
         }
+
+        public async Task SetAsDefaultAsync(int buyerUserId, int addressId)
+        {
+            var addresses = await _repository.GetAddressesByBuyerIdAsync(buyerUserId);
+
+            foreach (var addr in addresses)
+                addr.IsDefault = addr.Id == addressId;
+
+            await _repository.UpdateRangeAsync(addresses);
+            _logger.LogInformation("Varsayılan adres güncellendi. BuyerId: {BuyerId}, AddressId: {AddressId}", buyerUserId, addressId);
+        }
+
     }
 }

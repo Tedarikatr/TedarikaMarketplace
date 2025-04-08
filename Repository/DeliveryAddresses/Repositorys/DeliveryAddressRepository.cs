@@ -12,10 +12,17 @@ namespace Repository.DeliveryAddresses.Repositorys
         {
         }
 
-        public async Task<DeliveryAddress> GetByIdWithBuyerAsync(int id, int buyerUserId)
+        public async Task<IEnumerable<DeliveryAddress>> GetAddressesByBuyerIdAsync(int buyerUserId)
         {
-            return await _context.DeliveryAddresses
-                .FirstOrDefaultAsync(x => x.Id == id && x.BuyerUserId == buyerUserId);
+            return await _dbSet
+                .Where(x => x.BuyerUserId == buyerUserId)
+                .ToListAsync();
+        }
+
+        public async Task<DeliveryAddress> GetDefaultAddressAsync(int buyerUserId)
+        {
+            return await _dbSet
+                .FirstOrDefaultAsync(x => x.BuyerUserId == buyerUserId && x.IsDefault);
         }
     }
 }

@@ -3,8 +3,9 @@ using Entity.DeliveryAddresses;
 
 namespace Repository.DeliveryAddresses.IRepositorys
 {
-    public interface IDeliveryAddressRepository : IGenericRepository<Entity.DeliveryAddresses.DeliveryAddress>
+    public interface IDeliveryAddressRepository : IGenericRepository<DeliveryAddress>
     {
-        Task<DeliveryAddress> GetByIdWithBuyerAsync(int id, int buyerUserId);
+        Task<IEnumerable<DeliveryAddress>> GetAddressesByBuyerIdAsync(int buyerUserId);
+        Task<DeliveryAddress> GetDefaultAddressAsync(int buyerUserId);
     }
 }

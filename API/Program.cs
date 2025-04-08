@@ -127,13 +127,6 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
 builder.Services.AddScoped<IDeliveryAddressService, DeliveryAddressService>();
 
-builder.Services.AddScoped<IAddressValidationService, AddressValidationService>();
-
-builder.Services.AddHttpClient<IAddressValidationService, AddressValidationService>(client =>
-{
-    client.BaseAddress = new Uri("https://api.partnercenter.microsoft.com/");
-});
-
 //Files
 builder.Services.AddScoped<IFilesService, AzureBlobService>();
 builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();

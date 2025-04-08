@@ -1,66 +1,82 @@
-﻿using Data.Dtos.DeliveryAddresses;
+﻿using API.Helpers;
+using AutoMapper;
+using Data.Dtos.DeliveryAddresses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.DeliveryAddress.IService;
-using System.Security.Claims;
 
 namespace API.Controllers.DeliveryAddress
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "buyer")]
+    [Authorize]
     public class BuyerDeliveryAddressController : ControllerBase
     {
-        private readonly IDeliveryAddressService _deliveryAddressService;
-        private readonly IAddressValidationService _addressValidationService;
+        private readonly IDeliveryAddressService _addressService;
+        private readonly IMapper _mapper;
 
-        public BuyerDeliveryAddressController(IDeliveryAddressService deliveryAddressService, IAddressValidationService addressValidationService)
+        public BuyerDeliveryAddressController(IDeliveryAddressService addressService, IMapper mapper)
         {
-            _deliveryAddressService = deliveryAddressService;
-            _addressValidationService = addressValidationService;
+            _addressService = addressService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetMyAddresses()
         {
-            int buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var addresses = await _deliveryAddressService.GetAddressesByBuyerIdAsync(buyerId);
-            return Ok(addresses);
+            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            var result = await _addressService.GetAddressesByBuyerAsync(buyerId);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] DeliveryAddressCreateDto dto)
+        public async Task<IActionResult> AddAddress([FromBody] DeliveryAddressDto dto)
         {
-            dto.BuyerUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _deliveryAddressService.AddAddressAsync(dto);
-            return Ok(result);
+            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+
+            var address = _mapper.Map<Entity.DeliveryAddresses.DeliveryAddress>(dto);
+            address.BuyerUserId = buyerId;
+
+            await _addressService.AddAddressAsync(address);
+            return Ok("Adres başarıyla eklendi.");
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] DeliveryAddressUpdateDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAddress(int id, [FromBody] DeliveryAddressDto dto)
         {
-            var success = await _deliveryAddressService.UpdateAddressAsync(dto);
-            return success ? Ok("Adres güncellendi.") : NotFound("Adres bulunamadı.");
+            var address = await _addressService.GetAddressByIdAsync(id);
+            if (address == null) return NotFound("Adres bulunamadı.");
+
+            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            if (address.BuyerUserId != buyerId)
+                return Forbid("Bu adres size ait değil.");
+
+            _mapper.Map(dto, address);
+            await _addressService.UpdateAddressAsync(address);
+            return Ok("Adres güncellendi.");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAddress(int id)
         {
-            var success = await _deliveryAddressService.DeleteAddressAsync(id);
-            return success ? Ok("Adres silindi.") : NotFound("Adres bulunamadı.");
+            var address = await _addressService.GetAddressByIdAsync(id);
+            if (address == null) return NotFound("Adres bulunamadı.");
+
+            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            if (address.BuyerUserId != buyerId)
+                return Forbid("Bu adres size ait değil.");
+
+            await _addressService.DeleteAddressAsync(id);
+            return Ok("Adres silindi.");
         }
 
-        [HttpPost("set-default/{addressId}")]
-        public async Task<IActionResult> SetDefault(int addressId)
+        [HttpPost("{id}/set-default")]
+        public async Task<IActionResult> SetAsDefault(int id)
         {
-            int buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var success = await _deliveryAddressService.SetDefaultAsync(buyerId, addressId);
-            return success ? Ok("Varsayılan adres belirlendi.") : BadRequest("İşlem başarısız.");
-        }
-
-        [HttpPost("validate")]
-        public async Task<IActionResult> ValidateAddress([FromBody] DeliveryAddressValidateDto dto)
-        {
-            var result = await _addressValidationService.ValidateAsync(dto);
-            return Ok(result);
+            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            await _addressService.SetAsDefaultAsync(buyerId, id);
+            return Ok("Varsayılan adres ayarlandı.");
         }
     }
 }
