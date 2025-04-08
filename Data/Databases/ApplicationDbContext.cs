@@ -1,4 +1,5 @@
-﻿using Entity.Auths;
+﻿using Entity.Addresses;
+using Entity.Auths;
 using Entity.Baskets;
 using Entity.Carriers;
 using Entity.Categories;
@@ -27,6 +28,8 @@ namespace Data.Databases
             await Helper.Companies.CompanyNumberGenerator.HandleNewCompanyNumbersAsync(this);
             return await base.SaveChangesAsync(cancellationToken);
         }
+
+        public DbSet<AddressLocation> AddressLocations { get; set; }
 
         // Kullanıcılar
         public DbSet<AdminUser> AdminUsers { get; set; }

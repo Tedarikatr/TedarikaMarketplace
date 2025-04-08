@@ -1,9 +1,11 @@
 ﻿using Data.Databases;
+using Entity.Addresses;
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Data.Seeders
 {
@@ -196,7 +198,6 @@ namespace Data.Seeders
 
                     _logger.LogInformation("Tüm kategoriler başarıyla eklendi.");
                 }
-
                 else
                 {
                     _logger.LogInformation("Kategori verileri zaten mevcut, ekleme yapılmadı.");
@@ -233,11 +234,32 @@ namespace Data.Seeders
 
                     _logger.LogInformation("Ürün verileri başarıyla eklendi.");
                 }
-
                 else
                 {
                     _logger.LogInformation("Product verileri zaten mevcut, ekleme yapılmadı.");
                 }
+
+                if (!await _context.AddressLocations.AnyAsync())
+                {
+                    var addressJson = await File.ReadAllTextAsync("wwwroot/seed/AddressSeedData.json");
+                    var addressList = JsonSerializer.Deserialize<List<AddressLocation>>(addressJson);
+
+                    if (addressList != null && addressList.Any())
+                    {
+                        await _context.AddressLocations.AddRangeAsync(addressList);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("AddressLocations başarıyla eklendi. Toplam: {Count}", addressList.Count);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("AddressSeedData.json boş ya da geçersiz.");
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("AddressLocations verisi zaten mevcut, ekleme yapılmadı.");
+                }
+
 
                 _logger.LogInformation("Database seeding tamamlandı.");
             }
