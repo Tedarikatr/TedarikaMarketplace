@@ -341,14 +341,17 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
+                profile.CreateMap<DeliveryAddressDto, DeliveryAddress>()
+                            .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
+                            .ReverseMap();
+
                 profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
-               .ForMember(dest => dest.Id, opt => opt.Ignore())
-               .ForMember(dest => dest.BuyerUser, opt => opt.Ignore());
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()); 
 
                 profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) 
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore());
-
-                profile.CreateMap<DeliveryAddress, DeliveryAddressDto>();
 
             }
 

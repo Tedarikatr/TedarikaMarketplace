@@ -157,6 +157,9 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IStoreMarketRepository, StoreMarketRepository>();
 builder.Services.AddScoped<IStoreMarketService, StoreMarketService>();
 
+builder.Services.AddScoped<IStoreMarketRegionRepository, StoreMarketRegionRepository>();
+builder.Services.AddScoped<IStoreMarketRegionService, StoreMarketRegionService>();
+
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 builder.Services.AddScoped<IStoreProductService, StoreProductService>();
 

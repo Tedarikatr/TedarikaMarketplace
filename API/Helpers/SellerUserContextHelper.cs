@@ -16,7 +16,6 @@ namespace API.Helpers
             return userId;
         }
 
-
         public static string GetSellerNumber(ClaimsPrincipal user)
         {
             return user.FindFirst("UserNumber")?.Value ?? throw new UnauthorizedAccessException("Seller numarası bulunamadı.");
@@ -37,5 +36,13 @@ namespace API.Helpers
             var claim = user.FindFirst("CompanyId");
             return claim != null ? int.Parse(claim.Value) : null;
         }
+
+        public static int GetStoreId(ClaimsPrincipal user)
+        {
+            var claim = user.FindFirst("StoreId");
+            if (claim == null) throw new UnauthorizedAccessException("StoreId bulunamadı.");
+            return int.Parse(claim.Value);
+        }
+
     }
 }
