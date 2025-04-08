@@ -2,7 +2,7 @@
 using Data.Dtos.Stores;
 using Microsoft.Extensions.Logging;
 using Repository.Companys.IRepositorys;
-using Repository.Stores.IRepositorys;
+using Repository.Stores;
 
 namespace Services.Stores
 {

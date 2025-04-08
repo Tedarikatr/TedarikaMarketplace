@@ -4,7 +4,7 @@ using Domain.Products.Events;
 using Entity.Stores.Products;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Repository.Stores.IRepositorys;
+using Repository.Stores.Product.IRepositorys;
 using Services.Files.IServices;
 using Services.Stores.Product.IServices;
 

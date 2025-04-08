@@ -4,7 +4,7 @@ using Entity.Stores.Products;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
-using Repository.Stores.IRepositorys;
+using Repository.Stores.Product.IRepositorys;
 
 namespace Domain.Products.Handlers
 {

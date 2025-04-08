@@ -2,9 +2,9 @@
 using Data.Repository;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
-using Repository.Stores.IRepositorys;
+using Repository.Stores.Product.IRepositorys;
 
-namespace Repository.Stores.Repositorys
+namespace Repository.Stores.Product.Repositorys
 {
     public class StoreProductRequestRepository : GenericRepository<StoreProductRequest>, IStoreProductRequestRepository
     {

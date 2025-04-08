@@ -1,7 +1,7 @@
 ﻿using Domain.Products.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Repository.Stores.IRepositorys;
+using Repository.Stores.Product.IRepositorys;
 
 namespace Domain.Products.Handlers
 {

@@ -9,8 +9,8 @@ namespace API.Controllers.DeliveryAddress
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "buyer")]
     [Authorize]
+    [ApiExplorerSettings(GroupName = "buyer")]
     public class BuyerDeliveryAddressController : ControllerBase
     {
         private readonly IDeliveryAddressService _addressService;
@@ -26,57 +26,67 @@ namespace API.Controllers.DeliveryAddress
         public async Task<IActionResult> GetMyAddresses()
         {
             int buyerId = BuyerUserContextHelper.GetBuyerId(User);
-            var result = await _addressService.GetAddressesByBuyerAsync(buyerId);
-            return Ok(result);
+
+            var addresses = await _addressService.GetAddressesByBuyerAsync(buyerId);
+            return Ok(addresses);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var address = await _addressService.GetAddressByIdAsync(id);
+            if (address == null)
+                return NotFound("Adres bulunamadı.");
+
+            return Ok(address);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAddress([FromBody] DeliveryAddressDto dto)
+        public async Task<IActionResult> AddAddress([FromBody] DeliveryAddressCreateDto dto)
         {
             int buyerId = BuyerUserContextHelper.GetBuyerId(User);
 
-            var address = _mapper.Map<Entity.DeliveryAddresses.DeliveryAddress>(dto);
-            address.BuyerUserId = buyerId;
+            var result = await _addressService.AddAddressAsync(dto, buyerId);
+            if (!result)
+                return BadRequest("Adres eklenemedi. Lütfen bilgileri kontrol edin.");
 
-            await _addressService.AddAddressAsync(address);
             return Ok("Adres başarıyla eklendi.");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAddress(int id, [FromBody] DeliveryAddressDto dto)
+        [HttpPut]
+        public async Task<IActionResult> UpdateAddress([FromBody] DeliveryAddressUpdateDto dto)
         {
-            var address = await _addressService.GetAddressByIdAsync(id);
-            if (address == null) return NotFound("Adres bulunamadı.");
-
             int buyerId = BuyerUserContextHelper.GetBuyerId(User);
-            if (address.BuyerUserId != buyerId)
-                return Forbid("Bu adres size ait değil.");
 
-            _mapper.Map(dto, address);
-            await _addressService.UpdateAddressAsync(address);
-            return Ok("Adres güncellendi.");
+            var result = await _addressService.UpdateAddressAsync(dto, buyerId);
+            if (!result)
+                return BadRequest("Adres güncellenemedi. Adres bulunamadı veya size ait değil.");
+
+            return Ok("Adres başarıyla güncellendi.");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
-            var address = await _addressService.GetAddressByIdAsync(id);
-            if (address == null) return NotFound("Adres bulunamadı.");
-
             int buyerId = BuyerUserContextHelper.GetBuyerId(User);
-            if (address.BuyerUserId != buyerId)
-                return Forbid("Bu adres size ait değil.");
 
-            await _addressService.DeleteAddressAsync(id);
-            return Ok("Adres silindi.");
+            var result = await _addressService.DeleteAddressAsync(id, buyerId);
+            if (!result)
+                return BadRequest("Adres silinemedi. Adres bulunamadı veya size ait değil.");
+
+            return Ok("Adres başarıyla silindi.");
         }
 
         [HttpPost("{id}/set-default")]
         public async Task<IActionResult> SetAsDefault(int id)
         {
             int buyerId = BuyerUserContextHelper.GetBuyerId(User);
-            await _addressService.SetAsDefaultAsync(buyerId, id);
-            return Ok("Varsayılan adres ayarlandı.");
+
+            var result = await _addressService.SetAsDefaultAsync(buyerId, id);
+            if (!result)
+                return BadRequest("Varsayılan adres güncellenemedi.");
+
+            return Ok("Varsayılan adres başarıyla ayarlandı.");
         }
     }
 }

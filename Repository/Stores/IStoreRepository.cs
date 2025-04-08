@@ -4,7 +4,7 @@ using Entity.Stores.Carriers;
 using Entity.Stores.Markets;
 using Entity.Stores.Payments;
 
-namespace Repository.Stores.IRepositorys
+namespace Repository.Stores
 {
     public interface IStoreRepository : IGenericRepository<Store>
     {

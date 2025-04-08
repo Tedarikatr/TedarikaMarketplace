@@ -1,7 +1,7 @@
 ﻿using Entity.Stores.Products;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
-using Repository.Stores.IRepositorys;
+using Repository.Stores.Product.IRepositorys;
 using Services.Stores.Product.IServices;
 
 namespace Services.Stores.Product.Services

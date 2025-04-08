@@ -4,9 +4,8 @@ using Entity.Stores.Carriers;
 using Entity.Stores.Markets;
 using Entity.Stores.Payments;
 using Microsoft.EntityFrameworkCore;
-using Repository.Stores.IRepositorys;
 
-namespace Repository.Stores.Repositorys
+namespace Repository.Stores
 {
     public class StoreRepository : GenericRepository<Entity.Stores.Store>, IStoreRepository
     {

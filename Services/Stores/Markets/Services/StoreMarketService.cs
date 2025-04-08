@@ -3,7 +3,7 @@ using Data.Dtos.Stores;
 using Entity.Stores.Markets;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
-using Repository.Stores.IRepositorys;
+using Repository.Stores;
 using Services.Stores.Markets.IServices;
 
 namespace Services.Stores.Markets.Services
