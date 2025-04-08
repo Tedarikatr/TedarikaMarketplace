@@ -230,8 +230,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsRegional, opt => opt.Ignore())
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCities, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
                     .ReverseMap();
 
@@ -241,8 +239,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsRegional, opt => opt.Ignore())
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCities, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
                     .ReverseMap();
             }

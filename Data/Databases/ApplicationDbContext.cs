@@ -1,5 +1,4 @@
-﻿using Entity.Addresses;
-using Entity.Auths;
+﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Carriers;
 using Entity.Categories;
@@ -29,7 +28,7 @@ namespace Data.Databases
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public DbSet<AddressLocation> AddressLocations { get; set; }
+        public DbSet<MarketAddressLocation> AddressLocations { get; set; }
 
         // Kullanıcılar
         public DbSet<AdminUser> AdminUsers { get; set; }
@@ -54,7 +53,7 @@ namespace Data.Databases
 
         //Market
         public DbSet<Market> Markets { get; set; }
-        public DbSet<MarketCarrier> MarketCarriers { get; set; }
+        public DbSet<MarketAddressLocation> MarketAddressLocations { get; set; }
 
         //Siparişler
         public DbSet<Order> Orders { get; set; }

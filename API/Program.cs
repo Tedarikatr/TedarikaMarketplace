@@ -50,10 +50,6 @@ using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Store.PartnerCenter;
-using Microsoft.Store.PartnerCenter.Extensions;
-using Microsoft.Identity.Client;
 using static API.Validators.Auth.AuthValidator;
 
 var builder = WebApplication.CreateBuilder(args);

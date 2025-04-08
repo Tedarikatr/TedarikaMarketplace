@@ -1,7 +1,7 @@
 ﻿using Data.Databases;
-using Entity.Addresses;
 using Entity.Auths;
 using Entity.Categories;
+using Entity.Markets;
 using Entity.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -242,7 +242,7 @@ namespace Data.Seeders
                 if (!await _context.AddressLocations.AnyAsync())
                 {
                     var addressJson = await File.ReadAllTextAsync("wwwroot/seed/AddressSeedData.json");
-                    var addressList = JsonSerializer.Deserialize<List<AddressLocation>>(addressJson);
+                    var addressList = JsonSerializer.Deserialize<List<MarketAddressLocation>>(addressJson);
 
                     if (addressList != null && addressList.Any())
                     {

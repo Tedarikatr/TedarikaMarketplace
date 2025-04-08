@@ -1,6 +1,6 @@
-﻿namespace Entity.Addresses
+﻿namespace Entity.Markets
 {
-    public class AddressLocation
+    public class MarketAddressLocation
     {
         public int Id { get; set; }
         public string Country { get; set; }
