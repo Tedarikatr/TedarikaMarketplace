@@ -14,4 +14,9 @@
     <ProjectReference Include="..\Repository\Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Markets\Events\" />
+    <Folder Include="Markets\Handlers\" />
+  </ItemGroup>
+
 </Project>

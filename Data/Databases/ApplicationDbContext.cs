@@ -5,6 +5,7 @@ using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Markets;
+using Entity.Markets.Locations;
 using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;
@@ -51,7 +52,11 @@ namespace Data.Databases
 
         //Market
         public DbSet<Market> Markets { get; set; }
-        public DbSet<MarketAddressLocation> MarketAddressLocations { get; set; }
+        public DbSet<Country> Countrys { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
+        public DbSet<Province> Province { get; set; }
 
         //Siparişler
         public DbSet<Order> Orders { get; set; }

@@ -16,5 +16,7 @@ namespace Entity.Stores.Markets
 
         public int MarketId { get; set; }
         public Market Market { get; set; }
+
+        public ICollection<StoreMarketRegion> StoreMarketRegions { get; set; }
     }
 }

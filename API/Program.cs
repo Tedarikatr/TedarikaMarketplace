@@ -4,7 +4,6 @@ using AutoMapper;
 using Data.Databases;
 using Data.Seeders;
 using Domain.Companies.Events;
-using Domain.Markets.Events;
 using Domain.Products.Events;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +22,6 @@ using Repository.Markets.Repositorys;
 using Repository.Product.IRepositorys;
 using Repository.Product.Repositorys;
 using Repository.Stores;
-using Repository.Stores.Markets.IRepositorys;
-using Repository.Stores.Markets.Repositorys;
 using Repository.Stores.Product.IRepositorys;
 using Repository.Stores.Product.Repositorys;
 using Serilog;
@@ -47,8 +44,6 @@ using Services.Notification.Service;
 using Services.Product.IServices;
 using Services.Product.Services;
 using Services.Stores;
-using Services.Stores.Markets.IServices;
-using Services.Stores.Markets.Services;
 using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
@@ -68,7 +63,6 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(
         Assembly.GetExecutingAssembly(),                  
         typeof(CompanyCreatedEvent).Assembly,                
-        typeof(MarketUpdatedEvent).Assembly,                 
         typeof(ProductCategoryUpdatedEvent).Assembly         
     );
 });
@@ -153,12 +147,6 @@ builder.Services.AddScoped<IProductService, ProductService>();
 //Stores
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
-
-builder.Services.AddScoped<IStoreMarketRepository, StoreMarketRepository>();
-builder.Services.AddScoped<IStoreMarketService, StoreMarketService>();
-
-builder.Services.AddScoped<IStoreMarketRegionRepository, StoreMarketRegionRepository>();
-builder.Services.AddScoped<IStoreMarketRegionService, StoreMarketRegionService>();
 
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 builder.Services.AddScoped<IStoreProductService, StoreProductService>();

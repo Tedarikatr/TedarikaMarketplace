@@ -239,50 +239,6 @@ namespace Data.Seeders
                     _logger.LogInformation("Product verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
-                if (!await _context.MarketAddressLocations.AnyAsync())
-                {
-                    var addressJson = await File.ReadAllTextAsync("wwwroot/seed/AddressSeedData.json");
-                    var addresses = JsonSerializer.Deserialize<List<MarketAddressLocation>>(addressJson, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                    if (addresses != null && addresses.Any())
-                    {
-                        const int batchSize = 100;
-                        int totalInserted = 0;
-
-                        for (int i = 0; i < addresses.Count; i += batchSize)
-                        {
-                            var batch = addresses.Skip(i).Take(batchSize).ToList();
-
-                            using (var scope = _context.Database.BeginTransaction())
-                            {
-                                try
-                                {
-                                    await _context.MarketAddressLocations.AddRangeAsync(batch);
-                                    await _context.SaveChangesAsync();
-                                    await scope.CommitAsync();
-
-                                    totalInserted += batch.Count;
-                                    _logger.LogInformation("{Count} adet kayıt başarıyla eklendi.", batch.Count);
-                                }
-                                catch (Exception ex)
-                                {
-                                    await scope.RollbackAsync();
-                                    _logger.LogError(ex, "Batch sırasında hata oluştu. {Index}. batch atlandı", i / batchSize);
-                                }
-                            }
-                        }
-
-                        _logger.LogInformation("Tüm MarketAddressLocations verileri başarıyla eklendi. Toplam: {Count}", totalInserted);
-                    }
-                }
-                else
-                {
-                    _logger.LogInformation("MarketAddressLocations verisi zaten mevcut, ekleme yapılmadı.");
-                }
-
                 _logger.LogInformation("Database seeding tamamlandı.");
             }
             catch (Exception ex)
