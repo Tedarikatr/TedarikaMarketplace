@@ -234,6 +234,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketAddressLocations, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<MarketUpdateDto, Market>()
@@ -243,6 +244,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketAddressLocations, opt => opt.Ignore()) 
                     .ReverseMap();
             }
         }

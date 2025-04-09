@@ -52,11 +52,12 @@ namespace Data.Databases
 
         //Market
         public DbSet<Market> Markets { get; set; }
-        public DbSet<Country> Countrys { get; set; }
+        public DbSet<MarketAddressLocation> MarketAddressLocations { get; set; }
+        public DbSet<Country> Countries { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
-        public DbSet<Province> Province { get; set; }
+        public DbSet<Province> Provinces { get; set; }
 
         //Siparişler
         public DbSet<Order> Orders { get; set; }
