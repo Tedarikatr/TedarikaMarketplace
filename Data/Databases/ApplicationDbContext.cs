@@ -28,8 +28,6 @@ namespace Data.Databases
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public DbSet<MarketAddressLocation> AddressLocations { get; set; }
-
         // Kullanıcılar
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<BuyerUser> BuyerUsers { get; set; }
@@ -68,8 +66,10 @@ namespace Data.Databases
         // Mağaza & Marketler
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
-        public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StoreMarket> StoreMarkets { get; set; }
+        public DbSet<StoreMarketRegion> StoreMarketRegions { get; set; }
+        public DbSet<StoreInvoice> StoreInvoices { get; set; }
+        public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }
         public DbSet<StoreProductMarket> StoreProductMarkets { get; set; }
         public DbSet<StoreProductRequest> StoreProductRequests { get; set; }

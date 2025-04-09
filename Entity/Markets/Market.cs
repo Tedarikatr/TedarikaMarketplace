@@ -15,6 +15,10 @@ namespace Entity.Markets
 
         public int DeliveryTimeFrame { get; set; } 
 
-        public ICollection<StoreMarket> StoreMarkets { get; set; } 
+        public ICollection<StoreMarket> StoreMarkets { get; set; }
+
+
+        public ICollection<MarketAddressLocation> MarketAddressLocations { get; set; }
+
     }
 }
