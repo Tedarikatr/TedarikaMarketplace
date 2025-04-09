@@ -110,5 +110,123 @@ namespace Services.Markets.Location
             _logger.LogInformation("Mahalleye bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
+        // Listeleme Metotları
+        public async Task<List<CountryDto>> GetAllCountriesAsync()
+        {
+            return await _context.Countries
+                .Select(c => new CountryDto { Id = c.Id, Name = c.Name, Code = c.Code })
+                .ToListAsync();
+        }
+
+        public async Task<List<ProvinceDto>> GetProvincesByCountryIdAsync(int countryId)
+        {
+            return await _context.Provinces
+                .Where(p => p.CountryId == countryId)
+                .Select(p => new ProvinceDto { Id = p.Id, Name = p.Name, CountryId = p.CountryId })
+                .ToListAsync();
+        }
+
+        public async Task<List<DistrictDto>> GetDistrictsByProvinceIdAsync(int provinceId)
+        {
+            return await _context.Districts
+                .Where(d => d.ProvinceId == provinceId)
+                .Select(d => new DistrictDto { Id = d.Id, Name = d.Name, ProvinceId = d.ProvinceId })
+                .ToListAsync();
+        }
+
+        public async Task<List<NeighborhoodDto>> GetNeighborhoodsByDistrictIdAsync(int districtId)
+        {
+            return await _context.Neighborhoods
+                .Where(n => n.DistrictId == districtId)
+                .Select(n => new NeighborhoodDto { Id = n.Id, Name = n.Name, DistrictId = n.DistrictId, PostalCode = n.PostalCode })
+                .ToListAsync();
+        }
+
+        // Silme Metotları
+        public async Task<bool> DeleteCountryAsync(int id)
+        {
+            var entity = await _context.Countries.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Countries.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteProvinceAsync(int id)
+        {
+            var entity = await _context.Provinces.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Provinces.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteDistrictAsync(int id)
+        {
+            var entity = await _context.Districts.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Districts.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteNeighborhoodAsync(int id)
+        {
+            var entity = await _context.Neighborhoods.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Neighborhoods.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // Güncelleme Metotları
+        public async Task<bool> UpdateCountryAsync(int id, CountryCreateDto dto)
+        {
+            var entity = await _context.Countries.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = dto.Name;
+            entity.Code = dto.Code;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProvinceAsync(int id, ProvinceCreateDto dto)
+        {
+            var entity = await _context.Provinces.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = dto.Name;
+            entity.CountryId = dto.CountryId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateDistrictAsync(int id, DistrictCreateDto dto)
+        {
+            var entity = await _context.Districts.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = dto.Name;
+            entity.ProvinceId = dto.ProvinceId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateNeighborhoodAsync(int id, NeighborhoodCreateDto dto)
+        {
+            var entity = await _context.Neighborhoods.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = dto.Name;
+            entity.DistrictId = dto.DistrictId;
+            entity.PostalCode = dto.PostalCode;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

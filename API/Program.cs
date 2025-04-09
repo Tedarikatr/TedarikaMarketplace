@@ -37,6 +37,7 @@ using Services.DeliveryAddress.Services;
 using Services.Files.IServices;
 using Services.Files.Services;
 using Services.Markets.IServices;
+using Services.Markets.Location;
 using Services.Markets.Services;
 using Services.Notification.HelperService;
 using Services.Notification.IServices;
@@ -131,6 +132,8 @@ builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
 //Markets
 builder.Services.AddScoped<IMarketRepository, MarketRepository>();
 builder.Services.AddScoped<IMarketService, MarketService>();
+
+builder.Services.AddScoped<ILocationService, LocationService>();
 
 //Notifications
 builder.Services.AddScoped<INotificationService, NotificationService>();
