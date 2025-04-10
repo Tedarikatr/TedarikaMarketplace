@@ -10,6 +10,8 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public bool IsActive { get; set; }
+
     }
 
     public class CountryCreateDto
@@ -24,6 +26,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public int CountryId { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class ProvinceCreateDto
@@ -38,12 +41,15 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public int ProvinceId { get; set; }
+        public bool IsActive { get; set; }
+
     }
 
     public class DistrictCreateDto
     {
         public string Name { get; set; }
         public int ProvinceId { get; set; }
+
     }
 
     // Mahalle DTO'ları
@@ -53,6 +59,8 @@
         public string Name { get; set; }
         public string PostalCode { get; set; }
         public int DistrictId { get; set; }
+        public bool IsActive { get; set; }
+
     }
 
     public class NeighborhoodCreateDto
@@ -60,6 +68,7 @@
         public string Name { get; set; }
         public string PostalCode { get; set; }
         public int DistrictId { get; set; }
+
     }
 
 }

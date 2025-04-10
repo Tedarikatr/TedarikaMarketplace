@@ -236,7 +236,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketAddressLocations, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<MarketUpdateDto, Market>()
@@ -246,7 +245,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsGlobal, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketAddressLocations, opt => opt.Ignore()) 
                     .ReverseMap();
             }
         }
@@ -296,10 +294,6 @@ namespace API.Mappings
                     .ForAllMembers(opt => opt.Ignore());
 
                 profile.CreateMap<StoreDeliveryOptionDto, Store>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForAllMembers(opt => opt.Ignore());
-
-                profile.CreateMap<StoreMarketDto, Store>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForAllMembers(opt => opt.Ignore());
             }
@@ -372,27 +366,31 @@ namespace API.Mappings
                 profile.CreateMap<Country, CountryDto>().ReverseMap();
                 profile.CreateMap<CountryCreateDto, Country>()
                        .ForMember(dest => dest.Id, opt => opt.Ignore())
-                       .ForMember(dest => dest.Provinces, opt => opt.Ignore());
+                       .ForMember(dest => dest.Provinces, opt => opt.Ignore())
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
                 // Province
                 profile.CreateMap<Province, ProvinceDto>().ReverseMap();
                 profile.CreateMap<ProvinceCreateDto, Province>()
                        .ForMember(dest => dest.Id, opt => opt.Ignore())
                        .ForMember(dest => dest.Country, opt => opt.Ignore())
-                       .ForMember(dest => dest.Districts, opt => opt.Ignore());
+                       .ForMember(dest => dest.Districts, opt => opt.Ignore())
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
                 // District
                 profile.CreateMap<District, DistrictDto>().ReverseMap();
                 profile.CreateMap<DistrictCreateDto, District>()
                        .ForMember(dest => dest.Id, opt => opt.Ignore())
                        .ForMember(dest => dest.Province, opt => opt.Ignore())
-                       .ForMember(dest => dest.Neighborhoods, opt => opt.Ignore());
+                       .ForMember(dest => dest.Neighborhoods, opt => opt.Ignore())
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
                 // Neighborhood
                 profile.CreateMap<Neighborhood, NeighborhoodDto>().ReverseMap();
                 profile.CreateMap<NeighborhoodCreateDto, Neighborhood>()
                        .ForMember(dest => dest.Id, opt => opt.Ignore())
-                       .ForMember(dest => dest.District, opt => opt.Ignore());
+                       .ForMember(dest => dest.District, opt => opt.Ignore())
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true)); 
             }
         }
 

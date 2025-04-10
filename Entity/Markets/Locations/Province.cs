@@ -7,5 +7,8 @@
         public int CountryId { get; set; }
         public Country Country { get; set; }
         public ICollection<District> Districts { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
     }
 }

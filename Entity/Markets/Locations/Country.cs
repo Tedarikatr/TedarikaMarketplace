@@ -6,6 +6,9 @@
         public string Name { get; set; } 
         public string Code { get; set; } 
         public ICollection<Province> Provinces { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
     }
 
 }

@@ -61,55 +61,52 @@ namespace Services.Markets.Location
 
         public async Task<bool> ToggleCountryStatusAsync(int id, bool isActive)
         {
-            var locations = await _context.MarketAddressLocations
-                .Where(x => x.Location.CountryId == id)
-            .ToListAsync();
+            var country = await _context.Countries.FindAsync(id);
+            if (country == null) return false;
 
-            locations.ForEach(x => x.IsActive = isActive);
+            country.IsActive = isActive;
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Ülkeye bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
+            _logger.LogInformation("Ülke durumu {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
 
         public async Task<bool> ToggleProvinceStatusAsync(int id, bool isActive)
         {
-            var locations = await _context.MarketAddressLocations
-                .Where(x => x.Location.ProvinceId == id)
-            .ToListAsync();
+            var province = await _context.Provinces.FindAsync(id);
+            if (province == null) return false;
 
-            locations.ForEach(x => x.IsActive = isActive);
+            province.IsActive = isActive;
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("İle bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
+            _logger.LogInformation("İl durumu {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
 
         public async Task<bool> ToggleDistrictStatusAsync(int id, bool isActive)
         {
-            var locations = await _context.MarketAddressLocations
-                .Where(x => x.Location.DistrictId == id)
-            .ToListAsync();
+            var district = await _context.Districts.FindAsync(id);
+            if (district == null) return false;
 
-            locations.ForEach(x => x.IsActive = isActive);
+            district.IsActive = isActive;
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("İlçeye bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
+            _logger.LogInformation("İlçe durumu {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
 
         public async Task<bool> ToggleNeighborhoodStatusAsync(int id, bool isActive)
         {
-            var locations = await _context.MarketAddressLocations
-                .Where(x => x.Location.NeighborhoodId == id)
-            .ToListAsync();
+            var neighborhood = await _context.Neighborhoods.FindAsync(id);
+            if (neighborhood == null) return false;
 
-            locations.ForEach(x => x.IsActive = isActive);
+            neighborhood.IsActive = isActive;
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Mahalleye bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
+            _logger.LogInformation("Mahalle durumu {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
+
 
         // Listeleme Metotları
         public async Task<List<CountryDto>> GetAllCountriesAsync()

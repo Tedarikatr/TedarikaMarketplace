@@ -6,6 +6,7 @@ namespace API.Controllers.Markets.Locations
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     public class AdminLocationController : ControllerBase
     {
 
@@ -44,32 +45,32 @@ namespace API.Controllers.Markets.Locations
             return Ok(new { Id = id, Message = "Mahalle başarıyla eklendi." });
         }
 
-        [HttpPut("countries/{id}/status")]
-        public async Task<IActionResult> ToggleCountryStatus(int id, [FromQuery] bool isActive)
+        [HttpPut("toggle-country/{id}")]
+        public async Task<IActionResult> ToggleCountry(int id, [FromQuery] bool isActive)
         {
-            await _locationService.ToggleCountryStatusAsync(id, isActive);
-            return Ok(new { Message = $"Ülkeye bağlı marketler {(isActive ? "aktif" : "pasif")} yapıldı." });
+            var result = await _locationService.ToggleCountryStatusAsync(id, isActive);
+            return result ? Ok("Ülke durumu güncellendi.") : NotFound("Ülke bulunamadı.");
         }
 
-        [HttpPut("provinces/{id}/status")]
-        public async Task<IActionResult> ToggleProvinceStatus(int id, [FromQuery] bool isActive)
+        [HttpPut("toggle-province/{id}")]
+        public async Task<IActionResult> ToggleProvince(int id, [FromQuery] bool isActive)
         {
-            await _locationService.ToggleProvinceStatusAsync(id, isActive);
-            return Ok(new { Message = $"İle bağlı marketler {(isActive ? "aktif" : "pasif")} yapıldı." });
+            var result = await _locationService.ToggleProvinceStatusAsync(id, isActive);
+            return result ? Ok("İl durumu güncellendi.") : NotFound("İl bulunamadı.");
         }
 
-        [HttpPut("districts/{id}/status")]
-        public async Task<IActionResult> ToggleDistrictStatus(int id, [FromQuery] bool isActive)
+        [HttpPut("toggle-district/{id}")]
+        public async Task<IActionResult> ToggleDistrict(int id, [FromQuery] bool isActive)
         {
-            await _locationService.ToggleDistrictStatusAsync(id, isActive);
-            return Ok(new { Message = $"İlçeye bağlı marketler {(isActive ? "aktif" : "pasif")} yapıldı." });
+            var result = await _locationService.ToggleDistrictStatusAsync(id, isActive);
+            return result ? Ok("İlçe durumu güncellendi.") : NotFound("İlçe bulunamadı.");
         }
 
-        [HttpPut("neighborhoods/{id}/status")]
-        public async Task<IActionResult> ToggleNeighborhoodStatus(int id, [FromQuery] bool isActive)
+        [HttpPut("toggle-neighborhood/{id}")]
+        public async Task<IActionResult> ToggleNeighborhood(int id, [FromQuery] bool isActive)
         {
-            await _locationService.ToggleNeighborhoodStatusAsync(id, isActive);
-            return Ok(new { Message = $"Mahalleye bağlı marketler {(isActive ? "aktif" : "pasif")} yapıldı." });
+            var result = await _locationService.ToggleNeighborhoodStatusAsync(id, isActive);
+            return result ? Ok("Mahalle durumu güncellendi.") : NotFound("Mahalle bulunamadı.");
         }
 
         // Listeleme
