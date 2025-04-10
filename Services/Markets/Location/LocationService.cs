@@ -110,6 +110,7 @@ namespace Services.Markets.Location
             _logger.LogInformation("Mahalleye bağlı tüm market lokasyonları {status} yapıldı", isActive ? "aktif" : "pasif");
             return true;
         }
+
         // Listeleme Metotları
         public async Task<List<CountryDto>> GetAllCountriesAsync()
         {

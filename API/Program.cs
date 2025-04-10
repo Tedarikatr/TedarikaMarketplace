@@ -22,6 +22,8 @@ using Repository.Markets.Repositorys;
 using Repository.Product.IRepositorys;
 using Repository.Product.Repositorys;
 using Repository.Stores;
+using Repository.Stores.Markets.IRepositorys;
+using Repository.Stores.Markets.Repositorys;
 using Repository.Stores.Product.IRepositorys;
 using Repository.Stores.Product.Repositorys;
 using Serilog;
@@ -45,6 +47,8 @@ using Services.Notification.Service;
 using Services.Product.IServices;
 using Services.Product.Services;
 using Services.Stores;
+using Services.Stores.Markets.IServices;
+using Services.Stores.Markets.Services;
 using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
@@ -150,6 +154,9 @@ builder.Services.AddScoped<IProductService, ProductService>();
 //Stores
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+
+builder.Services.AddScoped<IStoreMarketCoverageRepository, StoreMarketCoverageRepository>();
+builder.Services.AddScoped<IStoreMarketCoverageService, StoreMarketCoverageService>();
 
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 builder.Services.AddScoped<IStoreProductService, StoreProductService>();

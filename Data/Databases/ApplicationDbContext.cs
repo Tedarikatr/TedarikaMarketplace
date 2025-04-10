@@ -52,10 +52,8 @@ namespace Data.Databases
 
         //Market
         public DbSet<Market> Markets { get; set; }
-        public DbSet<MarketAddressLocation> MarketAddressLocations { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<District> Districts { get; set; }
-        public DbSet<Location> Locations { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<Province> Provinces { get; set; }
 
@@ -73,7 +71,6 @@ namespace Data.Databases
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
         public DbSet<StoreMarket> StoreMarkets { get; set; }
-        public DbSet<StoreMarketRegion> StoreMarketRegions { get; set; }
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }
