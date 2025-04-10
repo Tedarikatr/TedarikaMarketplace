@@ -11,6 +11,7 @@ using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Markets;
+using Entity.Markets.Locations;
 using Entity.Products;
 using Entity.Stores;
 
@@ -27,6 +28,7 @@ namespace API.Mappings
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
+            LocationMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -357,6 +359,41 @@ namespace API.Mappings
 
             }
 
+        }
+
+        #endregion
+
+        #region 6️⃣ Locations  Mappings
+        private static class LocationMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                // Country
+                profile.CreateMap<Country, CountryDto>().ReverseMap();
+                profile.CreateMap<CountryCreateDto, Country>()
+                       .ForMember(dest => dest.Id, opt => opt.Ignore())
+                       .ForMember(dest => dest.Provinces, opt => opt.Ignore());
+
+                // Province
+                profile.CreateMap<Province, ProvinceDto>().ReverseMap();
+                profile.CreateMap<ProvinceCreateDto, Province>()
+                       .ForMember(dest => dest.Id, opt => opt.Ignore())
+                       .ForMember(dest => dest.Country, opt => opt.Ignore())
+                       .ForMember(dest => dest.Districts, opt => opt.Ignore());
+
+                // District
+                profile.CreateMap<District, DistrictDto>().ReverseMap();
+                profile.CreateMap<DistrictCreateDto, District>()
+                       .ForMember(dest => dest.Id, opt => opt.Ignore())
+                       .ForMember(dest => dest.Province, opt => opt.Ignore())
+                       .ForMember(dest => dest.Neighborhoods, opt => opt.Ignore());
+
+                // Neighborhood
+                profile.CreateMap<Neighborhood, NeighborhoodDto>().ReverseMap();
+                profile.CreateMap<NeighborhoodCreateDto, Neighborhood>()
+                       .ForMember(dest => dest.Id, opt => opt.Ignore())
+                       .ForMember(dest => dest.District, opt => opt.Ignore());
+            }
         }
 
         #endregion

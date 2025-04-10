@@ -1,8 +1,15 @@
-﻿namespace Entity.Markets.Locations
+﻿using Entity.Markets.Locations;
+
+namespace Entity.Stores.Markets
 {
-    public class Location
+    public class StoreMarketCoverage
     {
         public int Id { get; set; }
+
+        public MarketCoverageLevel CoverageLevel { get; set; }
+
+        public int StoreMarketId { get; set; }
+        public StoreMarket StoreMarket { get; set; }
 
         public int? CountryId { get; set; }
         public Country Country { get; set; }
@@ -16,12 +23,6 @@
         public int? NeighborhoodId { get; set; }
         public Neighborhood Neighborhood { get; set; }
 
-        public string FullAddress => $"{Neighborhood?.Name}, {District?.Name}, {Province?.Name}, {Country?.Name}";
-        public string PostalCode => Neighborhood?.PostalCode;
-
-        public ICollection<MarketAddressLocation> MarketAddressLocations { get; set; }
-
-        public MarketCoverageLevel CoverageLevel { get; set; }
-
+        public bool IsActive { get; set; }
     }
 }

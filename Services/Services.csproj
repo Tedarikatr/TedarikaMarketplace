@@ -19,9 +19,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Stores\Markets\IServices\" />
-    <Folder Include="Stores\Markets\Services\" />
-  </ItemGroup>
-
 </Project>

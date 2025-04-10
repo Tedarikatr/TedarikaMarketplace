@@ -17,8 +17,5 @@ namespace Entity.Markets
 
         public ICollection<StoreMarket> StoreMarkets { get; set; }
 
-
-        public ICollection<MarketAddressLocation> MarketAddressLocations { get; set; }
-
     }
 }
