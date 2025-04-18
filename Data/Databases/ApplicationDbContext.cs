@@ -56,6 +56,7 @@ namespace Data.Databases
         public DbSet<District> Districts { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<Province> Provinces { get; set; }
+        public DbSet<Region> Regions { get; set; }
 
         //Siparişler
         public DbSet<Order> Orders { get; set; }

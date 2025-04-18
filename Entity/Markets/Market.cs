@@ -8,10 +8,10 @@ namespace Entity.Markets
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public string RegionCode { get; set; } // örn: EU, MENA, AFR
+        public string RegionCode { get; set; } 
         public MarketType MarketType { get; set; }
 
-        public int DeliveryTimeFrame { get; set; } // Gün cinsinden
+        public int DeliveryTimeFrame { get; set; }
 
         public ICollection<StoreMarket> StoreMarkets { get; set; }
         public bool IsActive { get; set; } = true;

@@ -4,7 +4,6 @@ using Entity.Categories;
 using Entity.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SeedData.Collections;
 
 namespace Data.Seeders
 {
@@ -202,6 +201,7 @@ namespace Data.Seeders
                     _logger.LogInformation("Kategori verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
+                //Products
                 if (!await _context.Products.AnyAsync())
                 {
                     var products = new List<Product>
@@ -238,82 +238,19 @@ namespace Data.Seeders
                     _logger.LogInformation("Product verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
-                if (!await _context.Countries.AnyAsync(c => c.Code == "TR"))
+                //Locations(Region)
+                if (!await _context.Regions.AnyAsync())
                 {
-                    _logger.LogInformation("Adres verileri kontrol ediliyor...");
-
-                    // 1. Country
-                    var country = TurkeyAddressCollection.Countries.First(); // Türkiye olduğunu varsayıyoruz
-                    await _context.Countries.AddAsync(country);
+                    var regions = LocationsSeederCollection.GetRegions();
+                    await _context.Regions.AddRangeAsync(regions);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("Country (Türkiye) eklendi.");
 
-                    var existingCountry = await _context.Countries.FirstAsync(c => c.Code == "TR");
-
-                    // 2. Province
-                    if (!await _context.Provinces.AnyAsync(p => p.CountryId == existingCountry.Id))
-                    {
-                        var provinces = TurkeyAddressCollection.Provinces.Select(p =>
-                        {
-                            p.CountryId = existingCountry.Id;
-                            return p;
-                        }).ToList();
-
-                        await _context.Provinces.AddRangeAsync(provinces);
-                        await _context.SaveChangesAsync();
-                        _logger.LogInformation("Provinces (İller) eklendi.");
-                    }
-
-                    // Province isimlerine göre map yaparken null key hatası almamak için filtreliyoruz
-                    var provincesDict = await _context.Provinces
-                        .Where(p => !string.IsNullOrEmpty(p.Name))
-                        .ToDictionaryAsync(p => p.Name, p => p.Id);
-
-                    // 3. District
-                    if (!await _context.Districts.AnyAsync())
-                    {
-                        var districts = TurkeyAddressCollection.Districts
-                            .Where(d => !string.IsNullOrEmpty(d.ProvinceName) && provincesDict.ContainsKey(d.ProvinceName))
-                            .Select(d =>
-                            {
-                                d.ProvinceId = provincesDict[d.ProvinceName];
-                                return d;
-                            }).ToList();
-
-                        await _context.Districts.AddRangeAsync(districts);
-                        await _context.SaveChangesAsync();
-                        _logger.LogInformation("Districts (İlçeler) eklendi.");
-                    }
-
-                    var districtsDict = await _context.Districts
-                        .Where(d => !string.IsNullOrEmpty(d.Name))
-                        .ToDictionaryAsync(d => d.Name, d => d.Id);
-
-                    // 4. Neighborhood
-                    if (!await _context.Neighborhoods.AnyAsync())
-                    {
-                        var neighborhoods = TurkeyAddressCollection.Neighborhoods
-                            .Where(n => !string.IsNullOrEmpty(n.DistrictName) && districtsDict.ContainsKey(n.DistrictName))
-                            .Select(n =>
-                            {
-                                n.DistrictId = districtsDict[n.DistrictName];
-                                return n;
-                            }).ToList();
-
-                        await _context.Neighborhoods.AddRangeAsync(neighborhoods);
-                        await _context.SaveChangesAsync();
-                        _logger.LogInformation("Neighborhoods (Mahalleler) eklendi.");
-                    }
-
-                    _logger.LogInformation("Türkiye adres verileri başarıyla işlendi.");
+                    _logger.LogInformation("Region verileri başarıyla eklendi.");
                 }
-
                 else
                 {
-                    _logger.LogInformation("Türkiye adres verileri zaten mevcut, ekleme yapılmadı.");
+                    _logger.LogInformation("Region verileri zaten mevcut, ekleme yapılmadı.");
                 }
-
-
 
                 _logger.LogInformation("Database seeding tamamlandı.");
             }
