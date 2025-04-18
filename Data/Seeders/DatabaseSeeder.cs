@@ -252,6 +252,26 @@ namespace Data.Seeders
                     _logger.LogInformation("Region verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
+                // Avrupa için Country ekleme
+                var europeanRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Code == "EU");
+
+                if (europeanRegion != null && !await _context.Countries.AnyAsync(c => c.RegionId == europeanRegion.Id))
+                {
+                    var europeanCountries = LocationsSeederCollection.GetEuropeanCountries(europeanRegion.Id);
+                    await _context.Countries.AddRangeAsync(europeanCountries);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Avrupa bölgesine ait ülkeler başarıyla eklendi.");
+                }
+                else if (europeanRegion == null)
+                {
+                    _logger.LogWarning("EU kodlu Region bulunamadı, ülke verileri eklenemedi.");
+                }
+                else
+                {
+                    _logger.LogInformation("Avrupa ülkeleri zaten eklenmiş, tekrar eklenmedi.");
+                }
+
                 _logger.LogInformation("Database seeding tamamlandı.");
             }
             catch (Exception ex)
