@@ -48,6 +48,7 @@
     public class DistrictCreateDto
     {
         public string Name { get; set; }
+        public string ProvinceName { get; set; }
         public int ProvinceId { get; set; }
 
     }
@@ -66,6 +67,7 @@
     public class NeighborhoodCreateDto
     {
         public string Name { get; set; }
+        public string DistrictName { get; set; }
         public string PostalCode { get; set; }
         public int DistrictId { get; set; }
 

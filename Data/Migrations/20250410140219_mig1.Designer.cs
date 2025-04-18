@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250409133503_mig1")]
+    [Migration("20250410140219_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -441,13 +441,13 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -460,16 +460,19 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.District", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProvinceName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -478,52 +481,19 @@ namespace Data.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CoverageLevel")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DistrictId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NeighborhoodId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("DistrictId");
-
-                    b.HasIndex("NeighborhoodId");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Locations");
-                });
-
             modelBuilder.Entity("Entity.Markets.Locations.Neighborhood", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DistrictId")
                         .HasColumnType("int");
+
+                    b.Property<string>("DistrictName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -541,13 +511,13 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -591,35 +561,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Markets");
-                });
-
-            modelBuilder.Entity("Entity.Markets.MarketAddressLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CoverageLevel")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MarketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("MarketId");
-
-                    b.ToTable("MarketAddressLocations");
                 });
 
             modelBuilder.Entity("Entity.Orders.Order", b =>
@@ -837,17 +778,8 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<int>("MarketId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RegionCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
@@ -859,32 +791,6 @@ namespace Data.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("StoreMarkets");
-                });
-
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketRegion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoreMarketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("StoreMarketId");
-
-                    b.ToTable("StoreMarketRegions");
                 });
 
             modelBuilder.Entity("Entity.Stores.Payments.StoreInvoice", b =>
@@ -1269,39 +1175,8 @@ namespace Data.Migrations
                     b.HasOne("Entity.Markets.Locations.Province", "Province")
                         .WithMany("Districts")
                         .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Province");
-                });
-
-            modelBuilder.Entity("Entity.Markets.Locations.Location", b =>
-                {
-                    b.HasOne("Entity.Markets.Locations.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entity.Markets.Locations.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entity.Markets.Locations.Neighborhood", "Neighborhood")
-                        .WithMany()
-                        .HasForeignKey("NeighborhoodId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Entity.Markets.Locations.Province", "Province")
-                        .WithMany()
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Country");
-
-                    b.Navigation("District");
-
-                    b.Navigation("Neighborhood");
 
                     b.Navigation("Province");
                 });
@@ -1311,7 +1186,7 @@ namespace Data.Migrations
                     b.HasOne("Entity.Markets.Locations.District", "District")
                         .WithMany("Neighborhoods")
                         .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("District");
@@ -1322,29 +1197,10 @@ namespace Data.Migrations
                     b.HasOne("Entity.Markets.Locations.Country", "Country")
                         .WithMany("Provinces")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("Entity.Markets.MarketAddressLocation", b =>
-                {
-                    b.HasOne("Entity.Markets.Locations.Location", "Location")
-                        .WithMany("MarketAddressLocations")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity.Markets.Market", "Market")
-                        .WithMany("MarketAddressLocations")
-                        .HasForeignKey("MarketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Market");
                 });
 
             modelBuilder.Entity("Entity.Orders.Order", b =>
@@ -1460,25 +1316,6 @@ namespace Data.Migrations
                     b.Navigation("Market");
 
                     b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketRegion", b =>
-                {
-                    b.HasOne("Entity.Markets.Locations.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Entity.Stores.Markets.StoreMarket", "StoreMarket")
-                        .WithMany("StoreMarketRegions")
-                        .HasForeignKey("StoreMarketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("StoreMarket");
                 });
 
             modelBuilder.Entity("Entity.Stores.Payments.StoreInvoice", b =>
@@ -1633,11 +1470,6 @@ namespace Data.Migrations
                     b.Navigation("Neighborhoods");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Location", b =>
-                {
-                    b.Navigation("MarketAddressLocations");
-                });
-
             modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
                 {
                     b.Navigation("Districts");
@@ -1645,8 +1477,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entity.Markets.Market", b =>
                 {
-                    b.Navigation("MarketAddressLocations");
-
                     b.Navigation("StoreMarkets");
                 });
 
@@ -1655,11 +1485,6 @@ namespace Data.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("Payment");
-                });
-
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarket", b =>
-                {
-                    b.Navigation("StoreMarketRegions");
                 });
 
             modelBuilder.Entity("Entity.Stores.Products.StoreProduct", b =>

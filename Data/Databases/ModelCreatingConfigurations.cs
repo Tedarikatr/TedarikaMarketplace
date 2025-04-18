@@ -21,7 +21,6 @@ namespace Data.Databases
             ConfigureUserEntities(modelBuilder);
             ConfigureCompanyEntities(modelBuilder);
             ConfigureStoreEntities(modelBuilder);
-            ConfigureMarketEntities(modelBuilder);
             ConfigureLocationEntities(modelBuilder);
             ConfigureProductEntities(modelBuilder);
             ConfigureOrderEntities(modelBuilder);
@@ -83,32 +82,50 @@ namespace Data.Databases
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private static void ConfigureMarketEntities(ModelBuilder modelBuilder)
-        {
-           
-        }
-
         private static void ConfigureLocationEntities(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Country>()
+                .HasKey(c => c.Id);
+            modelBuilder.Entity<Country>()
+                .Property(c => c.Id)
+                .ValueGeneratedNever();
             modelBuilder.Entity<Country>()
                 .HasMany(c => c.Provinces)
                 .WithOne(p => p.Country)
                 .HasForeignKey(p => p.CountryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<Province>()
+                .HasKey(p => p.Id);
+            modelBuilder.Entity<Province>()
+                .Property(p => p.Id)
+                .ValueGeneratedNever();
             modelBuilder.Entity<Province>()
                 .HasMany(p => p.Districts)
                 .WithOne(d => d.Province)
                 .HasForeignKey(d => d.ProvinceId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<District>()
+                .HasKey(d => d.Id);
+            modelBuilder.Entity<District>()
+                .Property(d => d.Id)
+                .ValueGeneratedNever();
             modelBuilder.Entity<District>()
                 .HasMany(d => d.Neighborhoods)
                 .WithOne(n => n.District)
                 .HasForeignKey(n => n.DistrictId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
+                .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<Neighborhood>()
+                .HasKey(n => n.Id);
+            modelBuilder.Entity<Neighborhood>()
+                .Property(n => n.Id)
+                .ValueGeneratedNever();
+        }
 
         private static void ConfigureProductEntities(ModelBuilder modelBuilder)
         {

@@ -3,12 +3,12 @@
     public class Neighborhood
     {
         public int Id { get; set; }
-        public string Name { get; set; } 
+        public string Name { get; set; }
+
         public int DistrictId { get; set; }
         public District District { get; set; }
+
         public string PostalCode { get; set; }
-
         public bool IsActive { get; set; } = true;
-
     }
 }

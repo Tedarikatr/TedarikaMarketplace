@@ -7,4 +7,12 @@
         District = 2,
         Neighborhood = 3
     }
+
+    public enum MarketType
+    {
+        Local,
+        Regional,
+        CountryWide,
+        Global
+    }
 }
