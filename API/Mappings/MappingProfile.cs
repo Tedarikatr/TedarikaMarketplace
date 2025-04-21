@@ -361,19 +361,29 @@ namespace API.Mappings
                 // Country
                 profile.CreateMap<Country, CountryDto>().ReverseMap();
                 profile.CreateMap<CountryCreateDto, Country>()
-                       .ForMember(dest => dest.Id, opt => opt.Ignore())
-                       .ForMember(dest => dest.Provinces, opt => opt.Ignore())
-                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
-                       .ForMember(dest => dest.RegionId, opt => opt.MapFrom(src => src.RegionId)) // ✅ EKLENDİ
-                       .ForMember(dest => dest.Region, opt => opt.Ignore());
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
+                    .ForMember(dest => dest.Region, opt => opt.Ignore())
+                    .ForMember(dest => dest.Provinces, opt => opt.Ignore())
+                    .ForMember(dest => dest.States, opt => opt.Ignore()); // ✔️ HATA BURADAN GELİYORDU
+
+                // State
+                profile.CreateMap<State, StateDto>()
+                    .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
+                profile.CreateMap<StateCreateDto, State>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore()) // ✔️ Id atlanmalı
+                    .ForMember(dest => dest.Country, opt => opt.Ignore()) // ✔️ Navigation property
+                    .ForMember(dest => dest.Provinces, opt => opt.Ignore()) // ✔️ ICollection ilişkisi
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true)); // ✔️ Varsayılan true
 
                 // Province
                 profile.CreateMap<Province, ProvinceDto>().ReverseMap();
                 profile.CreateMap<ProvinceCreateDto, Province>()
-                       .ForMember(dest => dest.Id, opt => opt.Ignore())
-                       .ForMember(dest => dest.Country, opt => opt.Ignore())
-                       .ForMember(dest => dest.Districts, opt => opt.Ignore())
-                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.State, opt => opt.Ignore()) // ✔️ Eklenen navigation
+                    .ForMember(dest => dest.Districts, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
                 // District
                 profile.CreateMap<District, DistrictDto>().ReverseMap();
@@ -393,6 +403,7 @@ namespace API.Mappings
                     .ForSourceMember(src => src.DistrictName, opt => opt.DoNotValidate());
             }
         }
+
 
         #endregion
     }

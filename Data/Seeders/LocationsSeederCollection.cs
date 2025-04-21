@@ -238,5 +238,84 @@ namespace Data.Seeders
             new District { Name = "Saint-Denis", IsActive = true },
             new District { Name = "Mamoudzou",  IsActive = true },
         };
+
+        public static List<State> GetGermanStates(int countryId) => new List<State>
+        {
+            new State { Name = "Baden-Württemberg", CountryId = countryId },
+            new State { Name = "Bayern", CountryId = countryId },
+            new State { Name = "Berlin", CountryId = countryId },
+            new State { Name = "Brandenburg", CountryId = countryId },
+            new State { Name = "Bremen", CountryId = countryId },
+            new State { Name = "Hamburg", CountryId = countryId },
+            new State { Name = "Hessen", CountryId = countryId },
+            new State { Name = "Mecklenburg-Vorpommern", CountryId = countryId },
+            new State { Name = "Niedersachsen", CountryId = countryId },
+            new State { Name = "Nordrhein-Westfalen", CountryId = countryId },
+            new State { Name = "Rheinland-Pfalz", CountryId = countryId },
+            new State { Name = "Saarland", CountryId = countryId },
+            new State { Name = "Sachsen", CountryId = countryId },
+            new State { Name = "Sachsen-Anhalt", CountryId = countryId },
+            new State { Name = "Schleswig-Holstein", CountryId = countryId },
+            new State { Name = "Thüringen", CountryId = countryId },
+        };
+
+        public static List<Province> GetGermanProvinces(Dictionary<string, int> stateNameIdMap) => new List<Province>
+        {
+            new Province { Name = "Stuttgart", StateId = stateNameIdMap["Baden-Württemberg"] },
+            new Province { Name = "Karlsruhe", StateId = stateNameIdMap["Baden-Württemberg"] },
+            new Province { Name = "Freiburg", StateId = stateNameIdMap["Baden-Württemberg"] },
+
+            new Province { Name = "München", StateId = stateNameIdMap["Bayern"] },
+            new Province { Name = "Nürnberg", StateId = stateNameIdMap["Bayern"] },
+            new Province { Name = "Augsburg", StateId = stateNameIdMap["Bayern"] },
+
+            new Province { Name = "Berlin", StateId = stateNameIdMap["Berlin"] },
+
+            new Province { Name = "Potsdam", StateId = stateNameIdMap["Brandenburg"] },
+            new Province { Name = "Cottbus", StateId = stateNameIdMap["Brandenburg"] },
+            new Province { Name = "Brandenburg an der Havel", StateId = stateNameIdMap["Brandenburg"] },
+
+            new Province { Name = "Bremen", StateId = stateNameIdMap["Bremen"] },
+            new Province { Name = "Bremerhaven", StateId = stateNameIdMap["Bremen"] },
+
+            new Province { Name = "Hamburg", StateId = stateNameIdMap["Hamburg"] },
+
+            new Province { Name = "Wiesbaden", StateId = stateNameIdMap["Hessen"] },
+            new Province { Name = "Frankfurt am Main", StateId = stateNameIdMap["Hessen"] },
+            new Province { Name = "Darmstadt", StateId = stateNameIdMap["Hessen"] },
+
+            new Province { Name = "Schwerin", StateId = stateNameIdMap["Mecklenburg-Vorpommern"] },
+            new Province { Name = "Rostock", StateId = stateNameIdMap["Mecklenburg-Vorpommern"] },
+
+            new Province { Name = "Hannover", StateId = stateNameIdMap["Niedersachsen"] },
+            new Province { Name = "Braunschweig", StateId = stateNameIdMap["Niedersachsen"] },
+            new Province { Name = "Osnabrück", StateId = stateNameIdMap["Niedersachsen"] },
+
+            new Province { Name = "Düsseldorf", StateId = stateNameIdMap["Nordrhein-Westfalen"] },
+            new Province { Name = "Köln", StateId = stateNameIdMap["Nordrhein-Westfalen"] },
+            new Province { Name = "Dortmund", StateId = stateNameIdMap["Nordrhein-Westfalen"] },
+
+            new Province { Name = "Mainz", StateId = stateNameIdMap["Rheinland-Pfalz"] },
+            new Province { Name = "Koblenz", StateId = stateNameIdMap["Rheinland-Pfalz"] },
+            new Province { Name = "Ludwigshafen", StateId = stateNameIdMap["Rheinland-Pfalz"] },
+
+            new Province { Name = "Saarbrücken", StateId = stateNameIdMap["Saarland"] },
+
+            new Province { Name = "Dresden", StateId = stateNameIdMap["Sachsen"] },
+            new Province { Name = "Leipzig", StateId = stateNameIdMap["Sachsen"] },
+            new Province { Name = "Chemnitz", StateId = stateNameIdMap["Sachsen"] },
+
+            new Province { Name = "Magdeburg", StateId = stateNameIdMap["Sachsen-Anhalt"] },
+            new Province { Name = "Halle (Saale)", StateId = stateNameIdMap["Sachsen-Anhalt"] },
+            new Province { Name = "Dessau-Roßlau", StateId = stateNameIdMap["Sachsen-Anhalt"] },
+
+            new Province { Name = "Kiel", StateId = stateNameIdMap["Schleswig-Holstein"] },
+            new Province { Name = "Lübeck", StateId = stateNameIdMap["Schleswig-Holstein"] },
+            new Province { Name = "Flensburg", StateId = stateNameIdMap["Schleswig-Holstein"] },
+
+            new Province { Name = "Erfurt", StateId = stateNameIdMap["Thüringen"] },
+            new Province { Name = "Jena", StateId = stateNameIdMap["Thüringen"] },
+            new Province { Name = "Gera", StateId = stateNameIdMap["Thüringen"] },
+        };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Data.Databases;
 using Entity.Auths;
 using Entity.Categories;
+using Entity.Markets.Locations;
 using Entity.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ namespace Data.Seeders
             {
                 _logger.LogInformation("Database seeding başladı.");
 
-                // SuperAdmin kontrolü
+                // SuperAdmin
                 if (!await _context.AdminUsers.AnyAsync(u => u.IsSuperAdmin))
                 {
                     var superAdminSalt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -51,7 +52,7 @@ namespace Data.Seeders
                     _logger.LogInformation("SuperAdmin zaten mevcut, ekleme yapılmadı.");
                 }
 
-                // Standart Admin kontrolü
+                // StandartAdmin
                 if (!await _context.AdminUsers.AnyAsync(u => !u.IsSuperAdmin))
                 {
                     var adminSalt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -238,7 +239,8 @@ namespace Data.Seeders
                     _logger.LogInformation("Product verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
-                //Locations(Region)
+
+                //Region
                 if (!await _context.Regions.AnyAsync())
                 {
                     var regions = LocationsSeederCollection.GetRegions();
@@ -252,7 +254,8 @@ namespace Data.Seeders
                     _logger.LogInformation("Region verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
-                // Avrupa için Country ekleme
+
+                // Avrupa Country 
                 var europeanRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Code == "EU");
 
                 if (europeanRegion != null && !await _context.Countries.AnyAsync(c => c.RegionId == europeanRegion.Id))
@@ -273,7 +276,7 @@ namespace Data.Seeders
                     _logger.LogInformation("Avrupa ülkeleri zaten eklenmiş, tekrar eklenmedi.");
                 }
 
-                // Fransa şehirlerini (Province) veritabanına ekleme
+                // Fransa (Province)
                 var france = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(c => c.Code == "FR");
 
                 if (france != null && !await _context.Provinces.AnyAsync(p => p.CountryId == france.Id))
@@ -294,25 +297,91 @@ namespace Data.Seeders
                     _logger.LogInformation("Fransa şehirleri zaten mevcut, tekrar eklenmedi.");
                 }
 
-                //// Fransa ilçeleri (Districts) ekleme
-                //if (!await _context.Districts.AnyAsync())
-                //{
-                //    // Province adı - ID eşleşmeleri
-                //    var provinceNameIdMap = await _context.Provinces
-                //        .Where(p => p.Country.Code == "FR")
-                //        .ToDictionaryAsync(p => p.Name, p => p.Id);
+                // Fransa ilçeleri (Districts) ekleniyor
+                if (!await _context.Districts.AnyAsync(d => d.Province.Country.Code == "FR"))
+                {
+                    var franceProvinces = await _context.Provinces
+                        .Where(p => p.Country.Code == "FR")
+                        .ToListAsync();
 
-                //    var districts = LocationsSeederCollection.GetFrenchDistricts(provinceNameIdMap);
-                //    await _context.Districts.AddRangeAsync(districts);
-                //    await _context.SaveChangesAsync();
+                    if (!franceProvinces.Any())
+                    {
+                        _logger.LogWarning("Fransa şehirleri bulunamadı, önce Province seed işlemini kontrol edin.");
+                    }
+                    else
+                    {
+                        var districts = LocationsSeederCollection.GetFrenchDistricts();
+                        var random = new Random();
 
-                //    _logger.LogInformation("Fransa'nın arrondissement (ilçe) verileri başarıyla eklendi.");
-                //}
-                //else
-                //{
-                //    _logger.LogInformation("Fransa'nın ilçeleri zaten mevcut, ekleme yapılmadı.");
-                //}
+                        // Her district'e rastgele bir province atama (örnek amaçlı, daha iyi eşleme yapılabilir)
+                        for (int i = 0; i < districts.Count; i++)
+                        {
+                            var randomProvince = franceProvinces[random.Next(franceProvinces.Count)];
+                            districts[i].ProvinceId = randomProvince.Id;
+                        }
 
+                        await _context.Districts.AddRangeAsync(districts);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Fransa'ya ait ilçeler (Districts) başarıyla eklendi.");
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("Fransa'ya ait ilçeler (Districts) zaten mevcut.");
+                }
+
+
+                // Almanya eyaletleri (State) verisini ekleme
+                var germany = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(c => c.Code == "DE");
+
+                if (germany != null && !await _context.States.AnyAsync(s => s.CountryId == germany.Id))
+                {
+                    var germanStates = LocationsSeederCollection.GetGermanStates(germany.Id);
+                    _context.ChangeTracker.Clear();
+                    await _context.States.AddRangeAsync(germanStates);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Almanya eyaletleri başarıyla eklendi.");
+                }
+                else if (germany == null)
+                {
+                    _logger.LogWarning("Almanya (DE) ülkesi bulunamadı, eyalet verileri eklenemedi.");
+                }
+                else
+                {
+                    _logger.LogInformation("Almanya eyalet verileri zaten mevcut, tekrar eklenmedi.");
+                }
+
+                // Almanya şehirleri (Province) verisini ekleme
+                if (germany != null &&
+                    await _context.States.AnyAsync(s => s.CountryId == germany.Id) &&
+                    !await _context.Provinces.AnyAsync(p => p.CountryId == germany.Id))
+                {
+                    // Eyaletleri dictionary olarak al
+                    var germanStates = await _context.States
+                        .Where(s => s.CountryId == germany.Id)
+                        .ToDictionaryAsync(s => s.Name, s => s.Id);
+
+                    if (!germanStates.Any())
+                    {
+                        _logger.LogWarning("Almanya eyaletleri bulunamadı!");
+                        return;
+                    }
+
+                    var germanProvinces = LocationsSeederCollection.GetGermanProvinces(germanStates);
+
+                    // CountryId'leri manuel olarak ayarla
+                    foreach (var province in germanProvinces)
+                    {
+                        province.CountryId = germany.Id;
+                    }
+
+                    _context.ChangeTracker.Clear();
+                    await _context.Provinces.AddRangeAsync(germanProvinces);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Almanya şehirleri (Province) başarıyla eklendi.");
+                }
 
                 _logger.LogInformation("Database seeding tamamlandı.");
             }

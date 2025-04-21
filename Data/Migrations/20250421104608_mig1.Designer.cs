@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250418095757_mig1")]
+    [Migration("20250421104608_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -533,9 +533,14 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("StateId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("StateId");
 
                     b.ToTable("Provinces");
                 });
@@ -560,6 +565,30 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("States");
                 });
 
             modelBuilder.Entity("Entity.Markets.Market", b =>
@@ -1033,6 +1062,7 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("ReviewedAt")
@@ -1236,6 +1266,24 @@ namespace Data.Migrations
                         .WithMany("Provinces")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Entity.Markets.Locations.State", "State")
+                        .WithMany("Provinces")
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Country");
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+                {
+                    b.HasOne("Entity.Markets.Locations.Country", "Country")
+                        .WithMany("States")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -1501,6 +1549,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
                 {
                     b.Navigation("Provinces");
+
+                    b.Navigation("States");
                 });
 
             modelBuilder.Entity("Entity.Markets.Locations.District", b =>
@@ -1516,6 +1566,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Region", b =>
                 {
                     b.Navigation("Countries");
+                });
+
+            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+                {
+                    b.Navigation("Provinces");
                 });
 
             modelBuilder.Entity("Entity.Markets.Market", b =>

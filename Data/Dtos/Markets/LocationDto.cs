@@ -34,6 +34,7 @@
     {
         public string Name { get; set; }
         public int CountryId { get; set; }
+        public int? StateId { get; set; } 
     }
 
     // İlçe DTO'ları
