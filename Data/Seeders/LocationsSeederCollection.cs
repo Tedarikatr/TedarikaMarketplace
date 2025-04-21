@@ -1,5 +1,4 @@
-﻿using Data.Dtos.Markets;
-using Entity.Markets.Locations;
+﻿using Entity.Markets.Locations;
 
 namespace Data.Seeders
 {

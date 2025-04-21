@@ -1,18 +1,15 @@
 ﻿namespace Entity.Markets.Locations
 {
-    public class Province
+    public class State
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public int? StateId { get; set; }
-        public State State { get; set; }
-
         public int CountryId { get; set; }
         public Country Country { get; set; }
 
-        public ICollection<District> Districts { get; set; }
-        public bool IsActive { get; set; } = true;
+        public ICollection<Province> Provinces { get; set; }
 
+        public bool IsActive { get; set; } = true;
     }
 }

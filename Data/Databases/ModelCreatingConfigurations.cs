@@ -1,7 +1,6 @@
 ﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Companies;
-using Entity.Markets;
 using Entity.Markets.Locations;
 using Entity.Orders;
 using Entity.Payments;
@@ -86,45 +85,68 @@ namespace Data.Databases
         {
             modelBuilder.Entity<Country>()
                 .HasKey(c => c.Id);
+
             modelBuilder.Entity<Country>()
                 .Property(c => c.Id)
                 .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Country>()
                 .HasMany(c => c.Provinces)
                 .WithOne(p => p.Country)
                 .HasForeignKey(p => p.CountryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<Province>()
                 .HasKey(p => p.Id);
+
             modelBuilder.Entity<Province>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Province>()
                 .HasMany(p => p.Districts)
                 .WithOne(d => d.Province)
                 .HasForeignKey(d => d.ProvinceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<District>()
                 .HasKey(d => d.Id);
+
             modelBuilder.Entity<District>()
                 .Property(d => d.Id)
                 .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<District>()
                 .HasMany(d => d.Neighborhoods)
                 .WithOne(n => n.District)
                 .HasForeignKey(n => n.DistrictId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<Neighborhood>()
                 .HasKey(n => n.Id);
+
             modelBuilder.Entity<Neighborhood>()
                 .Property(n => n.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<State>()
+                .HasKey(s => s.Id);
+
+            modelBuilder.Entity<State>()
+                .Property(s => s.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<State>()
+                .HasMany(s => s.Provinces)
+                .WithOne(p => p.State)
+                .HasForeignKey(p => p.StateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<State>()
+                .HasOne(s => s.Country)
+                .WithMany(c => c.States)
+                .HasForeignKey(s => s.CountryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private static void ConfigureProductEntities(ModelBuilder modelBuilder)

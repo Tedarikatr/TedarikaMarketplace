@@ -59,6 +59,15 @@ namespace Services.Markets.Location
             return neighborhood.Id;
         }
 
+        public async Task<int> AddStateAsync(StateCreateDto dto)
+        {
+            var state = new State { Name = dto.Name, CountryId = dto.CountryId };
+            await _context.States.AddAsync(state);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Ülkeye eyalet eklendi: {Name}", dto.Name);
+            return state.Id;
+        }
+
         public async Task<bool> ToggleCountryStatusAsync(int id, bool isActive)
         {
             var country = await _context.Countries.FindAsync(id);
@@ -107,8 +116,18 @@ namespace Services.Markets.Location
             return true;
         }
 
+        public async Task<bool> ToggleStateStatusAsync(int id, bool isActive)
+        {
+            var state = await _context.States.FindAsync(id);
+            if (state == null) return false;
 
-        // Listeleme Metotları
+            state.IsActive = isActive;
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Eyalet durumu {status} yapıldı", isActive ? "aktif" : "pasif");
+            return true;
+        }
+
         public async Task<List<CountryDto>> GetAllCountriesAsync()
         {
             return await _context.Countries
@@ -140,7 +159,20 @@ namespace Services.Markets.Location
                 .ToListAsync();
         }
 
-        // Silme Metotları
+        public async Task<List<StateDto>> GetStatesByCountryIdAsync(int countryId)
+        {
+            return await _context.States
+                .Where(s => s.CountryId == countryId)
+                .Select(s => new StateDto
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    IsActive = s.IsActive,
+                    CountryId = s.CountryId,
+                    CountryName = s.Country.Name
+                }).ToListAsync();
+        }
+
         public async Task<bool> DeleteCountryAsync(int id)
         {
             var entity = await _context.Countries.FindAsync(id);
@@ -181,7 +213,16 @@ namespace Services.Markets.Location
             return true;
         }
 
-        // Güncelleme Metotları
+        public async Task<bool> DeleteStateAsync(int id)
+        {
+            var entity = await _context.States.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.States.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateCountryAsync(int id, CountryCreateDto dto)
         {
             var entity = await _context.Countries.FindAsync(id);
@@ -223,6 +264,17 @@ namespace Services.Markets.Location
             entity.Name = dto.Name;
             entity.DistrictId = dto.DistrictId;
             entity.PostalCode = dto.PostalCode;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateStateAsync(int id, StateCreateDto dto)
+        {
+            var entity = await _context.States.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Name = dto.Name;
+            entity.CountryId = dto.CountryId;
             await _context.SaveChangesAsync();
             return true;
         }

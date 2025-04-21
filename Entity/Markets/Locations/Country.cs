@@ -10,6 +10,8 @@
         public Region Region { get; set; }
 
         public ICollection<Province> Provinces { get; set; }
+        public ICollection<State> States { get; set; }
+
         public bool IsActive { get; set; } = true;
     }
 }
