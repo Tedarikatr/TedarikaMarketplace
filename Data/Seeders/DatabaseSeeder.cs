@@ -258,6 +258,7 @@ namespace Data.Seeders
                 if (europeanRegion != null && !await _context.Countries.AnyAsync(c => c.RegionId == europeanRegion.Id))
                 {
                     var europeanCountries = LocationsSeederCollection.GetEuropeanCountries(europeanRegion.Id);
+                    _context.ChangeTracker.Clear();
                     await _context.Countries.AddRangeAsync(europeanCountries);
                     await _context.SaveChangesAsync();
 
@@ -271,6 +272,47 @@ namespace Data.Seeders
                 {
                     _logger.LogInformation("Avrupa ülkeleri zaten eklenmiş, tekrar eklenmedi.");
                 }
+
+                // Fransa şehirlerini (Province) veritabanına ekleme
+                var france = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(c => c.Code == "FR");
+
+                if (france != null && !await _context.Provinces.AnyAsync(p => p.CountryId == france.Id))
+                {
+                    var franceProvinces = LocationsSeederCollection.GetFranceProvinces(france.Id);
+                    _context.ChangeTracker.Clear();
+                    await _context.Provinces.AddRangeAsync(franceProvinces);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Fransa şehirleri başarıyla eklendi.");
+                }
+                else if (france == null)
+                {
+                    _logger.LogWarning("Fransa (FR) ülkesi bulunamadı, şehirler eklenemedi.");
+                }
+                else
+                {
+                    _logger.LogInformation("Fransa şehirleri zaten mevcut, tekrar eklenmedi.");
+                }
+
+                //// Fransa ilçeleri (Districts) ekleme
+                //if (!await _context.Districts.AnyAsync())
+                //{
+                //    // Province adı - ID eşleşmeleri
+                //    var provinceNameIdMap = await _context.Provinces
+                //        .Where(p => p.Country.Code == "FR")
+                //        .ToDictionaryAsync(p => p.Name, p => p.Id);
+
+                //    var districts = LocationsSeederCollection.GetFrenchDistricts(provinceNameIdMap);
+                //    await _context.Districts.AddRangeAsync(districts);
+                //    await _context.SaveChangesAsync();
+
+                //    _logger.LogInformation("Fransa'nın arrondissement (ilçe) verileri başarıyla eklendi.");
+                //}
+                //else
+                //{
+                //    _logger.LogInformation("Fransa'nın ilçeleri zaten mevcut, ekleme yapılmadı.");
+                //}
+
 
                 _logger.LogInformation("Database seeding tamamlandı.");
             }

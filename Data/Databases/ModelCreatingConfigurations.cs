@@ -88,7 +88,7 @@ namespace Data.Databases
                 .HasKey(c => c.Id);
             modelBuilder.Entity<Country>()
                 .Property(c => c.Id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             modelBuilder.Entity<Country>()
                 .HasMany(c => c.Provinces)
                 .WithOne(p => p.Country)
@@ -100,7 +100,7 @@ namespace Data.Databases
                 .HasKey(p => p.Id);
             modelBuilder.Entity<Province>()
                 .Property(p => p.Id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             modelBuilder.Entity<Province>()
                 .HasMany(p => p.Districts)
                 .WithOne(d => d.Province)
@@ -112,7 +112,7 @@ namespace Data.Databases
                 .HasKey(d => d.Id);
             modelBuilder.Entity<District>()
                 .Property(d => d.Id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
             modelBuilder.Entity<District>()
                 .HasMany(d => d.Neighborhoods)
                 .WithOne(n => n.District)
@@ -124,7 +124,7 @@ namespace Data.Databases
                 .HasKey(n => n.Id);
             modelBuilder.Entity<Neighborhood>()
                 .Property(n => n.Id)
-                .ValueGeneratedNever();
+                .ValueGeneratedOnAdd();
         }
 
         private static void ConfigureProductEntities(ModelBuilder modelBuilder)

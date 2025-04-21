@@ -438,7 +438,10 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -449,7 +452,12 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("Countries");
                 });
@@ -457,7 +465,10 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.District", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -467,9 +478,6 @@ namespace Data.Migrations
 
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProvinceName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -481,13 +489,13 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Neighborhood", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DistrictId")
                         .HasColumnType("int");
-
-                    b.Property<string>("DistrictName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -508,7 +516,10 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -526,6 +537,28 @@ namespace Data.Migrations
                     b.ToTable("Provinces");
                 });
 
+            modelBuilder.Entity("Entity.Markets.Locations.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Regions");
+                });
+
             modelBuilder.Entity("Entity.Markets.Market", b =>
                 {
                     b.Property<int>("Id")
@@ -540,14 +573,8 @@ namespace Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsGlobal")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsLocal")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRegional")
-                        .HasColumnType("bit");
+                    b.Property<int>("MarketType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -1167,6 +1194,17 @@ namespace Data.Migrations
                     b.Navigation("BuyerUser");
                 });
 
+            modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
+                {
+                    b.HasOne("Entity.Markets.Locations.Region", "Region")
+                        .WithMany("Countries")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Region");
+                });
+
             modelBuilder.Entity("Entity.Markets.Locations.District", b =>
                 {
                     b.HasOne("Entity.Markets.Locations.Province", "Province")
@@ -1470,6 +1508,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
                 {
                     b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("Entity.Markets.Locations.Region", b =>
+                {
+                    b.Navigation("Countries");
                 });
 
             modelBuilder.Entity("Entity.Markets.Market", b =>

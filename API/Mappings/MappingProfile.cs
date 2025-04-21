@@ -233,12 +233,14 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketType, opt => opt.MapFrom(src => src.MarketType))
                     .ReverseMap();
 
                 profile.CreateMap<MarketUpdateDto, Market>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
+                    .ForMember(dest => dest.MarketType, opt => opt.MapFrom(src => src.MarketType))
                     .ReverseMap();
             }
         }
@@ -361,7 +363,9 @@ namespace API.Mappings
                 profile.CreateMap<CountryCreateDto, Country>()
                        .ForMember(dest => dest.Id, opt => opt.Ignore())
                        .ForMember(dest => dest.Provinces, opt => opt.Ignore())
-                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
+                       .ForMember(dest => dest.RegionId, opt => opt.MapFrom(src => src.RegionId)) // ✅ EKLENDİ
+                       .ForMember(dest => dest.Region, opt => opt.Ignore());
 
                 // Province
                 profile.CreateMap<Province, ProvinceDto>().ReverseMap();
