@@ -276,6 +276,66 @@ namespace Data.Seeders
                     _logger.LogInformation("Avrupa ülkeleri zaten eklenmiş, tekrar eklenmedi.");
                 }
 
+                // Turkiye (Province)
+                var turkey = await _context.Countries.FirstOrDefaultAsync(c => c.Code == "TR");
+                if (turkey != null)
+                {
+                    var existingProvinces = await _context.Provinces
+                        .Where(p => p.CountryId == turkey.Id)
+                        .Select(p => p.Name)
+                        .ToListAsync();
+
+                    var newProvinces = LocationsSeederCollection.GetTurkeyProvinceCollection(turkey.Id)
+                        .Where(p => !existingProvinces.Contains(p.Name))
+                        .ToList();
+
+                    if (newProvinces.Any())
+                    {
+                        foreach (var province in newProvinces)
+                        {
+                            province.CountryId = turkey.Id;
+                        }
+
+                        await _context.Provinces.AddRangeAsync(newProvinces);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Türkiye illeri başarıyla eklendi.");
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Türkiye illeri zaten mevcut, eklenmedi.");
+                    }
+                }
+
+                //Türkiye İzmir
+                if (turkey != null)
+                {
+                    var izmirProvince = await _context.Provinces
+                        .Include(p => p.Country)
+                        .FirstOrDefaultAsync(p => p.Country.Code == "TR" && p.Name == "İzmir");
+
+                    if (izmirProvince != null)
+                    {
+                        bool anyDistrictExists = await _context.Districts.AnyAsync(d => d.ProvinceId == izmirProvince.Id);
+
+                        if (!anyDistrictExists)
+                        {
+                            var izmirDistricts = LocationsSeederCollection.GetIzmirDistricts(izmirProvince.Id);
+                            await _context.Districts.AddRangeAsync(izmirDistricts);
+                            await _context.SaveChangesAsync();
+
+                            _logger.LogInformation("İzmir'e ait ilçeler başarıyla eklendi.");
+                        }
+                        else
+                        {
+                            _logger.LogInformation("İzmir ilçeleri zaten mevcut, tekrar eklenmedi.");
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("İzmir ili bulunamadı. Lütfen Province seed işlemini kontrol edin.");
+                    }
+                }
+
                 // Fransa (Province)
                 var france = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(c => c.Code == "FR");
 

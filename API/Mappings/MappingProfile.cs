@@ -335,20 +335,21 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                profile.CreateMap<DeliveryAddressDto, DeliveryAddress>()
-                            .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
-                            .ReverseMap();
+                profile.CreateMap<DeliveryAddress, DeliveryAddressDto>()
+                    .ReverseMap();
 
                 profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()); 
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) // ❗ Ignore navigation
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.MapFrom(src => src.BuyerUserId))
+                    .ReverseMap();
 
                 profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
-                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore());
-
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) // ❗ Güncelleme DTO'sunda user ID gelmiyor
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())  // ❗ Navigation
+                    .ReverseMap();
             }
-
         }
 
         #endregion

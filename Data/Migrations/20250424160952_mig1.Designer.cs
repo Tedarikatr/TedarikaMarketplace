@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250421104608_mig1")]
+    [Migration("20250424160952_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -410,6 +410,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AddressLine")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("BuyerUserId")
                         .HasColumnType("int");
 
@@ -429,6 +432,9 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Province")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
