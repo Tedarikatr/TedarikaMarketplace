@@ -38,7 +38,7 @@ namespace Services.Stores.Markets.Services
             }
 
             var entity = _mapper.Map<StoreMarketCoverage>(dto);
-            entity.IsActive = true;
+            //entity.IsActive = true;
 
             await _coverageRepo.AddAsync(entity);
             _logger.LogInformation("StoreMarketCoverage eklendi. ID: {Id}", entity.Id);
