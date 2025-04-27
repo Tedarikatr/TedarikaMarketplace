@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Auths.IServices;
+using System.Security.Claims;
 
 namespace API.Controllers.Auths
 {
@@ -68,5 +69,25 @@ namespace API.Controllers.Auths
                 return StatusCode(500, "Sunucu hatası.");
             }
         }
+
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            try
+            {
+                var sellerId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+                _logger.LogInformation("Satıcı profili alınıyor. SellerId: {SellerId}", sellerId);
+
+                var profile = await _sellerUserService.GetSellerProfileAsync(sellerId);
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcı profili alınırken hata oluştu.");
+                return StatusCode(500, "Profil bilgisi alınamadı.");
+            }
+        }
+
     }
 }
