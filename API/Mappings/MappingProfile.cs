@@ -73,6 +73,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.UserNumber, opt => opt.Ignore())
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
                     .ForMember(dest => dest.Company, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreId, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
                     .ReverseMap();
 
@@ -88,7 +89,13 @@ namespace API.Mappings
                     .ForMember(dest => dest.UserType, opt => opt.Ignore())
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
                     .ForMember(dest => dest.Company, opt => opt.Ignore())
+                     .ForMember(dest => dest.StoreId, opt => opt.Ignore())  
                     .ForMember(dest => dest.Store, opt => opt.Ignore());
+
+                profile.CreateMap<SellerUser, SellerProfileDto>()
+                    .ForMember(dest => dest.HasCompany, opt => opt.MapFrom(src => src.CompanyId.HasValue))
+                    .ForMember(dest => dest.HasStore, opt => opt.MapFrom(src => src.StoreId.HasValue));
+
             }
         }
         #endregion

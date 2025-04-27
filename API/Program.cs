@@ -5,6 +5,7 @@ using Data.Databases;
 using Data.Seeders;
 using Domain.Companies.Events;
 using Domain.Products.Events;
+using Domain.Store.Events;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -68,7 +69,8 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(
         Assembly.GetExecutingAssembly(),                  
         typeof(CompanyCreatedEvent).Assembly,                
-        typeof(ProductCategoryUpdatedEvent).Assembly         
+        typeof(ProductCategoryUpdatedEvent).Assembly,         
+        typeof(StoreCreatedEvent).Assembly         
     );
 });
 
@@ -169,9 +171,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>()
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerLoginValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<SellerRegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<SellerLoginValidator>();
-
-// **MediatR Kullanýmý**
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 // **HttpContextAccessor Eklenmesi**
 builder.Services.AddHttpContextAccessor();

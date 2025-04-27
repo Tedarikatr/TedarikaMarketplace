@@ -11,5 +11,7 @@ namespace Services.Auths.IServices
         Task<SellerUserDto> GetSellerUserByIdAsync(int userId);
         Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
         Task<BuyerUserInfoDto> GetUserInfoAsync(int userId);
+        Task<SellerProfileDto> GetSellerProfileAsync(int sellerId);
+
     }
 }

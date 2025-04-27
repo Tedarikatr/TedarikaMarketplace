@@ -40,6 +40,13 @@ namespace Data.Databases
                 .WithOne(c => c.SellerUser)
                 .HasForeignKey<Company>(c => c.SellerUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SellerUser>()
+                .HasOne(s => s.Store)
+                .WithOne(st => st.Owner)
+                .HasForeignKey<Store>(st => st.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         private static void ConfigureCompanyEntities(ModelBuilder modelBuilder)
@@ -58,8 +65,8 @@ namespace Data.Databases
         {
             modelBuilder.Entity<Store>()
                 .HasOne(s => s.Owner)
-                .WithMany(o => o.Store)
-                .HasForeignKey(s => s.OwnerId)
+                .WithOne(o => o.Store)
+                .HasForeignKey<Store>(s => s.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<StoreMarket>()

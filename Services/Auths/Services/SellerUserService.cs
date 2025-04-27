@@ -199,5 +199,32 @@ namespace Services.Auths.Services
                 throw;
             }
         }
+        public async Task<SellerProfileDto> GetSellerProfileAsync(int sellerId)
+        {
+            try
+            {
+                var seller = await _sellerUserRepository.GetByIdAsync(sellerId);
+                if (seller == null)
+                    throw new Exception("Satıcı bulunamadı.");
+
+                bool hasCompany = seller.CompanyId.HasValue;
+                bool hasStore = seller.Store != null;
+
+                return new SellerProfileDto
+                {
+                    Name = seller.Name,
+                    LastName = seller.LastName,
+                    Email = seller.Email,
+                    Phone = seller.Phone,
+                    HasCompany = hasCompany,
+                    HasStore = hasStore
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcı profil bilgisi alınırken hata oluştu: {SellerId}", sellerId);
+                throw;
+            }
+        }
     }
 }

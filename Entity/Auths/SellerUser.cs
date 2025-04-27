@@ -21,7 +21,8 @@ namespace Entity.Auths
         public int? CompanyId { get; set; }
         public Company Company { get; set; }
 
-        public virtual ICollection<Store> Store { get; set; }
+        public int? StoreId { get; set; }
+        public virtual Store Store { get; set; }
 
     }
 }
