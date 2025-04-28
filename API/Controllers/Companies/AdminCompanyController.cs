@@ -40,14 +40,14 @@ namespace API.Controllers.Companies
         }
 
         [HttpPut("verify/{id}")]
-        public async Task<IActionResult> VerifyCompany(int id)
+        public async Task<IActionResult> VerifyCompany(int id, bool value)
         {
             try
             {
                 int adminId = AdminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Şirket onaylanıyor. ID: {CompanyId}", id);
 
-                var result = await _companyService.VerifyCompanyAsync(id);
+                var result = await _companyService.VerifyCompanyAsync(id, value);
                 return result ? Ok("Şirket onaylandı.") : NotFound("Şirket bulunamadı.");
             }
             catch (Exception ex)

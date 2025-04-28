@@ -22,6 +22,29 @@ namespace API.Controllers.Companies
             _logger = logger;
         }
 
+        [HttpGet("my-company")]
+        public async Task<IActionResult> GetMyCompany()
+        {
+            try
+            {
+                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+                var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
+
+                if (company == null)
+                {
+                    _logger.LogWarning("Şirket bulunamadı. SellerUserId: {SellerUserId}", sellerUserId);
+                    return NotFound(new { message = "Şirket bilgisi bulunamadı." });
+                }
+
+                return Ok(company);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Şirket bilgisi alınırken hata oluştu.");
+                return StatusCode(500, new { error = "Şirket bilgisi alınamadı." });
+            }
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> RegisterSellerCompany([FromBody] CompanyCreateDto companyCreateDto)
         {
@@ -40,5 +63,55 @@ namespace API.Controllers.Companies
             }
         }
 
+        [HttpPut("update-my-company")]
+        public async Task<IActionResult> UpdateMyCompany([FromBody] CompanyUpdateDto companyUpdateDto)
+        {
+            try
+            {
+                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+                var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
+
+                if (company == null)
+                {
+                    _logger.LogWarning("Güncellenecek şirket bulunamadı. SellerUserId: {SellerUserId}", sellerUserId);
+                    return NotFound(new { message = "Şirket bilgisi bulunamadı." });
+                }
+
+                companyUpdateDto.Id = company.Id;
+                var result = await _companyService.UpdateCompanyAsync(companyUpdateDto);
+
+                if (!result)
+                {
+                    return StatusCode(500, new { error = "Şirket güncellemesi başarısız oldu." });
+                }
+
+                return Ok(new { message = "Şirket bilgisi başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Şirket bilgisi güncellenirken hata oluştu.");
+                return StatusCode(500, new { error = "Şirket bilgisi güncellenemedi." });
+            }
+        }
+
+        [HttpGet("has-company")]
+        public async Task<IActionResult> HasCompany()
+        {
+            try
+            {
+                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+
+                var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
+
+                bool hasCompany = company != null;
+
+                return Ok(new { hasCompany });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcının şirketi olup olmadığı kontrol edilirken hata oluştu: {SellerId}", SellerUserContextHelper.GetSellerId(User));
+                return StatusCode(500, new { error = "Şirket kontrolü sırasında hata oluştu." });
+            }
+        }
     }
 }

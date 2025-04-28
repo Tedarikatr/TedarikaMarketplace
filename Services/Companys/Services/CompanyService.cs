@@ -97,110 +97,58 @@ namespace Services.Companys.Services
 
         public async Task<CompanyDto> GetCompanyByIdAsync(int companyId)
         {
-            try
-            {
-                _logger.LogInformation("Şirket bilgisi getiriliyor. ID: {CompanyId}", companyId);
+            var company = await _companyRepository.GetByIdAsync(companyId)
+                ?? throw new Exception("Şirket bulunamadı.");
 
-                var company = await _companyRepository.GetByIdAsync(companyId);
-                if (company == null)
-                {
-                    throw new Exception("Şirket bulunamadı.");
-                }
-
-                return _mapper.Map<CompanyDto>(company);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Şirket bilgisi getirilirken hata oluştu. ID: {CompanyId}", companyId);
-                throw;
-            }
+            return _mapper.Map<CompanyDto>(company);
         }
+
+        public async Task<CompanyDto> GetCompanyBySellerUserIdAsync(int sellerUserId)
+        {
+            var company = await _companyRepository.GetCompanyBySellerIdAsync(sellerUserId);
+            return _mapper.Map<CompanyDto>(company);
+        }
+        public async Task<CompanyDto> GetCompanyByBuyerUserIdAsync(int buyerUserId)
+        {
+            var company = await _companyRepository.SingleOrDefaultAsync(c => c.BuyerUserId == buyerUserId);
+            return _mapper.Map<CompanyDto>(company);
+        }
+
+        #region Admin İşlemleri
 
         public async Task<IEnumerable<CompanyDto>> GetAllCompaniesAsync()
         {
-            try
-            {
-                _logger.LogInformation("Tüm şirketler listeleniyor.");
-                var companies = await _companyRepository.GetAllAsync();
-                return _mapper.Map<IEnumerable<CompanyDto>>(companies);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Şirketler listelenirken hata oluştu.");
-                throw;
-            }
+            var companies = await _companyRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<CompanyDto>>(companies);
         }
 
         public async Task<bool> UpdateCompanyAsync(CompanyUpdateDto companyUpdateDto)
         {
-            try
-            {
-                _logger.LogInformation("Şirket güncelleniyor. ID: {CompanyId}", companyUpdateDto.Id);
+            var company = await _companyRepository.GetByIdAsync(companyUpdateDto.Id)
+                ?? throw new Exception("Şirket bulunamadı.");
 
-                var company = await _companyRepository.GetByIdAsync(companyUpdateDto.Id);
-                if (company == null)
-                {
-                    throw new Exception("Şirket bulunamadı.");
-                }
-
-                _mapper.Map(companyUpdateDto, company);
-                var isUpdated = await _companyRepository.UpdateBoolAsync(company);
-
-                return isUpdated;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Şirket güncellenirken hata oluştu. ID: {CompanyId}", companyUpdateDto.Id);
-                return false;
-            }
+            _mapper.Map(companyUpdateDto, company);
+            return await _companyRepository.UpdateBoolAsync(company);
         }
 
-        public async Task<bool> VerifyCompanyAsync(int companyId)
+        public async Task<bool> VerifyCompanyAsync(int companyId, bool isVerified)
         {
-            try
-            {
-                _logger.LogInformation("Şirket onaylanıyor. ID: {CompanyId}", companyId);
+            var company = await _companyRepository.GetByIdAsync(companyId)
+                ?? throw new Exception("Şirket bulunamadı.");
 
-                var company = await _companyRepository.GetByIdAsync(companyId);
-                if (company == null)
-                {
-                    throw new Exception("Şirket bulunamadı.");
-                }
-
-                company.IsVerified = true;
-                var isUpdated = await _companyRepository.UpdateBoolAsync(company);
-
-                return isUpdated;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Şirket onaylama işlemi sırasında hata oluştu. ID: {CompanyId}", companyId);
-                return false;
-            }
+            company.IsVerified = isVerified;
+            return await _companyRepository.UpdateBoolAsync(company);
         }
 
         public async Task<bool> ToggleCompanyStatusAsync(int companyId)
         {
-            try
-            {
-                _logger.LogInformation("Şirket aktiflik durumu değiştiriliyor. ID: {CompanyId}", companyId);
+            var company = await _companyRepository.GetByIdAsync(companyId)
+                ?? throw new Exception("Şirket bulunamadı.");
 
-                var company = await _companyRepository.GetByIdAsync(companyId);
-                if (company == null)
-                {
-                    throw new Exception("Şirket bulunamadı.");
-                }
-
-                company.IsActive = !company.IsActive; 
-                var isUpdated = await _companyRepository.UpdateBoolAsync(company);
-
-                return isUpdated;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Şirket aktiflik durumu değiştirilirken hata oluştu. ID: {CompanyId}", companyId);
-                return false;
-            }
+            company.IsActive = !company.IsActive;
+            return await _companyRepository.UpdateBoolAsync(company);
         }
+
+        #endregion
     }
 }
