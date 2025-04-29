@@ -13,13 +13,13 @@ namespace API.Controllers.Stores.Market
     public class SellerMarketCoverageController : ControllerBase
     {
         private readonly IStoreMarketCoverageService _coverageService;
+        private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerMarketCoverageController> _logger;
 
-        public SellerMarketCoverageController(
-            IStoreMarketCoverageService coverageService,
-            ILogger<SellerMarketCoverageController> logger)
+        public SellerMarketCoverageController(IStoreMarketCoverageService coverageService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
         {
             _coverageService = coverageService;
+            _userHelper = userHelper;
             _logger = logger;
         }
 
@@ -28,7 +28,7 @@ namespace API.Controllers.Stores.Market
         {
             try
             {
-                var sellerStoreId = SellerUserContextHelper.GetStoreId(User);
+                var sellerStoreId = await _userHelper.GetStoreId(User);
                 dto.StoreMarketId = sellerStoreId;
 
                 var coverageId = await _coverageService.AddCoverageAsync(dto);
@@ -43,17 +43,20 @@ namespace API.Controllers.Stores.Market
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetMyCoverages([FromQuery] bool? onlyActive = null)
+        public async Task<IActionResult> GetMyCoverages()
         {
             try
             {
-                var storeMarketId = SellerUserContextHelper.GetStoreId(User);
-                var coverages = await _coverageService.GetStoreCoveragesAsync(storeMarketId, onlyActive);
+                var storeId = await _userHelper.GetStoreId(User);
+
+                // Store'a bağlı tüm marketlerin coverage'ları çekiliyor
+                var coverages = await _coverageService.GetStoreCoveragesByStoreIdAsync(storeId);
+
                 return Ok(coverages);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Hizmet bölgeleri listelenemedi.");
+                _logger.LogError(ex, "Hizmet bölgeleri alınırken hata oluştu.");
                 return StatusCode(500, new { error = "Hizmet bölgeleri alınırken hata oluştu." });
             }
         }

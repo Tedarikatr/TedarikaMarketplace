@@ -13,11 +13,13 @@ namespace API.Controllers.Stores.Products
     public class SellerStoreProductRequestController : ControllerBase
     {
         private readonly IStoreProductRequestService _requestService;
+        private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerStoreProductRequestController> _logger;
 
-        public SellerStoreProductRequestController(IStoreProductRequestService requestService, ILogger<SellerStoreProductRequestController> logger)
+        public SellerStoreProductRequestController(IStoreProductRequestService requestService, SellerUserContextHelper userHelper, ILogger<SellerStoreProductRequestController> logger)
         {
             _requestService = requestService;
+            _userHelper = userHelper;
             _logger = logger;
         }
 
@@ -26,7 +28,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                dto.StoreId = SellerUserContextHelper.GetSellerId(User);
+                dto.StoreId = _userHelper.GetSellerId(User);
 
                 var result = await _requestService.CreateStoreProductRequestAsync(dto);
                 return Ok(new { Message = result });

@@ -54,6 +54,7 @@ namespace Services.Auths.Helper
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("UserType", "Seller"),
                 new Claim("SellerUserId", sellerUser.Id.ToString()),
+                new Claim("StoreId", sellerUser.StoreId.ToString()),
                 new Claim("Status", sellerUser.Status.ToString().ToLower())
             };
 

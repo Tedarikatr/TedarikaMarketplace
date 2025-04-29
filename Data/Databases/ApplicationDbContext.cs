@@ -73,6 +73,7 @@ namespace Data.Databases
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
         public DbSet<StoreMarket> StoreMarkets { get; set; }
+        public DbSet<StoreMarketCoverage> StoreMarketCoverages { get; set; }
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }

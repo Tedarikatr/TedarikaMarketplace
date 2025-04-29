@@ -70,12 +70,9 @@ namespace Services.Stores.Markets.Services
             return await _coverageRepo.UpdateBoolAsync(entity);
         }
 
-        public async Task<List<StoreMarketCoverageDto>> GetStoreCoveragesAsync(int storeMarketId, bool? onlyActive = null)
+        public async Task<List<StoreMarketCoverageDto>> GetStoreCoveragesByStoreIdAsync(int storeId)
         {
-            var coverages = await _coverageRepo.FindAsync(x =>
-                x.StoreMarketId == storeMarketId &&
-                (onlyActive == null || x.IsActive == onlyActive.Value)
-            );
+            var coverages = await _coverageRepo.FindWithStoreMarketAsync(x => x.StoreMarket.StoreId == storeId);
 
             return _mapper.Map<List<StoreMarketCoverageDto>>(coverages);
         }

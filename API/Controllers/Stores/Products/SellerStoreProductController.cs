@@ -12,11 +12,13 @@ namespace API.Controllers.Stores.Products
     public class SellerStoreProductController : ControllerBase
     {
         private readonly IStoreProductService _storeProductService;
+        private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerStoreProductController> _logger;
 
-        public SellerStoreProductController(IStoreProductService storeProductService, ILogger<SellerStoreProductController> logger)
+        public SellerStoreProductController(IStoreProductService storeProductService, SellerUserContextHelper userHelper, ILogger<SellerStoreProductController> logger)
         {
             _storeProductService = storeProductService;
+            _userHelper = userHelper;
             _logger = logger;
         }
 
@@ -25,7 +27,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 _logger.LogInformation("Mağaza ürünü ekliyor. StoreId: {StoreId}, ProductId: {ProductId}", storeId, productId);
 
                 var result = await _storeProductService.AddProductToStoreAsync(storeId, productId);
@@ -43,7 +45,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.UpdateStoreProductPriceAsync(storeId, productId, price);
                 return Ok(new { message = result });
             }
@@ -59,7 +61,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.SetProductActiveStatusAsync(storeId, productId, isActive);
                 return Ok(new { message = result });
             }
@@ -75,7 +77,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.SetProductOnSaleStatusAsync(storeId, productId, isOnSale);
                 return Ok(new { message = result });
             }
@@ -91,7 +93,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.SetMinMaxQuantityAsync(storeId, productId, minQty, maxQty);
                 return Ok(new { message = result });
             }
@@ -107,7 +109,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.SetAllowedRegionsAsync(storeId, productId, allowedDomestic, allowedInternational);
                 return Ok(new { message = result });
             }
@@ -123,7 +125,7 @@ namespace API.Controllers.Stores.Products
         {
             try
             {
-                var storeId = SellerUserContextHelper.GetSellerId(User);
+                var storeId = _userHelper.GetSellerId(User);
                 var result = await _storeProductService.UpdateStoreImageAsync(storeId, productId, imageUrl);
                 return Ok(new { message = result });
             }

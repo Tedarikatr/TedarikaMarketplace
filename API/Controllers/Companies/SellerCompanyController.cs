@@ -14,11 +14,13 @@ namespace API.Controllers.Companies
     public class SellerCompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerCompanyController> _logger;
 
-        public SellerCompanyController(ICompanyService companyService, ILogger<SellerCompanyController> logger)
+        public SellerCompanyController(ICompanyService companyService, SellerUserContextHelper userHelper, ILogger<SellerCompanyController> logger)
         {
             _companyService = companyService;
+            _userHelper = userHelper;
             _logger = logger;
         }
 
@@ -27,7 +29,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+                var sellerUserId = _userHelper.GetSellerId(User);
                 var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
 
                 if (company == null)
@@ -50,7 +52,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                var sellerId = SellerUserContextHelper.GetSellerId(User);
+                var sellerId = _userHelper.GetSellerId(User);
                 _logger.LogInformation("Yeni satıcı şirket kaydı başlatıldı: {CompanyNumber}", companyCreateDto.CompanyNumber);
 
                 var result = await _companyService.RegisterCompanyAsync(companyCreateDto, sellerId, UserType.Seller);
@@ -68,7 +70,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+                var sellerUserId = _userHelper.GetSellerId(User);
                 var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
 
                 if (company == null)
@@ -99,7 +101,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                var sellerUserId = SellerUserContextHelper.GetSellerId(User);
+                var sellerUserId = _userHelper.GetSellerId(User);
 
                 var company = await _companyService.GetCompanyBySellerUserIdAsync(sellerUserId);
 
@@ -109,7 +111,7 @@ namespace API.Controllers.Companies
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Satıcının şirketi olup olmadığı kontrol edilirken hata oluştu: {SellerId}", SellerUserContextHelper.GetSellerId(User));
+                _logger.LogError(ex, "Satıcının şirketi olup olmadığı kontrol edilirken hata oluştu: {SellerId}", _userHelper.GetSellerId(User));
                 return StatusCode(500, new { error = "Şirket kontrolü sırasında hata oluştu." });
             }
         }

@@ -1,4 +1,5 @@
 using API.Filter;
+using API.Helpers;
 using API.Mappings;
 using AutoMapper;
 using Data.Databases;
@@ -108,6 +109,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+
 //Auth
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
 builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
@@ -115,6 +117,8 @@ builder.Services.AddScoped<IBuyerUserService, BuyerUserService>();
 builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
+
+builder.Services.AddScoped<SellerUserContextHelper>();
 
 //Categories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -136,7 +140,6 @@ builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
 
 //Markets
 builder.Services.AddScoped<IMarketRepository, MarketRepository>();
-
 builder.Services.AddScoped<IMarketLocationService, MarketLocationService>();
 
 //Notifications

@@ -1,10 +1,18 @@
-﻿using System.Security.Claims;
+﻿using Repository.Stores;
+using System.Security.Claims;
 
 namespace API.Helpers
 {
     public class SellerUserContextHelper
     {
-        public static int GetSellerId(ClaimsPrincipal user)
+        private readonly IStoreRepository _storeRepository;
+
+        public SellerUserContextHelper(IStoreRepository storeRepository)
+        {
+            _storeRepository = storeRepository;
+        }
+
+        public int GetSellerId(ClaimsPrincipal user)
         {
             var claim = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier);
             if (claim == null)
@@ -16,33 +24,33 @@ namespace API.Helpers
             return userId;
         }
 
-        public static string GetSellerNumber(ClaimsPrincipal user)
+        public  async Task<int> GetStoreId(ClaimsPrincipal user)
         {
-            return user.FindFirst("UserNumber")?.Value ?? throw new UnauthorizedAccessException("Seller numarası bulunamadı.");
+            if (_storeRepository == null)
+                throw new InvalidOperationException("StoreRepository yapılandırılmadı.");
+
+            var sellerId = GetSellerId(user);
+
+            var store = await _storeRepository.GetStoreBySellerIdAsync(sellerId);
+            if (store == null)
+                throw new UnauthorizedAccessException("Bu kullanıcıya ait mağaza bulunamadı.");
+
+            return store.Id;
         }
 
-        public static Guid GetSellerGuid(ClaimsPrincipal user)
-        {
-            return Guid.Parse(user.FindFirst("UserGuid")?.Value ?? throw new UnauthorizedAccessException("Seller GUID bulunamadı."));
-        }
+        public  string GetSellerNumber(ClaimsPrincipal user) =>
+            user.FindFirst("UserNumber")?.Value ?? throw new UnauthorizedAccessException("Seller numarası bulunamadı.");
 
-        public static bool IsSellerActive(ClaimsPrincipal user)
-        {
-            return bool.Parse(user.FindFirst("IsActive")?.Value ?? throw new UnauthorizedAccessException("Seller aktiflik durumu bulunamadı."));
-        }
+        public  Guid GetSellerGuid(ClaimsPrincipal user) =>
+            Guid.Parse(user.FindFirst("UserGuid")?.Value ?? throw new UnauthorizedAccessException("Seller GUID bulunamadı."));
 
-        public static int? GetCompanyId(ClaimsPrincipal user)
+        public  bool IsSellerActive(ClaimsPrincipal user) =>
+            bool.Parse(user.FindFirst("IsActive")?.Value ?? throw new UnauthorizedAccessException("Seller aktiflik durumu bulunamadı."));
+
+        public int? GetCompanyId(ClaimsPrincipal user)
         {
             var claim = user.FindFirst("CompanyId");
             return claim != null ? int.Parse(claim.Value) : null;
         }
-
-        public static int GetStoreId(ClaimsPrincipal user)
-        {
-            var claim = user.FindFirst("StoreId");
-            if (claim == null) throw new UnauthorizedAccessException("StoreId bulunamadı.");
-            return int.Parse(claim.Value);
-        }
-
     }
 }
