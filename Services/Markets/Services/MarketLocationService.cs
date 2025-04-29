@@ -3,15 +3,16 @@ using Data.Dtos.Markets;
 using Entity.Markets.Locations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Services.Markets.IServices;
 
-namespace Services.Markets.Location
+namespace Services.Markets.Services
 {
-    public class LocationService : ILocationService
+    public class MarketLocationService : IMarketLocationService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<LocationService> _logger;
+        private readonly ILogger<MarketLocationService> _logger;
 
-        public LocationService(ApplicationDbContext context, ILogger<LocationService> logger)
+        public MarketLocationService(ApplicationDbContext context, ILogger<MarketLocationService> logger)
         {
             _context = context;
             _logger = logger;

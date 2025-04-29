@@ -1,9 +1,9 @@
 ﻿using Data.Dtos.Markets;
 using Data.Dtos.Stores;
 
-namespace Services.Markets.Location
+namespace Services.Markets.IServices
 {
-    public interface ILocationService
+    public interface IMarketLocationService
     {
         Task<int> AddCountryAsync(CountryCreateDto dto);
         Task<int> AddProvinceAsync(ProvinceCreateDto dto);

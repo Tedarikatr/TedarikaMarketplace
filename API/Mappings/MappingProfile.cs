@@ -10,7 +10,6 @@ using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
-using Entity.Markets;
 using Entity.Markets.Locations;
 using Entity.Products;
 using Entity.Stores;
@@ -24,7 +23,6 @@ namespace API.Mappings
             AuthMappings.RegisterMappings(this);
             CompanyMappings.RegisterMappings(this);
             CategoryMappings.RegisterMappings(this);
-            MarketMappings.RegisterMappings(this);
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
@@ -228,30 +226,6 @@ namespace API.Mappings
         }
         #endregion
 
-        #region 4️⃣ MARKET Mappings
-        private static class MarketMappings
-        {
-            public static void RegisterMappings(Profile profile)
-            {
-                profile.CreateMap<Market, MarketDto>().ReverseMap();
-
-                profile.CreateMap<MarketCreateDto, Market>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.Ignore())
-                    .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
-                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketType, opt => opt.MapFrom(src => src.MarketType))
-                    .ReverseMap();
-
-                profile.CreateMap<MarketUpdateDto, Market>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.DeliveryTimeFrame, opt => opt.Ignore())
-                    .ForMember(dest => dest.StoreMarkets, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketType, opt => opt.MapFrom(src => src.MarketType))
-                    .ReverseMap();
-            }
-        }
-        #endregion
 
         #region 5️⃣ STORE Mappings
         private static class StoreMappings

@@ -1,6 +1,6 @@
 ﻿namespace Data.Dtos.Markets
 {
-    public class LocationDto
+    public class MarketLocationDto
     {
     }
 

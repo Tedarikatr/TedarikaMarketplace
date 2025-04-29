@@ -1,6 +1,6 @@
 ﻿using Entity.Markets.Locations;
 
-namespace Data.Dtos.Stores
+namespace Data.Dtos.Stores.Markets
 {
     public class StoreMarketCoverageDto
     {

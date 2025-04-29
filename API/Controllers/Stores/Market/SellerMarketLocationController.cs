@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services.Markets.Location;
+using Services.Markets.IServices;
 
 namespace API.Controllers.Stores.Market
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "seller")]
-    public class SellerLocationController : ControllerBase
+    public class SellerMarketLocationController : ControllerBase
     {
-        private readonly ILocationService _locationService;
+        private readonly IMarketLocationService _locationService;
 
-        public SellerLocationController(ILocationService locationService)
+        public SellerMarketLocationController(IMarketLocationService locationService)
         {
             _locationService = locationService;
         }

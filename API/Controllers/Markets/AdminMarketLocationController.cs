@@ -1,17 +1,17 @@
 ﻿using Data.Dtos.Markets;
 using Microsoft.AspNetCore.Mvc;
-using Services.Markets.Location;
+using Services.Markets.IServices;
 
-namespace API.Controllers.Markets.Locations
+namespace API.Controllers.Markets
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    public class AdminLocationController : ControllerBase
+    public class AdminMarketLocationController : ControllerBase
     {
-        private readonly ILocationService _locationService;
+        private readonly IMarketLocationService _locationService;
 
-        public AdminLocationController(ILocationService locationService)
+        public AdminMarketLocationController(IMarketLocationService locationService)
         {
             _locationService = locationService;
         }
