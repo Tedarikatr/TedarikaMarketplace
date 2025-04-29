@@ -14,11 +14,13 @@ namespace API.Controllers.Companies
     public class BuyerCompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly BuyerUserContextHelper _buyerUserContextHelper;
         private readonly ILogger<BuyerCompanyController> _logger;
 
-        public BuyerCompanyController(ICompanyService companyService, ILogger<BuyerCompanyController> logger)
+        public BuyerCompanyController(ICompanyService companyService, BuyerUserContextHelper buyerUserContextHelper, ILogger<BuyerCompanyController> logger)
         {
             _companyService = companyService;
+            _buyerUserContextHelper = buyerUserContextHelper;
             _logger = logger;
         }
 
@@ -27,7 +29,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                var buyerId = BuyerUserContextHelper.GetBuyerId(User);
+                var buyerId = _buyerUserContextHelper.GetBuyerId(User);
                 _logger.LogInformation("Yeni alıcı şirket kaydı başlatıldı: {CompanyNumber}", companyCreateDto.CompanyNumber);
 
                 var result = await _companyService.RegisterCompanyAsync(companyCreateDto, buyerId, UserType.Buyer);

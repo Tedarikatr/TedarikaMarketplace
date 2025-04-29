@@ -1,5 +1,5 @@
-﻿using Data.Dtos.Product;
-using Microsoft.AspNetCore.Authorization;
+﻿using API.Helpers;
+using Data.Dtos.Product;
 using Microsoft.AspNetCore.Mvc;
 using Services.Product.IServices;
 
@@ -8,15 +8,17 @@ namespace API.Controllers.Products
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize]
+    //[Authorize]
     public class AdminProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly AdminUserContextHelper _adminUserContextHelper;
         private readonly ILogger<AdminProductController> _logger;
 
-        public AdminProductController(IProductService productService, ILogger<AdminProductController> logger)
+        public AdminProductController(IProductService productService, AdminUserContextHelper adminUserContextHelper, ILogger<AdminProductController> logger)
         {
             _productService = productService;
+            _adminUserContextHelper = adminUserContextHelper;
             _logger = logger;
         }
 

@@ -14,18 +14,20 @@ namespace API.Controllers.DeliveryAddress
     public class BuyerDeliveryAddressController : ControllerBase
     {
         private readonly IDeliveryAddressService _addressService;
+        private readonly BuyerUserContextHelper _buyerUserContextHelper;
         private readonly IMapper _mapper;
 
-        public BuyerDeliveryAddressController(IDeliveryAddressService addressService, IMapper mapper)
+        public BuyerDeliveryAddressController(IDeliveryAddressService addressService, BuyerUserContextHelper buyerUserContextHelper, IMapper mapper)
         {
             _addressService = addressService;
+            _buyerUserContextHelper = buyerUserContextHelper;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetMyAddresses()
         {
-            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            int buyerId = _buyerUserContextHelper.GetBuyerId(User);
 
             var addresses = await _addressService.GetAddressesByBuyerAsync(buyerId);
             return Ok(addresses);
@@ -44,7 +46,7 @@ namespace API.Controllers.DeliveryAddress
         [HttpPost]
         public async Task<IActionResult> AddAddress([FromBody] DeliveryAddressCreateDto dto)
         {
-            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            int buyerId = _buyerUserContextHelper.GetBuyerId(User);
 
             var result = await _addressService.AddAddressAsync(dto, buyerId);
             if (!result)
@@ -56,7 +58,7 @@ namespace API.Controllers.DeliveryAddress
         [HttpPut]
         public async Task<IActionResult> UpdateAddress([FromBody] DeliveryAddressUpdateDto dto)
         {
-            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            int buyerId = _buyerUserContextHelper.GetBuyerId(User);
 
             var result = await _addressService.UpdateAddressAsync(dto, buyerId);
             if (!result)
@@ -68,7 +70,7 @@ namespace API.Controllers.DeliveryAddress
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
-            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            int buyerId = _buyerUserContextHelper.GetBuyerId(User);
 
             var result = await _addressService.DeleteAddressAsync(id, buyerId);
             if (!result)
@@ -80,7 +82,7 @@ namespace API.Controllers.DeliveryAddress
         [HttpPost("{id}/set-default")]
         public async Task<IActionResult> SetAsDefault(int id)
         {
-            int buyerId = BuyerUserContextHelper.GetBuyerId(User);
+            int buyerId = _buyerUserContextHelper.GetBuyerId(User);
 
             var result = await _addressService.SetAsDefaultAsync(buyerId, id);
             if (!result)

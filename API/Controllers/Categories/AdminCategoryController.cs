@@ -10,16 +10,18 @@ namespace API.Controllers.Categories
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    //[Authorize(Roles = "SuperAdmin, Admin")]
+    //[Authorize]
     public class AdminCategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly AdminUserContextHelper _adminUserContextHelper;
         private readonly ILogger<AdminCategoryController> _logger;
         private readonly IFilesService _filesService;
 
-        public AdminCategoryController(ICategoryService categoryService, ILogger<AdminCategoryController> logger, IFilesService filesService)
+        public AdminCategoryController(ICategoryService categoryService, AdminUserContextHelper adminUserContextHelper, ILogger<AdminCategoryController> logger, IFilesService filesService)
         {
             _categoryService = categoryService;
+            _adminUserContextHelper = adminUserContextHelper;
             _logger = logger;
             _filesService = filesService;
         }
@@ -85,7 +87,7 @@ namespace API.Controllers.Categories
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Kategori güncelleniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
 
                 var result = await _categoryService.UpdateCategoryAsync(id, categoryUpdateDto);
@@ -103,7 +105,7 @@ namespace API.Controllers.Categories
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Kategori siliniyor. Admin ID: {AdminId}, Kategori ID: {CategoryId}", adminId, id);
 
                 var result = await _categoryService.DeleteCategoryAsync(id);

@@ -118,6 +118,8 @@ builder.Services.AddScoped<IBuyerUserRepository, BuyerUserRepository>();
 builder.Services.AddScoped<ISellerUserService, SellerUserService>();
 builder.Services.AddScoped<ISellerUserRepository, SellerUserRepository>();
 
+builder.Services.AddScoped<AdminUserContextHelper>();
+builder.Services.AddScoped<BuyerUserContextHelper>();
 builder.Services.AddScoped<SellerUserContextHelper>();
 
 //Categories

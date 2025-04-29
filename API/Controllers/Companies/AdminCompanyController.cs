@@ -8,15 +8,17 @@ namespace API.Controllers.Companies
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize]
+    //[Authorize]
     public class AdminCompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly AdminUserContextHelper _adminUserContextHelper;
         private readonly ILogger<AdminCompanyController> _logger;
 
-        public AdminCompanyController(ICompanyService companyService, ILogger<AdminCompanyController> logger)
+        public AdminCompanyController(ICompanyService companyService, AdminUserContextHelper adminUserContextHelper, ILogger<AdminCompanyController> logger)
         {
             _companyService = companyService;
+            _adminUserContextHelper = adminUserContextHelper;
             _logger = logger;
         }
 
@@ -25,7 +27,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
 
                 _logger.LogInformation("Şirket listesi alınıyor...");
 
@@ -44,7 +46,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Şirket onaylanıyor. ID: {CompanyId}", id);
 
                 var result = await _companyService.VerifyCompanyAsync(id, value);
@@ -62,7 +64,7 @@ namespace API.Controllers.Companies
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Şirket aktif/pasif durumu değiştiriliyor. ID: {CompanyId}", id);
 
                 var result = await _companyService.ToggleCompanyStatusAsync(id);

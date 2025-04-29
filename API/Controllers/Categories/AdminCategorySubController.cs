@@ -9,15 +9,17 @@ namespace API.Controllers.Categories
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
-    [Authorize(Roles = "SuperAdmin, Admin")]
+    //[Authorize]
     public class AdminCategorySubController : ControllerBase
     {
         private readonly ICategorySubService _categorySubService;
+        private readonly AdminUserContextHelper _adminUserContextHelper;
         private readonly ILogger<AdminCategorySubController> _logger;
 
-        public AdminCategorySubController(ICategorySubService categorySubService, ILogger<AdminCategorySubController> logger)
+        public AdminCategorySubController(ICategorySubService categorySubService, AdminUserContextHelper adminUserContextHelper, ILogger<AdminCategorySubController> logger)
         {
             _categorySubService = categorySubService;
+            _adminUserContextHelper = adminUserContextHelper;
             _logger = logger;
         }
 
@@ -74,7 +76,7 @@ namespace API.Controllers.Categories
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Yeni alt kategori ekleniyor. Admin ID: {AdminId}, Ad: {CategorySubName}", adminId, categorySubCreateDto.Name);
 
                 var result = await _categorySubService.AddCategorySubAsync(categorySubCreateDto);
@@ -92,7 +94,7 @@ namespace API.Controllers.Categories
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Alt kategori güncelleniyor. Admin ID: {AdminId}, ID: {CategorySubId}", adminId, id);
 
                 var result = await _categorySubService.UpdateCategorySubAsync(id, categorySubUpdateDto);
@@ -110,7 +112,7 @@ namespace API.Controllers.Categories
         {
             try
             {
-                int adminId = AdminUserContextHelper.GetAdminId(User);
+                int adminId = _adminUserContextHelper.GetAdminId(User);
                 _logger.LogInformation("Alt kategori siliniyor. Admin ID: {AdminId}, ID: {CategorySubId}", adminId, id);
 
                 var result = await _categorySubService.DeleteCategorySubAsync(id);

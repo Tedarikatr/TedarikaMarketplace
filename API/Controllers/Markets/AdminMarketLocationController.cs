@@ -7,6 +7,7 @@ namespace API.Controllers.Markets
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
+    //[Authorize]
     public class AdminMarketLocationController : ControllerBase
     {
         private readonly IMarketLocationService _locationService;
