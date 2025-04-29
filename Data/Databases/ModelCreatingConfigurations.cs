@@ -43,8 +43,8 @@ namespace Data.Databases
 
             modelBuilder.Entity<SellerUser>()
                 .HasOne(s => s.Store)
-                .WithOne(st => st.Owner)
-                .HasForeignKey<Store>(st => st.OwnerId)
+                .WithOne(st => st.SellerUser)
+                .HasForeignKey<Store>(st => st.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }
@@ -64,9 +64,9 @@ namespace Data.Databases
         private static void ConfigureStoreEntities(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Store>()
-                .HasOne(s => s.Owner)
+                .HasOne(s => s.SellerUser)
                 .WithOne(o => o.Store)
-                .HasForeignKey<Store>(s => s.OwnerId)
+                .HasForeignKey<Store>(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<StoreMarket>()

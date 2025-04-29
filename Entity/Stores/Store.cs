@@ -12,9 +12,15 @@ namespace Entity.Stores
         public int Id { get; set; }
 
         public string StoreName { get; set; }
+        public string StoreDescription { get; set; }
+        public string ImageUrl { get; set; }
+        public string StorePhone { get; set; }
+        public string StoreMail { get; set; }
+        public string StoreProvince { get; set; }
+        public string StoreDistrict { get; set; }
 
-        public int OwnerId { get; set; }
-        public SellerUser Owner { get; set; }
+        public int SellerId { get; set; }
+        public SellerUser SellerUser { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }
@@ -22,8 +28,6 @@ namespace Entity.Stores
         public int CompanyId { get; set; } 
         public virtual Company Company { get; set; }
 
-        public string Country { get; set; }
-        public string City { get; set; }
 
         public ICollection<StoreMarket> StoreMarkets { get; set; }
         public ICollection<StoreProduct> StoreProducts { get; set; }

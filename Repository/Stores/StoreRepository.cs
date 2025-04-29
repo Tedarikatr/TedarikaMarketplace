@@ -16,7 +16,7 @@ namespace Repository.Stores
             return await _dbSet
                 .Include(s => s.Company)
                 .Include(s => s.StoreMarkets)
-                .FirstOrDefaultAsync(s => s.OwnerId == sellerId);
+                .FirstOrDefaultAsync(s => s.SellerId == sellerId);
         }
 
         public async Task<bool> AddPaymentMethodAsync(StorePaymentMethod paymentMethod)

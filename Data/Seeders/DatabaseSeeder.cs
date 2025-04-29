@@ -312,12 +312,12 @@ namespace Data.Seeders
                     var store = new Store
                     {
                         StoreName = "Yılmaz Toptan",
-                        OwnerId = seller.Id,
+                        SellerId = seller.Id,
                         IsApproved = true,
                         IsActive = true,
                         CompanyId = company.Id,
-                        Country = "Türkiye",
-                        City = "İstanbul"
+                        StoreProvince = "İstanbul",
+                        StoreDistrict = "Beyoğlu"
                     };
                     await _context.Stores.AddAsync(store);
                     await _context.SaveChangesAsync();

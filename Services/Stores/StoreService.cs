@@ -42,7 +42,7 @@ namespace Services.Stores
                     throw new Exception("Seller'a ait geçerli bir şirket ataması yapılmamış.");
 
                 var newStore = _mapper.Map<Entity.Stores.Store>(storeCreateDto);
-                newStore.OwnerId = sellerId;
+                newStore.SellerId = sellerId;
                 newStore.CompanyId = company.Id;
                 newStore.IsApproved = false;
                 newStore.IsActive = false;
@@ -66,7 +66,7 @@ namespace Services.Stores
                 _logger.LogInformation("Mağaza güncelleme işlemi başlatıldı. Mağaza ID: {StoreId}", storeId);
 
                 var store = await _storeRepository.GetByIdAsync(storeId);
-                if (store == null || store.OwnerId != sellerId)
+                if (store == null || store.SellerId != sellerId)
                 {
                     throw new UnauthorizedAccessException("Bu mağazayı güncelleme yetkiniz yok.");
                 }
@@ -91,7 +91,7 @@ namespace Services.Stores
                 _logger.LogInformation("Mağaza durumu değiştiriliyor. Mağaza ID: {StoreId}, Yeni Durum: {IsActive}", storeId, isActive);
 
                 var store = await _storeRepository.GetByIdAsync(storeId);
-                if (store == null || store.OwnerId != sellerId)
+                if (store == null || store.SellerId != sellerId)
                 {
                     throw new UnauthorizedAccessException("Bu mağazayı yönetme yetkiniz yok.");
                 }
@@ -126,6 +126,15 @@ namespace Services.Stores
                 _logger.LogError(ex, "Tüm mağazalar getirilirken hata oluştu.");
                 throw;
             }
+        }
+
+        public async Task<StoreDto> GetStoreBySellerIdAsync(int sellerId)
+        {
+            var store = await _storeRepository.GetStoreBySellerIdAsync(sellerId);
+            if (store == null)
+                throw new Exception("Mağaza bulunamadı.");
+
+            return _mapper.Map<StoreDto>(store);
         }
 
         public async Task<string> ApproveStoreAsync(int storeId, bool isApproved)

@@ -262,8 +262,8 @@ namespace API.Mappings
 
                 profile.CreateMap<StoreCreateDto, Store>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
-                    .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                    .ForMember(dest => dest.SellerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
@@ -276,8 +276,8 @@ namespace API.Mappings
 
                 profile.CreateMap<StoreUpdateDto, Store>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
-                    .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                    .ForMember(dest => dest.SellerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.Ignore())
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
@@ -289,14 +289,6 @@ namespace API.Mappings
                     .ReverseMap();
 
                 profile.CreateMap<StoreStatusDto, Store>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForAllMembers(opt => opt.Ignore());
-
-                profile.CreateMap<StorePaymentMethodDto, Store>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForAllMembers(opt => opt.Ignore());
-
-                profile.CreateMap<StoreDeliveryOptionDto, Store>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForAllMembers(opt => opt.Ignore());
             }

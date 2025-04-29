@@ -86,5 +86,25 @@ namespace API.Controllers.Stores
                 return StatusCode(500, new { Error = "Mağaza durumu değiştirilirken hata oluştu." });
             }
         }
+
+        [HttpGet("my-store")]
+        public async Task<ActionResult<StoreDto>> GetMyStore()
+        {
+            try
+            {
+                var sellerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                if (sellerId == 0)
+                    return Unauthorized("Geçersiz kullanıcı kimliği.");
+
+                var store = await _storeService.GetStoreBySellerIdAsync(sellerId);
+                return Ok(store);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağaza bilgisi alınamadı.");
+                return BadRequest("Mağaza bilgisi alınırken bir hata oluştu.");
+            }
+        }
     }
 }
