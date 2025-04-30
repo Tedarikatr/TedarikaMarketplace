@@ -6,6 +6,7 @@ using Data.Dtos.DeliveryAddresses;
 using Data.Dtos.Markets;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
+using Data.Dtos.Stores.Markets;
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
@@ -13,6 +14,7 @@ using Entity.DeliveryAddresses;
 using Entity.Markets.Locations;
 using Entity.Products;
 using Entity.Stores;
+using Entity.Stores.Markets;
 
 namespace API.Mappings
 {
@@ -27,6 +29,7 @@ namespace API.Mappings
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
             LocationMappings.RegisterMappings(this);
+            MarketMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -379,5 +382,48 @@ namespace API.Mappings
 
 
         #endregion
+
+        #region 7️⃣ MARKET COVERAGE Mappings
+        private static class MarketMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<StoreMarketCoverageCreateDto, StoreMarketCoverage>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreId, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.IsActive, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.Store, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.Province, opt => opt.Ignore())
+                    .ForMember(dest => dest.District, opt => opt.Ignore())
+                    .ForMember(dest => dest.Neighborhood, opt => opt.Ignore())
+                    .ForMember(dest => dest.Region, opt => opt.Ignore());
+
+                profile.CreateMap<StoreMarketCoverageUpdateDto, StoreMarketCoverage>()
+                    .ForMember(dest => dest.StoreId, opt => opt.Ignore())
+                    .ForMember(dest => dest.CoverageLevel, opt => opt.Ignore())
+                    .ForMember(dest => dest.CountryId, opt => opt.Ignore())
+                    .ForMember(dest => dest.ProvinceId, opt => opt.Ignore())
+                    .ForMember(dest => dest.DistrictId, opt => opt.Ignore())
+                    .ForMember(dest => dest.NeighborhoodId, opt => opt.Ignore())
+                    .ForMember(dest => dest.RegionId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Store, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.Province, opt => opt.Ignore())
+                    .ForMember(dest => dest.District, opt => opt.Ignore())
+                    .ForMember(dest => dest.Neighborhood, opt => opt.Ignore())
+                    .ForMember(dest => dest.Region, opt => opt.Ignore());
+
+
+                profile.CreateMap<StoreMarketCoverage, StoreMarketCoverageDto>()
+                    .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null))
+                    .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province != null ? src.Province.Name : null))
+                    .ForMember(dest => dest.DistrictName, opt => opt.MapFrom(src => src.District != null ? src.District.Name : null))
+                    .ForMember(dest => dest.NeighborhoodName, opt => opt.MapFrom(src => src.Neighborhood != null ? src.Neighborhood.Name : null))
+                    .ForMember(dest => dest.RegionName, opt => opt.MapFrom(src => src.Region != null ? src.Region.Name : null));
+            }
+        }
+        #endregion
+
     }
 }

@@ -78,6 +78,24 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Yeni kapsam ekleniyor. StoreId: {StoreId}", storeId);
 
+                if (dto.CountryId == 0) dto.CountryId = null;
+                if (dto.ProvinceId == 0) dto.ProvinceId = null;
+                if (dto.DistrictId == 0) dto.DistrictId = null;
+                if (dto.NeighborhoodId == 0) dto.NeighborhoodId = null;
+                if (dto.RegionId == 0) dto.RegionId = null;
+
+                switch (dto.CoverageLevel)
+                {
+                    case MarketCoverageLevel.Country when dto.CountryId == null:
+                        throw new Exception("Ülke bilgisi zorunludur.");
+                    case MarketCoverageLevel.Province when dto.ProvinceId == null:
+                        throw new Exception("İl bilgisi zorunludur.");
+                    case MarketCoverageLevel.District when dto.DistrictId == null:
+                        throw new Exception("İlçe bilgisi zorunludur.");
+                    case MarketCoverageLevel.Neighborhood when dto.NeighborhoodId == null:
+                        throw new Exception("Mahalle bilgisi zorunludur.");
+                }
+
                 var entity = _mapper.Map<StoreMarketCoverage>(dto);
                 entity.StoreId = storeId;
                 entity.IsActive = true;
@@ -87,10 +105,11 @@ namespace Services.Stores.Markets.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Kapsam eklenirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
+                _logger.LogError(ex, "Kapsam eklenirken hata oluştu. StoreId: {StoreId}, Dto: {@Dto}", storeId, dto);
+                throw new Exception("Kapsam eklenirken bir hata oluştu. Lütfen geçerli lokasyon bilgileri giriniz.");
             }
         }
+
 
         public async Task AddCoveragesBulkAsync(StoreMarketCoverageBatchDto dto)
         {

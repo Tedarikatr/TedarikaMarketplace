@@ -1,6 +1,7 @@
 ﻿using Data.Databases;
 using Data.Repository;
 using Entity.Stores;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Stores
 {
@@ -8,9 +9,10 @@ namespace Repository.Stores
     {
         public StoreRepository(ApplicationDbContext context) : base(context) { }
 
-        public Task<Store> GetStoreBySellerIdAsync(int sellerId)
+        public async Task<Store> GetStoreBySellerIdAsync(int sellerId)
         {
-            throw new NotImplementedException();
+            return await _context.Stores
+                .FirstOrDefaultAsync(s => s.SellerId == sellerId);
         }
     }
 }

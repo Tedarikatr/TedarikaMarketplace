@@ -20,10 +20,9 @@ namespace Repository.Stores.Markets.Repositorys
                 .Include(x => x.District)
                 .Include(x => x.Neighborhood)
                 .Include(x => x.Region)
-                .Where(x => x.StoreMarket.Store.SellerUserId == sellerUserId)
+                .Include(x => x.Store)
+                .Where(x => x.Store.SellerId == sellerUserId)
                 .ToListAsync();
         }
-
-
     }
 }
