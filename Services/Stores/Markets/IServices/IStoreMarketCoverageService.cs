@@ -13,12 +13,12 @@ namespace Services.Stores.Markets.IServices
 
         //Multi
 
-        Task<int> AddCountriesMultiAsync(StoreMarketCountryMultiCreateDto dto);
-        Task<int> AddProvincesMultiAsync(StoreMarketProvinceMultiCreateDto dto);
-        Task<int> AddDistrictsMultiAsync(StoreMarketDistrictMultiCreateDto dto);
-        Task<int> AddNeighborhoodsMultiAsync(StoreMarketNeighborhoodMultiCreateDto dto);
-        Task<int> AddRegionsMultiAsync(StoreMarketRegionMultiCreateDto dto);
-        Task<int> AddStatesMultiAsync(StoreMarketStateMultiCreateDto dto);
+        Task<List<int>> AddCountriesMultiAsync(StoreMarketCountryMultiCreateDto dto);
+        Task<List<int>> AddProvincesMultiAsync(StoreMarketProvinceMultiCreateDto dto);
+        Task<List<int>> AddDistrictsMultiAsync(StoreMarketDistrictMultiCreateDto dto);
+        Task<List<int>> AddNeighborhoodsMultiAsync(StoreMarketNeighborhoodMultiCreateDto dto);
+        Task<List<int>> AddRegionsMultiAsync(StoreMarketRegionMultiCreateDto dto);
+        Task<List<int>> AddStatesMultiAsync(StoreMarketStateMultiCreateDto dto);
 
         Task<List<StoreMarketCountryDto>> GetCountrysByStoreIdAsync(int storeId);
         Task<List<StoreMarketProvinceDto>> GetProvincesByStoreIdAsync(int storeId);
