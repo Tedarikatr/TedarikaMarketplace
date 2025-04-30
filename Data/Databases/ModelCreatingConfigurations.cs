@@ -24,6 +24,7 @@ namespace Data.Databases
             ConfigureProductEntities(modelBuilder);
             ConfigureOrderEntities(modelBuilder);
             ConfigurePaymentEntities(modelBuilder);
+            ConfigureStoreMarketEntities(modelBuilder);
             ConfigureDecimal(modelBuilder);
         }
 
@@ -197,6 +198,82 @@ namespace Data.Databases
                 .HasForeignKey<Payment>(p => p.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
+
+        private static void ConfigureStoreMarketEntities(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StoreMarketCountry>()
+                .HasOne(smc => smc.Store)
+                .WithMany(s => s.MarketCountries)
+                .HasForeignKey(smc => smc.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketCountry>()
+                .HasOne(smc => smc.Country)
+                .WithMany()
+                .HasForeignKey(smc => smc.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreMarketProvince>()
+                .HasOne(smp => smp.Store)
+                .WithMany(s => s.MarketProvinces)
+                .HasForeignKey(smp => smp.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketProvince>()
+                .HasOne(smp => smp.Province)
+                .WithMany()
+                .HasForeignKey(smp => smp.ProvinceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreMarketDistrict>()
+                .HasOne(smd => smd.Store)
+                .WithMany(s => s.MarketDistricts)
+                .HasForeignKey(smd => smd.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketDistrict>()
+                .HasOne(smd => smd.District)
+                .WithMany()
+                .HasForeignKey(smd => smd.DistrictId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreMarketNeighborhood>()
+                .HasOne(smn => smn.Store)
+                .WithMany(s => s.MarketNeighborhoods)
+                .HasForeignKey(smn => smn.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketNeighborhood>()
+                .HasOne(smn => smn.Neighborhood)
+                .WithMany()
+                .HasForeignKey(smn => smn.NeighborhoodId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreMarketState>()
+                .HasOne(sms => sms.Store)
+                .WithMany(s => s.MarketStates)
+                .HasForeignKey(sms => sms.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketState>()
+                .HasOne(sms => sms.State)
+                .WithMany()
+                .HasForeignKey(sms => sms.StateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreMarketRegion>()
+                .HasOne(smr => smr.Store)
+                .WithMany(s => s.MarketRegions)
+                .HasForeignKey(smr => smr.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StoreMarketRegion>()
+                .HasOne(smr => smr.Region)
+                .WithMany()
+                .HasForeignKey(smr => smr.RegionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
 
         private static void ConfigureDecimal(ModelBuilder modelBuilder)
         {
