@@ -15,6 +15,7 @@ namespace Data.Repository
         Task<bool> RemoveBoolAsync(T entity);
         Task<bool> UpdateBoolAsync(T entity); 
         Task<int> SaveChangesAsync();
+        IQueryable<T> GetQueryable();
         Task UpdateRangeAsync(IEnumerable<T> entities);
     }
 }

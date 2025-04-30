@@ -5,6 +5,7 @@ namespace Repository.Stores.Markets.IRepositorys
 {
     public interface IStoreMarketCoverageRepository : IGenericRepository<StoreMarketCoverage>
     {
+        Task<List<StoreMarketCoverage>> GetCoveragesBySellerUserIdAsync(int sellerUserId);
 
     }
 }

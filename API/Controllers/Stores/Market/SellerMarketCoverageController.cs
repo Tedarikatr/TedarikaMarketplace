@@ -22,73 +22,115 @@ namespace API.Controllers.Stores.Market
             _userHelper = userHelper;
             _logger = logger;
         }
-
         [HttpPost("add")]
         public async Task<IActionResult> AddCoverage([FromBody] StoreMarketCoverageCreateDto dto)
         {
             try
             {
-                var sellerStoreId = await _userHelper.GetStoreId(User);
-
-                var coverageId = await _coverageService.AddCoverageAsync(dto);
-                _logger.LogInformation("Satıcı hizmet bölgesi eklendi. StoreMarketId: {StoreMarketId}, CoverageId: {CoverageId}", sellerStoreId, coverageId);
-                return Ok(new { message = "Hizmet bölgesi başarıyla eklendi.", id = coverageId });
+                var storeId = await _userHelper.GetStoreId(User);
+                await _coverageService.AddCoverageAsync(dto, storeId);
+                _logger.LogInformation("Kapsam eklendi. StoreId: {StoreId}", storeId);
+                return Ok(new { message = "Kapsam başarıyla eklendi." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Hizmet bölgesi eklenirken hata oluştu.");
-                return StatusCode(500, new { error = ex.Message });
+                _logger.LogError(ex, "Kapsam ekleme hatası.");
+                return BadRequest(new { error = ex.Message });
             }
         }
 
-        [HttpGet("list")]
-        public async Task<IActionResult> GetMyCoverages()
+        [HttpPost("add-bulk")]
+        public async Task<IActionResult> AddCoveragesBulk([FromBody] List<StoreMarketCoverageCreateDto> dtos)
         {
             try
             {
                 var storeId = await _userHelper.GetStoreId(User);
+                var batchDto = new StoreMarketCoverageBatchDto
+                {
+                    StoreId = storeId,
+                    Coverages = dtos
+                };
 
-                // Store'a bağlı tüm marketlerin coverage'ları çekiliyor
-                var coverages = await _coverageService.GetStoreCoveragesByStoreIdAsync(storeId);
+                await _coverageService.AddCoveragesBulkAsync(batchDto);
+                _logger.LogInformation("Toplu kapsam eklendi. Adet: {Count}", dtos.Count);
+                return Ok(new { message = "Toplu kapsam başarıyla eklendi." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Toplu kapsam ekleme hatası.");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
+        [HttpPost("add-multi")]
+        public async Task<IActionResult> AddCoverageMulti([FromBody] StoreMarketCoverageMultiCreateDto dto)
+        {
+            try
+            {
+                dto.StoreId = await _userHelper.GetStoreId(User);
+                await _coverageService.AddCoverageMultiAsync(dto);
+                _logger.LogInformation("Multi DTO ile kapsam eklendi. StoreId: {StoreId}", dto.StoreId);
+                return Ok(new { message = "Kapsamlar başarıyla eklendi (multi)." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Multi DTO ekleme hatası.");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCoverage([FromBody] StoreMarketCoverageUpdateDto dto)
+        {
+            try
+            {
+                var storeId = await _userHelper.GetStoreId(User);
+                await _coverageService.UpdateCoverageAsync(dto, storeId);
+                _logger.LogInformation("Kapsam güncellendi. ID: {CoverageId}", dto.Id);
+                return Ok(new { message = "Kapsam başarıyla güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kapsam güncelleme hatası.");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("detail/{coverageId}")]
+        public async Task<IActionResult> GetCoverageDetail(int coverageId)
+        {
+            try
+            {
+                var storeId = await _userHelper.GetStoreId(User);
+                var coverages = await _coverageService.GetMyCoveragesAsync(storeId);
+                var detail = coverages.FirstOrDefault(x => x.Id == coverageId);
+
+                if (detail == null)
+                    return NotFound(new { error = "Kapsam kaydı bulunamadı." });
+
+                return Ok(detail);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Kapsam detayı getirilirken hata oluştu.");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("my-coverages")]
+        public async Task<IActionResult> GetMyCoverages()
+        {
+            try
+            {
+                int sellerUserId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
+
+                var coverages = await _coverageService.GetSellerOwnCoveragesAsync(sellerUserId);
                 return Ok(coverages);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Hizmet bölgeleri alınırken hata oluştu.");
-                return StatusCode(500, new { error = "Hizmet bölgeleri alınırken hata oluştu." });
-            }
-        }
-
-        [HttpDelete("{coverageId}")]
-        public async Task<IActionResult> DeleteCoverage(int coverageId)
-        {
-            try
-            {
-                var success = await _coverageService.RemoveCoverageAsync(coverageId);
-                if (!success) return NotFound("Hizmet bölgesi bulunamadı.");
-                return Ok(new { message = "Hizmet bölgesi silindi." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Hizmet bölgesi silinirken hata oluştu.");
-                return StatusCode(500, new { error = "Silme sırasında bir hata oluştu." });
-            }
-        }
-
-        [HttpPatch("{coverageId}/status")]
-        public async Task<IActionResult> ToggleCoverageStatus(int coverageId, [FromQuery] bool isActive)
-        {
-            try
-            {
-                var success = await _coverageService.UpdateCoverageStatusAsync(coverageId, isActive);
-                if (!success) return NotFound("Hizmet bölgesi bulunamadı.");
-                return Ok(new { message = "Hizmet bölgesi durumu güncellendi." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Hizmet bölgesi durumu güncellenemedi.");
-                return StatusCode(500, new { error = "Durum güncelleme sırasında bir hata oluştu." });
+                _logger.LogError(ex, "Kapsamlar alınırken hata oluştu.");
+                return StatusCode(500, "Kapsamlar alınamadı.");
             }
         }
     }

@@ -6,6 +6,9 @@ namespace Entity.Stores.Markets
     {
         public int Id { get; set; }
 
+        public int StoreId { get; set; }
+        public Store Store { get; set; }
+
         public MarketCoverageLevel CoverageLevel { get; set; }
 
         public int DeliveryTimeFrame { get; set; }

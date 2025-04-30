@@ -226,7 +226,6 @@ namespace API.Mappings
         }
         #endregion
 
-
         #region 5️⃣ STORE Mappings
         private static class StoreMappings
         {
@@ -245,6 +244,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarketCoverages, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreUpdateDto, Store>()
@@ -258,6 +258,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreMarketCoverages, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreStatusDto, Store>()
@@ -311,14 +312,14 @@ namespace API.Mappings
 
                 profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) // ❗ Ignore navigation
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
                     .ForMember(dest => dest.BuyerUserId, opt => opt.MapFrom(src => src.BuyerUserId))
                     .ReverseMap();
 
                 profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) // ❗ Güncelleme DTO'sunda user ID gelmiyor
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())  // ❗ Navigation
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
                     .ReverseMap();
             }
         }

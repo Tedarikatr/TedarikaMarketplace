@@ -84,5 +84,10 @@ namespace Data.Repository
             _dbSet.UpdateRange(entities);
             await _context.SaveChangesAsync();
         }
+        public IQueryable<T> GetQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
     }
 }
