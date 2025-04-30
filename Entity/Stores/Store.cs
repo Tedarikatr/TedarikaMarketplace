@@ -28,10 +28,17 @@ namespace Entity.Stores
         public int CompanyId { get; set; } 
         public virtual Company Company { get; set; }
 
-
-        public ICollection<StoreMarketCoverage> StoreMarketCoverages { get; set; }
         public ICollection<StoreProduct> StoreProducts { get; set; }
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }
+
+        public ICollection<StoreMarketCountry> MarketCountries { get; set; }
+        public ICollection<StoreMarketProvince> MarketProvinces { get; set; }
+        public ICollection<StoreMarketDistrict> MarketDistricts { get; set; }
+        public ICollection<StoreMarketNeighborhood> MarketNeighborhoods { get; set; }
+        public ICollection<StoreMarketRegion> MarketRegions { get; set; }
+        public ICollection<StoreMarketState> MarketStates { get; set; }
+
+
     }
 }

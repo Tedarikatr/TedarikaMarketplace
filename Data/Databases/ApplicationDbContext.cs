@@ -39,6 +39,7 @@ namespace Data.Databases
 
         // Kargo 
         public DbSet<Carrier> Carriers { get; set; }
+
         //Category
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategorySub> CategoriesSubs { get; set; }
@@ -70,7 +71,6 @@ namespace Data.Databases
         // Mağaza & Marketler
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
-        public DbSet<StoreMarketCoverage> StoreMarketCoverages { get; set; }
         public DbSet<StoreMarketCountry> StoreMarketCountries { get; set; }
         public DbSet<StoreMarketDistrict> StoreMarketDistricts { get; set; }
         public DbSet<StoreMarketNeighborhood> StoreMarketNeighborhoods { get; set; }
