@@ -11,6 +11,7 @@ namespace Entity.Stores.Markets
         public int StateId { get; set; }
         public State State { get; set; }
 
+        public string StateName { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; } = true;
     }

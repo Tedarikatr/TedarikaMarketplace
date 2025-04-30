@@ -130,7 +130,7 @@ namespace API.Controllers.Stores.Market
         {
             var storeId = await _userHelper.GetStoreId(User);
             dto.StoreId = storeId;
-            await _coverageService.AddCountriesMultiAsync(dto);
+            await _coverageService.AddCountrysMultiAsync(dto);
             return Ok(new { message = "Ülkeler başarıyla eklendi." });
         }
 

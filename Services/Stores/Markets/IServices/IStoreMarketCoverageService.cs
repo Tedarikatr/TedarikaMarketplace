@@ -13,7 +13,7 @@ namespace Services.Stores.Markets.IServices
 
         //Multi
 
-        Task<List<int>> AddCountriesMultiAsync(StoreMarketCountryMultiCreateDto dto);
+        Task<List<int>> AddCountrysMultiAsync(StoreMarketCountryMultiCreateDto dto);
         Task<List<int>> AddProvincesMultiAsync(StoreMarketProvinceMultiCreateDto dto);
         Task<List<int>> AddDistrictsMultiAsync(StoreMarketDistrictMultiCreateDto dto);
         Task<List<int>> AddNeighborhoodsMultiAsync(StoreMarketNeighborhoodMultiCreateDto dto);

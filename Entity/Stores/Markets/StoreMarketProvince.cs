@@ -16,6 +16,7 @@ namespace Entity.Stores.Markets
         public Region Region => Province?.Country?.Region;
         public State State => Province?.State;
 
+        public string ProvinceName { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; } = true;
     }
