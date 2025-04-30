@@ -4,7 +4,6 @@ using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
-using Entity.Markets;
 using Entity.Markets.Locations;
 using Entity.Orders;
 using Entity.Payments;
@@ -72,6 +71,13 @@ namespace Data.Databases
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
         public DbSet<StoreMarketCoverage> StoreMarketCoverages { get; set; }
+        public DbSet<StoreMarketCountry> StoreMarketCountries { get; set; }
+        public DbSet<StoreMarketDistrict> StoreMarketDistricts { get; set; }
+        public DbSet<StoreMarketNeighborhood> StoreMarketNeighborhoods { get; set; }
+        public DbSet<StoreMarketProvince> StoreMarketProvinces { get; set; }
+        public DbSet<StoreMarketRegion> StoreMarketRegions { get; set; }
+        public DbSet<StoreMarketState> StoreMarketStates { get; set; }
+
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }
