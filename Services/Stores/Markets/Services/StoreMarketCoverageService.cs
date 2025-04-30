@@ -2,6 +2,7 @@
 using Data.Dtos.Stores.Markets;
 using Entity.Stores.Markets;
 using Microsoft.Extensions.Logging;
+using Repository.Markets.IRepositorys;
 using Repository.Stores.Markets.IRepositorys;
 using Services.Stores.Markets.IServices;
 
@@ -16,18 +17,16 @@ namespace Services.Stores.Markets.Services
         private readonly IStoreMarketNeighborhoodRepository _neighborhoodRepo;
         private readonly IStoreMarketRegionRepository _regionRepo;
         private readonly IStoreMarketStateRepository _stateRepo;
+        private readonly ICountryRepository _masterCountryRepo;
+        private readonly IProvinceRepository _masterProvinceRepo;
+        private readonly IDistrictRepository _masterDistrictRepo;
+        private readonly INeighborhoodRepository _masterNeighborhoodRepo;
+        private readonly IStateRepository _masterStateRepo;
+        private readonly IRegionRepository _masterRegionRepo;
         private readonly IMapper _mapper;
         private readonly ILogger<StoreMarketCoverageService> _logger;
 
-        public StoreMarketCoverageService(
-            IStoreMarketCountryRepository countryRepo,
-            IStoreMarketProvinceRepository provinceRepo,
-            IStoreMarketDistrictRepository districtRepo,
-            IStoreMarketNeighborhoodRepository neighborhoodRepo,
-            IStoreMarketRegionRepository regionRepo,
-            IStoreMarketStateRepository stateRepo,
-            IMapper mapper,
-            ILogger<StoreMarketCoverageService> logger)
+        public StoreMarketCoverageService(IStoreMarketCountryRepository countryRepo, IStoreMarketProvinceRepository provinceRepo, IStoreMarketDistrictRepository districtRepo, IStoreMarketNeighborhoodRepository neighborhoodRepo, IStoreMarketRegionRepository regionRepo, IStoreMarketStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreMarketCoverageService> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
@@ -35,6 +34,12 @@ namespace Services.Stores.Markets.Services
             _neighborhoodRepo = neighborhoodRepo;
             _regionRepo = regionRepo;
             _stateRepo = stateRepo;
+            _masterCountryRepo = masterCountryRepo;
+            _masterProvinceRepo = masterProvinceRepo;
+            _masterDistrictRepo = masterDistrictRepo;
+            _masterNeighborhoodRepo = masterNeighborhoodRepo;
+            _masterStateRepo = masterStateRepo;
+            _masterRegionRepo = masterRegionRepo;
             _mapper = mapper;
             _logger = logger;
         }
@@ -44,7 +49,20 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni Country kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketCountry>(dto);
+
+                var country = await _masterCountryRepo.GetByIdAsync(dto.CountryId);
+                if (country == null)
+                    throw new Exception($"Country bulunamadı. Id: {dto.CountryId}");
+
+                var entity = new StoreMarketCountry
+                {
+                    StoreId = dto.StoreId,
+                    CountryId = dto.CountryId,
+                    CountryName = country.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _countryRepo.AddAsync(entity);
                 _logger.LogInformation("Country kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
@@ -61,9 +79,22 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni Province kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketProvince>(dto);
+
+                var province = await _masterProvinceRepo.GetByIdAsync(dto.ProvinceId);
+                if (province == null)
+                    throw new Exception($"Province bulunamadı. Id: {dto.ProvinceId}");
+
+                var entity = new StoreMarketProvince
+                {
+                    StoreId = dto.StoreId,
+                    ProvinceId = dto.ProvinceId,
+                    ProvinceName = province.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _provinceRepo.AddAsync(entity);
-                _logger.LogInformation("Province kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
+                _logger.LogInformation("Province kapsamı eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
             }
             catch (Exception ex)
@@ -78,9 +109,22 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni District kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketDistrict>(dto);
+
+                var district = await _masterDistrictRepo.GetByIdAsync(dto.DistrictId);
+                if (district == null)
+                    throw new Exception($"District bulunamadı. Id: {dto.DistrictId}");
+
+                var entity = new StoreMarketDistrict
+                {
+                    StoreId = dto.StoreId,
+                    DistrictId = dto.DistrictId,
+                    DistrictName = district.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _districtRepo.AddAsync(entity);
-                _logger.LogInformation("District kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
+                _logger.LogInformation("District kapsamı eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
             }
             catch (Exception ex)
@@ -95,9 +139,22 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni Neighborhood kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketNeighborhood>(dto);
+
+                var neighborhood = await _masterNeighborhoodRepo.GetByIdAsync(dto.NeighborhoodId);
+                if (neighborhood == null)
+                    throw new Exception($"Neighborhood bulunamadı. Id: {dto.NeighborhoodId}");
+
+                var entity = new StoreMarketNeighborhood
+                {
+                    StoreId = dto.StoreId,
+                    NeighborhoodId = dto.NeighborhoodId,
+                    NeighborhoodName = neighborhood.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _neighborhoodRepo.AddAsync(entity);
-                _logger.LogInformation("Neighborhood kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
+                _logger.LogInformation("Neighborhood kapsamı eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
             }
             catch (Exception ex)
@@ -112,7 +169,20 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni Region kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketRegion>(dto);
+
+                var region = await _masterRegionRepo.GetByIdAsync(dto.RegionId);
+                if (region == null)
+                    throw new Exception($"Region bulunamadı. Id: {dto.RegionId}");
+
+                var entity = new StoreMarketRegion
+                {
+                    StoreId = dto.StoreId,
+                    RegionId = dto.RegionId,
+                    RegionName = region.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _regionRepo.AddAsync(entity);
                 _logger.LogInformation("Region kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
@@ -129,7 +199,20 @@ namespace Services.Stores.Markets.Services
             try
             {
                 _logger.LogInformation("Yeni State kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-                var entity = _mapper.Map<StoreMarketState>(dto);
+
+                var state = await _masterStateRepo.GetByIdAsync(dto.StateId);
+                if (state == null)
+                    throw new Exception($"State bulunamadı. Id: {dto.StateId}");
+
+                var entity = new StoreMarketState
+                {
+                    StoreId = dto.StoreId,
+                    StateId = dto.StateId,
+                    StateName = state.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
                 await _stateRepo.AddAsync(entity);
                 _logger.LogInformation("State kapsamı başarıyla eklendi. Id: {Id}", entity.Id);
                 return entity.Id;
@@ -142,6 +225,7 @@ namespace Services.Stores.Markets.Services
         }
 
 
+
         // Mutli
 
         public async Task<List<int>> AddCountriesMultiAsync(StoreMarketCountryMultiCreateDto dto)
@@ -151,12 +235,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu Country kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var countries = await _masterCountryRepo.FindAsync(x => dto.CountryIds.Contains(x.Id));
+                var countryDict = countries.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var countryId in dto.CountryIds)
                 {
+                    if (!countryDict.TryGetValue(countryId, out var countryName))
+                        continue;
+
                     var entity = new StoreMarketCountry
                     {
                         StoreId = dto.StoreId,
                         CountryId = countryId,
+                        CountryName = countryName,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -182,12 +273,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu Province kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var provinces = await _masterProvinceRepo.FindAsync(x => dto.ProvinceIds.Contains(x.Id));
+                var provinceDict = provinces.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var provinceId in dto.ProvinceIds)
                 {
+                    if (!provinceDict.TryGetValue(provinceId, out var provinceName))
+                        continue;
+
                     var entity = new StoreMarketProvince
                     {
                         StoreId = dto.StoreId,
                         ProvinceId = provinceId,
+                        ProvinceName = provinceName,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -213,12 +311,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu District kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var districts = await _masterDistrictRepo.FindAsync(x => dto.DistrictIds.Contains(x.Id));
+                var districtDict = districts.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var districtId in dto.DistrictIds)
                 {
+                    if (!districtDict.TryGetValue(districtId, out var districtName))
+                        continue;
+
                     var entity = new StoreMarketDistrict
                     {
                         StoreId = dto.StoreId,
                         DistrictId = districtId,
+                        DistrictName = districtName,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -244,12 +349,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu Neighborhood kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var neighborhoods = await _masterNeighborhoodRepo.FindAsync(x => dto.NeighborhoodIds.Contains(x.Id));
+                var neighborhoodDict = neighborhoods.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var neighborhoodId in dto.NeighborhoodIds)
                 {
+                    if (!neighborhoodDict.TryGetValue(neighborhoodId, out var name))
+                        continue;
+
                     var entity = new StoreMarketNeighborhood
                     {
                         StoreId = dto.StoreId,
                         NeighborhoodId = neighborhoodId,
+                        NeighborhoodName = name,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -275,12 +387,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu Region kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var regions = await _masterRegionRepo.FindAsync(x => dto.RegionIds.Contains(x.Id));
+                var regionDict = regions.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var regionId in dto.RegionIds)
                 {
+                    if (!regionDict.TryGetValue(regionId, out var name))
+                        continue;
+
                     var entity = new StoreMarketRegion
                     {
                         StoreId = dto.StoreId,
                         RegionId = regionId,
+                        RegionName = name,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -306,12 +425,19 @@ namespace Services.Stores.Markets.Services
             {
                 _logger.LogInformation("Toplu State kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
 
+                var states = await _masterStateRepo.FindAsync(x => dto.StateIds.Contains(x.Id));
+                var stateDict = states.ToDictionary(x => x.Id, x => x.Name);
+
                 foreach (var stateId in dto.StateIds)
                 {
+                    if (!stateDict.TryGetValue(stateId, out var name))
+                        continue;
+
                     var entity = new StoreMarketState
                     {
                         StoreId = dto.StoreId,
                         StateId = stateId,
+                        StateName = name,
                         DeliveryTimeFrame = dto.DeliveryTimeFrame,
                         IsActive = true
                     };
@@ -329,8 +455,6 @@ namespace Services.Stores.Markets.Services
                 throw;
             }
         }
-
-
 
         public async Task<List<StoreMarketCountryDto>> GetCountrysByStoreIdAsync(int storeId)
         {
@@ -668,7 +792,5 @@ namespace Services.Stores.Markets.Services
                 throw;
             }
         }
-
-     
     }
 }

@@ -13,6 +13,7 @@ namespace Entity.Stores.Markets
 
         public Region Region => Country?.Region;
 
+        public string CountryName { get; set; } 
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; } = true;
     }
