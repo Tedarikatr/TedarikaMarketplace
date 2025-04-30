@@ -16,8 +16,5 @@ namespace Entity.Stores.Products
         public int EstimatedDeliveryDays { get; set; }
         public string AllowedCarriers { get; set; }
 
-        public int? MarketId { get; set; }
-        public virtual Market Market { get; set; } 
-
     }
 }

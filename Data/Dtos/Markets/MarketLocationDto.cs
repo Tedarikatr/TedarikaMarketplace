@@ -4,7 +4,6 @@
     {
     }
 
-    // Ülke DTO'ları
     public class CountryDto
     {
         public int Id { get; set; }
@@ -21,7 +20,6 @@
         public string Code { get; set; }
     }
 
-    // İl DTO'ları
     public class ProvinceDto
     {
         public int Id { get; set; }
@@ -37,7 +35,6 @@
         public int? StateId { get; set; } 
     }
 
-    // İlçe DTO'ları
     public class DistrictDto
     {
         public int Id { get; set; }
@@ -55,7 +52,6 @@
 
     }
 
-    // Mahalle DTO'ları
     public class NeighborhoodDto
     {
         public int Id { get; set; }
@@ -89,5 +85,4 @@
         public string Name { get; set; }
         public int CountryId { get; set; }
     }
-
 }

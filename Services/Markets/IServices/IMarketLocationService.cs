@@ -1,5 +1,4 @@
 ﻿using Data.Dtos.Markets;
-using Data.Dtos.Stores;
 
 namespace Services.Markets.IServices
 {

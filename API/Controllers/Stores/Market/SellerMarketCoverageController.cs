@@ -29,7 +29,6 @@ namespace API.Controllers.Stores.Market
             try
             {
                 var sellerStoreId = await _userHelper.GetStoreId(User);
-                dto.StoreMarketId = sellerStoreId;
 
                 var coverageId = await _coverageService.AddCoverageAsync(dto);
                 _logger.LogInformation("Satıcı hizmet bölgesi eklendi. StoreMarketId: {StoreMarketId}, CoverageId: {CoverageId}", sellerStoreId, coverageId);

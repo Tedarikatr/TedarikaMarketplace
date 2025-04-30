@@ -29,7 +29,7 @@ namespace Entity.Stores
         public virtual Company Company { get; set; }
 
 
-        public ICollection<StoreMarket> StoreMarkets { get; set; }
+        public ICollection<StoreMarketCoverage> StoreMarketCoverages { get; set; }
         public ICollection<StoreProduct> StoreProducts { get; set; }
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }

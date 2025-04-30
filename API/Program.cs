@@ -19,8 +19,6 @@ using Repository.Companys.IRepositorys;
 using Repository.Companys.Repositorys;
 using Repository.DeliveryAddresses.IRepositorys;
 using Repository.DeliveryAddresses.Repositorys;
-using Repository.Markets.IRepositorys;
-using Repository.Markets.Repositorys;
 using Repository.Product.IRepositorys;
 using Repository.Product.Repositorys;
 using Repository.Stores;
@@ -141,7 +139,6 @@ builder.Services.AddScoped<IFilesService, AzureBlobService>();
 builder.Services.AddScoped<IPdfService, AzureBlobPdfService>();
 
 //Markets
-builder.Services.AddScoped<IMarketRepository, MarketRepository>();
 builder.Services.AddScoped<IMarketLocationService, MarketLocationService>();
 
 //Notifications

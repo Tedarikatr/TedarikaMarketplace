@@ -69,18 +69,6 @@ namespace Data.Databases
                 .HasForeignKey<Store>(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarket>()
-                .HasOne(sm => sm.Store)
-                .WithMany(s => s.StoreMarkets)
-                .HasForeignKey(sm => sm.StoreId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<StoreMarket>()
-                .HasOne(sm => sm.Market)
-                .WithMany(m => m.StoreMarkets)
-                .HasForeignKey(sm => sm.MarketId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<StoreProduct>()
                 .HasOne(sp => sp.Store)
                 .WithMany(s => s.StoreProducts)

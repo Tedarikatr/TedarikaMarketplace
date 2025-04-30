@@ -51,7 +51,6 @@ namespace Data.Databases
         public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
         //Market
-        public DbSet<Market> Markets { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
@@ -72,7 +71,6 @@ namespace Data.Databases
         // Mağaza & Marketler
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
-        public DbSet<StoreMarket> StoreMarkets { get; set; }
         public DbSet<StoreMarketCoverage> StoreMarketCoverages { get; set; }
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }

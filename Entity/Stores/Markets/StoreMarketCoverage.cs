@@ -8,8 +8,7 @@ namespace Entity.Stores.Markets
 
         public MarketCoverageLevel CoverageLevel { get; set; }
 
-        public int StoreMarketId { get; set; }
-        public StoreMarket StoreMarket { get; set; }
+        public int DeliveryTimeFrame { get; set; }
 
         public int? CountryId { get; set; }
         public Country Country { get; set; }
@@ -22,6 +21,9 @@ namespace Entity.Stores.Markets
 
         public int? NeighborhoodId { get; set; }
         public Neighborhood Neighborhood { get; set; }
+
+        public int? RegionId { get; set; }
+        public Region Region { get; set; }
 
         public bool IsActive { get; set; }
     }
