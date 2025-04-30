@@ -157,7 +157,12 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 
-builder.Services.AddScoped<IStoreMarketCoverageRepository, StoreMarketCoverageRepository>();
+builder.Services.AddScoped<IStoreMarketCountryRepository, StoreMarketCountryRepository>();
+builder.Services.AddScoped<IStoreMarketProvinceRepository, StoreMarketProvinceRepository>();
+builder.Services.AddScoped<IStoreMarketDistrictRepository, StoreMarketDistrictRepository>();
+builder.Services.AddScoped<IStoreMarketNeighborhoodRepository, StoreMarketNeighborhoodRepository>();
+builder.Services.AddScoped<IStoreMarketRegionRepository, StoreMarketRegionRepository>();
+builder.Services.AddScoped<IStoreMarketStateRepository, StoreMarketStateRepository>();
 builder.Services.AddScoped<IStoreMarketCoverageService, StoreMarketCoverageService>();
 
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
