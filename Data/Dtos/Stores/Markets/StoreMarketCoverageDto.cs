@@ -144,4 +144,47 @@
         public bool IsActive { get; set; }
     }
 
+
+    public class StoreMarketCountryMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> CountryIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
+    public class StoreMarketProvinceMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> ProvinceIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
+    public class StoreMarketDistrictMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> DistrictIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
+    public class StoreMarketNeighborhoodMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> NeighborhoodIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
+    public class StoreMarketRegionMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> RegionIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
+    public class StoreMarketStateMultiCreateDto
+    {
+        public int StoreId { get; set; }
+        public List<int> StateIds { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+    }
+
 }

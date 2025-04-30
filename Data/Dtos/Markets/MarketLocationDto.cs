@@ -1,9 +1,5 @@
 ﻿namespace Data.Dtos.Markets
 {
-    public class MarketLocationDto
-    {
-    }
-
     public class CountryDto
     {
         public int Id { get; set; }
