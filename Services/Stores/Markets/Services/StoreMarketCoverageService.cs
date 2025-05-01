@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores.Markets;
 using Entity.Stores.Markets;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Markets.IRepositorys;
 using Repository.Stores.Markets.IRepositorys;
@@ -44,407 +45,186 @@ namespace Services.Stores.Markets.Services
             _logger = logger;
         }
 
-
-        public async Task<int> AddCountryAsync(StoreMarketCountryCreateDto dto)
+        public async Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto)
         {
-            try
+            var addedIds = new List<int>();
+
+            // 1️⃣ Ülkeler
+            foreach (var countryId in dto.CountryIds.Distinct())
             {
-                _logger.LogInformation("Yeni Country kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
+                bool exists = await _countryRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.CountryId == countryId);
+                if (exists)
+                {
+                    _logger.LogInformation("Country zaten eklenmiş. StoreId: {StoreId}, CountryId: {CountryId}", dto.StoreId, countryId);
+                    continue;
+                }
 
-                var data = await _masterCountryRepo.GetByIdAsync(dto.CountryId);
-                if (data == null)
-                    throw new Exception($"Country bulunamadı. Id: {dto.CountryId}");
+                var country = await _masterCountryRepo.GetByIdAsync(countryId);
+                if (country == null) continue;
 
-                var entity = _mapper.Map<StoreMarketCountry>(dto);
-                entity.CountryName = data.Name;
-                entity.IsActive = true;
+                var entity = new StoreMarketCountry
+                {
+                    StoreId = dto.StoreId,
+                    CountryId = countryId,
+                    CountryName = country.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
 
                 await _countryRepo.AddAsync(entity);
-                _logger.LogInformation("Country kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Country kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                addedIds.Add(entity.Id);
 
-        public async Task<List<int>> AddCountrysMultiAsync(StoreMarketCountryMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu Country kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterCountryRepo.FindAsync(x => dto.CountryIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.CountryIds)
+                if (dto.CascadeProvinceFromCountry)
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
+                    var provinces = await _masterProvinceRepo.FindAsync(p => p.CountryId == countryId);
+                    dto.ProvinceIds.AddRange(provinces.Select(p => p.Id));
+                }
+            }
 
-                    var itemDto = new StoreMarketCountryCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        CountryId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketCountry>(itemDto);
-                    entity.CountryName = name;
-                    entity.IsActive = true;
-
-                    await _countryRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("Country kapsamı eklendi. Id: {Id}", entity.Id);
+            // 2️⃣ İller
+            foreach (var provinceId in dto.ProvinceIds.Distinct())
+            {
+                bool exists = await _provinceRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.ProvinceId == provinceId);
+                if (exists)
+                {
+                    _logger.LogInformation("Province zaten eklenmiş. StoreId: {StoreId}, ProvinceId: {ProvinceId}", dto.StoreId, provinceId);
+                    continue;
                 }
 
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu Country kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                var province = await _masterProvinceRepo.GetByIdAsync(provinceId);
+                if (province == null) continue;
 
-
-        public async Task<int> AddProvinceAsync(StoreMarketProvinceCreateDto dto)
-        {
-            try
-            {
-                _logger.LogInformation("Yeni Province kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var data = await _masterProvinceRepo.GetByIdAsync(dto.ProvinceId);
-                if (data == null)
-                    throw new Exception($"Province bulunamadı. Id: {dto.ProvinceId}");
-
-                var entity = _mapper.Map<StoreMarketProvince>(dto);
-                entity.ProvinceName = data.Name;
-                entity.IsActive = true;
+                var entity = new StoreMarketProvince
+                {
+                    StoreId = dto.StoreId,
+                    ProvinceId = provinceId,
+                    ProvinceName = province.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
 
                 await _provinceRepo.AddAsync(entity);
-                _logger.LogInformation("Province kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Province kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                addedIds.Add(entity.Id);
 
-
-        public async Task<List<int>> AddProvincesMultiAsync(StoreMarketProvinceMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu Province kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterProvinceRepo.FindAsync(x => dto.ProvinceIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.ProvinceIds)
+                if (dto.CascadeDistrictFromProvince)
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
+                    var districts = await _masterDistrictRepo.FindAsync(d => d.ProvinceId == provinceId);
+                    dto.DistrictIds.AddRange(districts.Select(d => d.Id));
+                }
+            }
 
-                    var itemDto = new StoreMarketProvinceCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        ProvinceId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketProvince>(itemDto);
-                    entity.ProvinceName = name;
-                    entity.IsActive = true;
-
-                    await _provinceRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("Province kapsamı eklendi. Id: {Id}", entity.Id);
+            // 3️⃣ İlçeler
+            foreach (var districtId in dto.DistrictIds.Distinct())
+            {
+                bool exists = await _districtRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.DistrictId == districtId);
+                if (exists)
+                {
+                    _logger.LogInformation("District zaten eklenmiş. StoreId: {StoreId}, DistrictId: {DistrictId}", dto.StoreId, districtId);
+                    continue;
                 }
 
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu Province kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                var district = await _masterDistrictRepo.GetByIdAsync(districtId);
+                if (district == null) continue;
 
-
-        public async Task<int> AddDistrictAsync(StoreMarketDistrictCreateDto dto)
-        {
-            try
-            {
-                _logger.LogInformation("Yeni District kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var data = await _masterDistrictRepo.GetByIdAsync(dto.DistrictId);
-                if (data == null)
-                    throw new Exception($"District bulunamadı. Id: {dto.DistrictId}");
-
-                var entity = _mapper.Map<StoreMarketDistrict>(dto);
-                entity.DistrictName = data.Name;
-                entity.IsActive = true;
+                var entity = new StoreMarketDistrict
+                {
+                    StoreId = dto.StoreId,
+                    DistrictId = districtId,
+                    DistrictName = district.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
 
                 await _districtRepo.AddAsync(entity);
-                _logger.LogInformation("District kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "District kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                addedIds.Add(entity.Id);
 
-
-        public async Task<List<int>> AddDistrictsMultiAsync(StoreMarketDistrictMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu District kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterDistrictRepo.FindAsync(x => dto.DistrictIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.DistrictIds)
+                if (dto.CascadeNeighborhoodFromDistrict)
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
+                    var neighborhoods = await _masterNeighborhoodRepo.FindAsync(n => n.DistrictId == districtId);
+                    dto.NeighborhoodIds.AddRange(neighborhoods.Select(n => n.Id));
+                }
+            }
 
-                    var itemDto = new StoreMarketDistrictCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        DistrictId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketDistrict>(itemDto);
-                    entity.DistrictName = name;
-                    entity.IsActive = true;
-
-                    await _districtRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("District kapsamı eklendi. Id: {Id}", entity.Id);
+            // 4️⃣ Mahalleler
+            foreach (var neighborhoodId in dto.NeighborhoodIds.Distinct())
+            {
+                bool exists = await _neighborhoodRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.NeighborhoodId == neighborhoodId);
+                if (exists)
+                {
+                    _logger.LogInformation("Neighborhood zaten eklenmiş. StoreId: {StoreId}, NeighborhoodId: {NeighborhoodId}", dto.StoreId, neighborhoodId);
+                    continue;
                 }
 
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu District kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                var neighborhood = await _masterNeighborhoodRepo.GetByIdAsync(neighborhoodId);
+                if (neighborhood == null) continue;
 
-
-        public async Task<int> AddNeighborhoodAsync(StoreMarketNeighborhoodCreateDto dto)
-        {
-            try
-            {
-                _logger.LogInformation("Yeni Neighborhood kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var data = await _masterNeighborhoodRepo.GetByIdAsync(dto.NeighborhoodId);
-                if (data == null)
-                    throw new Exception($"Neighborhood bulunamadı. Id: {dto.NeighborhoodId}");
-
-                var entity = _mapper.Map<StoreMarketNeighborhood>(dto);
-                entity.NeighborhoodName = data.Name;
-                entity.IsActive = true;
+                var entity = new StoreMarketNeighborhood
+                {
+                    StoreId = dto.StoreId,
+                    NeighborhoodId = neighborhoodId,
+                    NeighborhoodName = neighborhood.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
 
                 await _neighborhoodRepo.AddAsync(entity);
-                _logger.LogInformation("Neighborhood kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
+                addedIds.Add(entity.Id);
             }
-            catch (Exception ex)
+
+            // 5️⃣ Eyaletler
+            foreach (var stateId in dto.StateIds.Distinct())
             {
-                _logger.LogError(ex, "Neighborhood kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
-
-
-        public async Task<List<int>> AddNeighborhoodsMultiAsync(StoreMarketNeighborhoodMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu Neighborhood kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterNeighborhoodRepo.FindAsync(x => dto.NeighborhoodIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.NeighborhoodIds)
+                bool exists = await _stateRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.StateId == stateId);
+                if (exists)
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
-
-                    var itemDto = new StoreMarketNeighborhoodCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        NeighborhoodId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketNeighborhood>(itemDto);
-                    entity.NeighborhoodName = name;
-                    entity.IsActive = true;
-
-                    await _neighborhoodRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("Neighborhood kapsamı eklendi. Id: {Id}", entity.Id);
+                    _logger.LogInformation("State zaten eklenmiş. StoreId: {StoreId}, StateId: {StateId}", dto.StoreId, stateId);
+                    continue;
                 }
 
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu Neighborhood kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                var state = await _masterStateRepo.GetByIdAsync(stateId);
+                if (state == null) continue;
 
-
-        public async Task<int> AddRegionAsync(StoreMarketRegionCreateDto dto)
-        {
-            try
-            {
-                _logger.LogInformation("Yeni Region kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var data = await _masterRegionRepo.GetByIdAsync(dto.RegionId);
-                if (data == null)
-                    throw new Exception($"Region bulunamadı. Id: {dto.RegionId}");
-
-                var entity = _mapper.Map<StoreMarketRegion>(dto);
-                entity.RegionName = data.Name;
-                entity.IsActive = true;
-
-                await _regionRepo.AddAsync(entity);
-                _logger.LogInformation("Region kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Region kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
-
-
-        public async Task<List<int>> AddRegionsMultiAsync(StoreMarketRegionMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu Region kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterRegionRepo.FindAsync(x => dto.RegionIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.RegionIds)
+                var entity = new StoreMarketState
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
-
-                    var itemDto = new StoreMarketRegionCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        RegionId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketRegion>(itemDto);
-                    entity.RegionName = name;
-                    entity.IsActive = true;
-
-                    await _regionRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("Region kapsamı eklendi. Id: {Id}", entity.Id);
-                }
-
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu Region kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
-
-
-        public async Task<int> AddStateAsync(StoreMarketStateCreateDto dto)
-        {
-            try
-            {
-                _logger.LogInformation("Yeni State kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var data = await _masterStateRepo.GetByIdAsync(dto.StateId);
-                if (data == null)
-                    throw new Exception($"State bulunamadı. Id: {dto.StateId}");
-
-                var entity = _mapper.Map<StoreMarketState>(dto);
-                entity.StateName = data.Name;
-                entity.IsActive = true;
+                    StoreId = dto.StoreId,
+                    StateId = stateId,
+                    StateName = state.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
 
                 await _stateRepo.AddAsync(entity);
-                _logger.LogInformation("State kapsamı eklendi. Id: {Id}", entity.Id);
-                return entity.Id;
+                addedIds.Add(entity.Id);
             }
-            catch (Exception ex)
+
+            // 6️⃣ Bölgeler
+            foreach (var regionId in dto.RegionIds.Distinct())
             {
-                _logger.LogError(ex, "State kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
-
-
-        public async Task<List<int>> AddStatesMultiAsync(StoreMarketStateMultiCreateDto dto)
-        {
-            var addedIds = new List<int>();
-            try
-            {
-                _logger.LogInformation("Toplu State kapsamı ekleniyor. StoreId: {StoreId}", dto.StoreId);
-
-                var list = await _masterStateRepo.FindAsync(x => dto.StateIds.Contains(x.Id));
-                var dict = list.ToDictionary(x => x.Id, x => x.Name);
-
-                foreach (var id in dto.StateIds)
+                bool exists = await _regionRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.RegionId == regionId);
+                if (exists)
                 {
-                    if (!dict.TryGetValue(id, out var name))
-                        continue;
-
-                    var itemDto = new StoreMarketStateCreateDto
-                    {
-                        StoreId = dto.StoreId,
-                        StateId = id,
-                        DeliveryTimeFrame = dto.DeliveryTimeFrame
-                    };
-
-                    var entity = _mapper.Map<StoreMarketState>(itemDto);
-                    entity.StateName = name;
-                    entity.IsActive = true;
-
-                    await _stateRepo.AddAsync(entity);
-                    addedIds.Add(entity.Id);
-                    _logger.LogInformation("State kapsamı eklendi. Id: {Id}", entity.Id);
+                    _logger.LogInformation("Region zaten eklenmiş. StoreId: {StoreId}, RegionId: {RegionId}", dto.StoreId, regionId);
+                    continue;
                 }
 
-                return addedIds;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Toplu State kapsamı eklenirken hata oluştu.");
-                throw;
-            }
-        }
+                var region = await _masterRegionRepo.GetByIdAsync(regionId);
+                if (region == null) continue;
 
+                var entity = new StoreMarketRegion
+                {
+                    StoreId = dto.StoreId,
+                    RegionId = regionId,
+                    RegionName = region.Name,
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
+                    IsActive = true
+                };
+
+                await _regionRepo.AddAsync(entity);
+                addedIds.Add(entity.Id);
+            }
+
+            return addedIds;
+        }
 
         public async Task<List<StoreMarketCountryDto>> GetCountrysByStoreIdAsync(int storeId)
         {
@@ -782,7 +562,5 @@ namespace Services.Stores.Markets.Services
                 throw;
             }
         }
-
-
     }
 }

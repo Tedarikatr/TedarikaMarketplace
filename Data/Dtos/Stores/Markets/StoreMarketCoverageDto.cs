@@ -187,4 +187,31 @@
         public int DeliveryTimeFrame { get; set; }
     }
 
+    public class StoreMarketCountryCascadeCreateDto
+    {
+        public int StoreId { get; set; }
+        public int CountryId { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+
+        public bool IncludeProvinces { get; set; } = true;
+        public bool IncludeDistricts { get; set; } = true;
+        public bool IncludeNeighborhoods { get; set; } = false; // opsiyonel
+    }
+
+    public class StoreMarketCoverageCompositeCreateDto
+    {
+        public int StoreId { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+
+        public List<int> CountryIds { get; set; } = new();
+        public List<int> ProvinceIds { get; set; } = new();
+        public List<int> DistrictIds { get; set; } = new();
+        public List<int> NeighborhoodIds { get; set; } = new();
+        public List<int> StateIds { get; set; } = new();
+        public List<int> RegionIds { get; set; } = new();
+
+        public bool CascadeProvinceFromCountry { get; set; } = false;
+        public bool CascadeDistrictFromProvince { get; set; } = false;
+        public bool CascadeNeighborhoodFromDistrict { get; set; } = false;
+    }
 }

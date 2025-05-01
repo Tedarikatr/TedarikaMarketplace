@@ -4,21 +4,7 @@ namespace Services.Stores.Markets.IServices
 {
     public interface IStoreMarketCoverageService
     {
-        Task<int> AddCountryAsync(StoreMarketCountryCreateDto dto);
-        Task<int> AddProvinceAsync(StoreMarketProvinceCreateDto dto);
-        Task<int> AddDistrictAsync(StoreMarketDistrictCreateDto dto);
-        Task<int> AddNeighborhoodAsync(StoreMarketNeighborhoodCreateDto dto);
-        Task<int> AddRegionAsync(StoreMarketRegionCreateDto dto);
-        Task<int> AddStateAsync(StoreMarketStateCreateDto dto);
-
-        //Multi
-
-        Task<List<int>> AddCountrysMultiAsync(StoreMarketCountryMultiCreateDto dto);
-        Task<List<int>> AddProvincesMultiAsync(StoreMarketProvinceMultiCreateDto dto);
-        Task<List<int>> AddDistrictsMultiAsync(StoreMarketDistrictMultiCreateDto dto);
-        Task<List<int>> AddNeighborhoodsMultiAsync(StoreMarketNeighborhoodMultiCreateDto dto);
-        Task<List<int>> AddRegionsMultiAsync(StoreMarketRegionMultiCreateDto dto);
-        Task<List<int>> AddStatesMultiAsync(StoreMarketStateMultiCreateDto dto);
+        Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto);
 
         Task<List<StoreMarketCountryDto>> GetCountrysByStoreIdAsync(int storeId);
         Task<List<StoreMarketProvinceDto>> GetProvincesByStoreIdAsync(int storeId);

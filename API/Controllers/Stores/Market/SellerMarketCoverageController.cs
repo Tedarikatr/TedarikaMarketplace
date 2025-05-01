@@ -23,161 +23,28 @@ namespace API.Controllers.Stores.Market
             _logger = logger;
         }
 
-        [HttpPost("add-country")]
-        public async Task<IActionResult> AddCountry([FromBody] StoreMarketCountryCreateDto dto)
+        [HttpPost("add-coverage")]
+        public async Task<IActionResult> AddCoverage([FromBody] StoreMarketCoverageCompositeCreateDto dto)
         {
             try
             {
                 var storeId = await _userHelper.GetStoreId(User);
                 dto.StoreId = storeId;
-                var id = await _coverageService.AddCountryAsync(dto);
-                return Ok(new { Message = "Ülke kapsamı başarıyla eklendi.", Id = id });
+
+                var addedIds = await _coverageService.AddCompositeCoverageAsync(dto);
+
+                return Ok(new
+                {
+                    Message = "Kapsamlar başarıyla eklendi.",
+                    AddedCount = addedIds.Count,
+                    AddedIds = addedIds
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ülke kapsamı eklenirken hata oluştu.");
+                _logger.LogError(ex, "Toplu coverage eklenirken hata oluştu.");
                 return BadRequest(new { Error = ex.Message });
             }
-        }
-
-        [HttpPost("add-province")]
-        public async Task<IActionResult> AddProvince([FromBody] StoreMarketProvinceCreateDto dto)
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                dto.StoreId = storeId;
-                var id = await _coverageService.AddProvinceAsync(dto);
-                return Ok(new { Message = "İl kapsamı başarıyla eklendi.", Id = id });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İl kapsamı eklenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPost("add-district")]
-        public async Task<IActionResult> AddDistrict([FromBody] StoreMarketDistrictCreateDto dto)
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                dto.StoreId = storeId;
-                var id = await _coverageService.AddDistrictAsync(dto);
-                return Ok(new { Message = "İlçe kapsamı başarıyla eklendi.", Id = id });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İlçe kapsamı eklenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPost("add-neighborhood")]
-        public async Task<IActionResult> AddNeighborhood([FromBody] StoreMarketNeighborhoodCreateDto dto)
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                dto.StoreId = storeId;
-                var id = await _coverageService.AddNeighborhoodAsync(dto);
-                return Ok(new { Message = "Mahalle kapsamı başarıyla eklendi.", Id = id });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mahalle kapsamı eklenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPost("add-region")]
-        public async Task<IActionResult> AddRegion([FromBody] StoreMarketRegionCreateDto dto)
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                dto.StoreId = storeId;
-                var id = await _coverageService.AddRegionAsync(dto);
-                return Ok(new { Message = "Bölge kapsamı başarıyla eklendi.", Id = id });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge kapsamı eklenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPost("add-state")]
-        public async Task<IActionResult> AddState([FromBody] StoreMarketStateCreateDto dto)
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                dto.StoreId = storeId;
-                var id = await _coverageService.AddStateAsync(dto);
-                return Ok(new { Message = "Eyalet kapsamı başarıyla eklendi.", Id = id });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Eyalet kapsamı eklenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPost("add-multi-country")]
-        public async Task<IActionResult> AddMultiCountry([FromBody] StoreMarketCountryMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-            await _coverageService.AddCountrysMultiAsync(dto);
-            return Ok(new { message = "Ülkeler başarıyla eklendi." });
-        }
-
-        [HttpPost("add-multi-province")]
-        public async Task<IActionResult> AddMultiProvince([FromBody] StoreMarketProvinceMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-            await _coverageService.AddProvincesMultiAsync(dto);
-            return Ok(new { message = "İller başarıyla eklendi." });
-        }
-
-        [HttpPost("add-multi-district")]
-        public async Task<IActionResult> AddMultiDistrict([FromBody] StoreMarketDistrictMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-            await _coverageService.AddDistrictsMultiAsync(dto);
-            return Ok(new { message = "İlçeler başarıyla eklendi." });
-        }
-
-        [HttpPost("add-multi-neighborhood")]
-        public async Task<IActionResult> AddMultiNeighborhood([FromBody] StoreMarketNeighborhoodMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-            await _coverageService.AddNeighborhoodsMultiAsync(dto);
-            return Ok(new { message = "Mahalleler başarıyla eklendi." });
-        }
-
-        [HttpPost("add-multi-region")]
-        public async Task<IActionResult> AddMultiRegion([FromBody] StoreMarketRegionMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-            await _coverageService.AddRegionsMultiAsync(dto);
-            return Ok(new { message = "Bölgeler başarıyla eklendi." });
-        }
-
-        [HttpPost("add-multi-state")]
-        public async Task<IActionResult> AddMultiState([FromBody] StoreMarketStateMultiCreateDto dto)
-        {
-            var storeId = await _userHelper.GetStoreId(User);
-            dto.StoreId = storeId;
-
-            await _coverageService.AddStatesMultiAsync(dto);
-            return Ok(new { message = "Eyaletler başarıyla eklendi." });
         }
 
         [HttpGet("my-countries")]
