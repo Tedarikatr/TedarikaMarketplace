@@ -237,5 +237,21 @@
         public List<StoreMarketRegionDto> Regions { get; set; } = new();
     }
 
+    public class StoreMarketCoverageUpdateBaseDto
+    {
+        public int Id { get; set; }
+        public int DeliveryTimeFrame { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public enum CoverageType
+    {
+        Country,
+        Province,
+        District,
+        Neighborhood,
+        Region,
+        State
+    }
+
 
 }

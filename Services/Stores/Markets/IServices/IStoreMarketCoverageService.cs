@@ -8,12 +8,7 @@ namespace Services.Stores.Markets.IServices
 
         Task<StoreMarketCoverageHierarchyDto> GetCoverageHierarchyByStoreIdAsync(int storeId);
 
-        Task<bool> UpdateCountryAsync(StoreMarketCountryUpdateDto dto);
-        Task<bool> UpdateProvinceAsync(StoreMarketProvinceUpdateDto dto);
-        Task<bool> UpdateDistrictAsync(StoreMarketDistrictUpdateDto dto);
-        Task<bool> UpdateNeighborhoodAsync(StoreMarketNeighborhoodUpdateDto dto);
-        Task<bool> UpdateRegionAsync(StoreMarketRegionUpdateDto dto);
-        Task<bool> UpdateStateAsync(StoreMarketStateUpdateDto dto);
+        Task<bool> UpdateCoverageAsync(StoreMarketCoverageUpdateBaseDto dto, CoverageType type);
 
         Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto);
 

@@ -88,95 +88,45 @@ namespace API.Controllers.Stores.Market
         }
 
 
-        [HttpPut("update-country")]
-        public async Task<IActionResult> UpdateCountry([FromBody] StoreMarketCountryUpdateDto dto)
+        [HttpPut("update-coverage/{type}")]
+        public async Task<IActionResult> UpdateCoverage([FromRoute] CoverageType type, [FromBody] StoreMarketCoverageUpdateBaseDto dto)
         {
             try
             {
-                var result = await _coverageService.UpdateCountryAsync(dto);
-                return result ? Ok(new { Message = "Ülke kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
+                _logger.LogInformation("🛠️ Coverage güncelleme isteği alındı. Type: {Type}, Id: {Id}", type, dto.Id);
+
+                var result = await _coverageService.UpdateCoverageAsync(dto, type);
+
+                if (result)
+                {
+                    return Ok(new
+                    {
+                        Message = $"{type} kapsamı başarıyla güncellendi.",
+                        CoverageType = type.ToString(),
+                        CoverageId = dto.Id
+                    });
+                }
+                else
+                {
+                    return NotFound(new
+                    {
+                        Message = $"{type} kapsamı bulunamadı.",
+                        CoverageType = type.ToString(),
+                        CoverageId = dto.Id
+                    });
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ülke kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
+                _logger.LogError(ex, "❌ Coverage güncelleme sırasında hata oluştu. Type: {Type}, Id: {Id}", type, dto.Id);
+                return StatusCode(500, new
+                {
+                    Error = "Kapsam güncellenirken beklenmeyen bir hata oluştu.",
+                    Exception = ex.Message
+                });
             }
         }
 
-        [HttpPut("update-province")]
-        public async Task<IActionResult> UpdateProvince([FromBody] StoreMarketProvinceUpdateDto dto)
-        {
-            try
-            {
-                var result = await _coverageService.UpdateProvinceAsync(dto);
-                return result ? Ok(new { Message = "İl kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İl kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPut("update-district")]
-        public async Task<IActionResult> UpdateDistrict([FromBody] StoreMarketDistrictUpdateDto dto)
-        {
-            try
-            {
-                var result = await _coverageService.UpdateDistrictAsync(dto);
-                return result ? Ok(new { Message = "İlçe kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İlçe kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPut("update-neighborhood")]
-        public async Task<IActionResult> UpdateNeighborhood([FromBody] StoreMarketNeighborhoodUpdateDto dto)
-        {
-            try
-            {
-                var result = await _coverageService.UpdateNeighborhoodAsync(dto);
-                return result ? Ok(new { Message = "Mahalle kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mahalle kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPut("update-region")]
-        public async Task<IActionResult> UpdateRegion([FromBody] StoreMarketRegionUpdateDto dto)
-        {
-            try
-            {
-                var result = await _coverageService.UpdateRegionAsync(dto);
-                return result ? Ok(new { Message = "Bölge kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpPut("update-state")]
-        public async Task<IActionResult> UpdateState([FromBody] StoreMarketStateUpdateDto dto)
-        {
-            try
-            {
-                var result = await _coverageService.UpdateStateAsync(dto);
-                return result ? Ok(new { Message = "Eyalet kapsamı güncellendi." }) : BadRequest("Güncelleme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Eyalet kapsamı güncellenirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
 
 
         [HttpPost("delete-coverage")]

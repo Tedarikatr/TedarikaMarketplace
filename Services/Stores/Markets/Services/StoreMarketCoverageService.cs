@@ -275,137 +275,101 @@ namespace Services.Stores.Markets.Services
         }
 
 
-        public async Task<bool> UpdateCountryAsync(StoreMarketCountryUpdateDto dto)
+        public async Task<bool> UpdateCoverageAsync(StoreMarketCoverageUpdateBaseDto dto, CoverageType type)
         {
             try
             {
-                var entity = await _countryRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
+                _logger.LogInformation("🔧 Kapsam güncelleme işlemi başlatıldı. Tip: {Type}, Id: {Id}", type, dto.Id);
+
+                switch (type)
                 {
-                    _logger.LogWarning("Country kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
+                    case CoverageType.Country:
+                        var country = await _countryRepo.GetByIdAsync(dto.Id);
+                        if (country == null)
+                        {
+                            _logger.LogWarning("❗ Country bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        country.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        country.IsActive = dto.IsActive;
+                        await _countryRepo.UpdateAsync(country);
+                        break;
+
+                    case CoverageType.Province:
+                        var province = await _provinceRepo.GetByIdAsync(dto.Id);
+                        if (province == null)
+                        {
+                            _logger.LogWarning("❗ Province bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        province.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        province.IsActive = dto.IsActive;
+                        await _provinceRepo.UpdateAsync(province);
+                        break;
+
+                    case CoverageType.District:
+                        var district = await _districtRepo.GetByIdAsync(dto.Id);
+                        if (district == null)
+                        {
+                            _logger.LogWarning("❗ District bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        district.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        district.IsActive = dto.IsActive;
+                        await _districtRepo.UpdateAsync(district);
+                        break;
+
+                    case CoverageType.Neighborhood:
+                        var neighborhood = await _neighborhoodRepo.GetByIdAsync(dto.Id);
+                        if (neighborhood == null)
+                        {
+                            _logger.LogWarning("❗ Neighborhood bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        neighborhood.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        neighborhood.IsActive = dto.IsActive;
+                        await _neighborhoodRepo.UpdateAsync(neighborhood);
+                        break;
+
+                    case CoverageType.Region:
+                        var region = await _regionRepo.GetByIdAsync(dto.Id);
+                        if (region == null)
+                        {
+                            _logger.LogWarning("❗ Region bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        region.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        region.IsActive = dto.IsActive;
+                        await _regionRepo.UpdateAsync(region);
+                        break;
+
+                    case CoverageType.State:
+                        var state = await _stateRepo.GetByIdAsync(dto.Id);
+                        if (state == null)
+                        {
+                            _logger.LogWarning("❗ State bulunamadı. Id: {Id}", dto.Id);
+                            return false;
+                        }
+                        state.DeliveryTimeFrame = dto.DeliveryTimeFrame;
+                        state.IsActive = dto.IsActive;
+                        await _stateRepo.UpdateAsync(state);
+                        break;
+
+                    default:
+                        _logger.LogWarning("⚠️ Geçersiz coverage tipi girildi: {Type}", type);
+                        return false;
                 }
-                _mapper.Map(dto, entity);
-                await _countryRepo.UpdateAsync(entity);
-                _logger.LogInformation("Country kapsamı güncellendi. Id: {Id}", dto.Id);
+
+                _logger.LogInformation("✅ Kapsam güncelleme başarılı. Tip: {Type}, Id: {Id}", type, dto.Id);
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Country kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
+                _logger.LogError(ex, "❌ Kapsam güncellenirken hata oluştu. Tip: {Type}, Id: {Id}", type, dto.Id);
+                throw new ApplicationException("Kapsam güncelleme işlemi başarısız oldu.", ex);
             }
         }
 
-        public async Task<bool> UpdateProvinceAsync(StoreMarketProvinceUpdateDto dto)
-        {
-            try
-            {
-                var entity = await _provinceRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Province kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
-                }
-                _mapper.Map(dto, entity);
-                await _provinceRepo.UpdateAsync(entity);
-                _logger.LogInformation("Province kapsamı güncellendi. Id: {Id}", dto.Id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Province kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateDistrictAsync(StoreMarketDistrictUpdateDto dto)
-        {
-            try
-            {
-                var entity = await _districtRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("District kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
-                }
-                _mapper.Map(dto, entity);
-                await _districtRepo.UpdateAsync(entity);
-                _logger.LogInformation("District kapsamı güncellendi. Id: {Id}", dto.Id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "District kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateNeighborhoodAsync(StoreMarketNeighborhoodUpdateDto dto)
-        {
-            try
-            {
-                var entity = await _neighborhoodRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Neighborhood kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
-                }
-                _mapper.Map(dto, entity);
-                await _neighborhoodRepo.UpdateAsync(entity);
-                _logger.LogInformation("Neighborhood kapsamı güncellendi. Id: {Id}", dto.Id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Neighborhood kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateRegionAsync(StoreMarketRegionUpdateDto dto)
-        {
-            try
-            {
-                var entity = await _regionRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Region kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
-                }
-                _mapper.Map(dto, entity);
-                await _regionRepo.UpdateAsync(entity);
-                _logger.LogInformation("Region kapsamı güncellendi. Id: {Id}", dto.Id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Region kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateStateAsync(StoreMarketStateUpdateDto dto)
-        {
-            try
-            {
-                var entity = await _stateRepo.GetByIdAsync(dto.Id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("State kapsamı bulunamadı. Id: {Id}", dto.Id);
-                    return false;
-                }
-                _mapper.Map(dto, entity);
-                await _stateRepo.UpdateAsync(entity);
-                _logger.LogInformation("State kapsamı güncellendi. Id: {Id}", dto.Id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "State kapsamı güncellenirken hata oluştu. Id: {Id}", dto.Id);
-                throw;
-            }
-        }
 
         public async Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto)
         {
