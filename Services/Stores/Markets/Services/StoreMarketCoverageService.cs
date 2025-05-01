@@ -226,89 +226,54 @@ namespace Services.Stores.Markets.Services
             return addedIds;
         }
 
-        public async Task<List<StoreMarketCountryDto>> GetCountrysByStoreIdAsync(int storeId)
+        public async Task<StoreMarketCoverageHierarchyDto> GetCoverageHierarchyByStoreIdAsync(int storeId)
         {
+            _logger.LogInformation("📥 Store kapsam hiyerarşisi alınmaya çalışılıyor. StoreId: {StoreId}", storeId);
+
+            var hierarchyDto = new StoreMarketCoverageHierarchyDto();
+
             try
             {
-                var data = await _countryRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketCountryDto>>(data);
+                // Ülkeler
+                var countries = await _countryRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.Countries = _mapper.Map<List<StoreMarketCountryDto>>(countries);
+                _logger.LogInformation("✅ {Count} ülke getirildi.", hierarchyDto.Countries.Count);
+
+                // İller
+                var provinces = await _provinceRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.Provinces = _mapper.Map<List<StoreMarketProvinceDto>>(provinces);
+                _logger.LogInformation("✅ {Count} il getirildi.", hierarchyDto.Provinces.Count);
+
+                // İlçeler
+                var districts = await _districtRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.Districts = _mapper.Map<List<StoreMarketDistrictDto>>(districts);
+                _logger.LogInformation("✅ {Count} ilçe getirildi.", hierarchyDto.Districts.Count);
+
+                // Mahalleler
+                var neighborhoods = await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.Neighborhoods = _mapper.Map<List<StoreMarketNeighborhoodDto>>(neighborhoods);
+                _logger.LogInformation("✅ {Count} mahalle getirildi.", hierarchyDto.Neighborhoods.Count);
+
+                // Eyaletler
+                var states = await _stateRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.States = _mapper.Map<List<StoreMarketStateDto>>(states);
+                _logger.LogInformation("✅ {Count} eyalet getirildi.", hierarchyDto.States.Count);
+
+                // Bölgeler
+                var regions = await _regionRepo.FindAsync(x => x.StoreId == storeId);
+                hierarchyDto.Regions = _mapper.Map<List<StoreMarketRegionDto>>(regions);
+                _logger.LogInformation("✅ {Count} bölge getirildi.", hierarchyDto.Regions.Count);
+
+                _logger.LogInformation("🎯 Store kapsam verileri başarıyla yüklendi. StoreId: {StoreId}", storeId);
+                return hierarchyDto;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Country kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
+                _logger.LogError(ex, "❌ Store kapsam hiyerarşisi getirilirken hata oluştu. StoreId: {StoreId}", storeId);
+                throw new ApplicationException("Mağaza kapsam bilgileri alınırken bir hata oluştu.", ex);
             }
         }
 
-        public async Task<List<StoreMarketProvinceDto>> GetProvincesByStoreIdAsync(int storeId)
-        {
-            try
-            {
-                var data = await _provinceRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketProvinceDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Province kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
-            }
-        }
-
-        public async Task<List<StoreMarketDistrictDto>> GetDistrictsByStoreIdAsync(int storeId)
-        {
-            try
-            {
-                var data = await _districtRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketDistrictDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "District kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
-            }
-        }
-
-        public async Task<List<StoreMarketNeighborhoodDto>> GetNeighborhoodsByStoreIdAsync(int storeId)
-        {
-            try
-            {
-                var data = await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketNeighborhoodDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Neighborhood kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
-            }
-        }
-
-        public async Task<List<StoreMarketRegionDto>> GetRegionsByStoreIdAsync(int storeId)
-        {
-            try
-            {
-                var data = await _regionRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketRegionDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Region kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
-            }
-        }
-
-        public async Task<List<StoreMarketStateDto>> GetStatesByStoreIdAsync(int storeId)
-        {
-            try
-            {
-                var data = await _stateRepo.FindAsync(x => x.StoreId == storeId);
-                return _mapper.Map<List<StoreMarketStateDto>>(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "State kapsamları getirilirken hata oluştu. StoreId: {StoreId}", storeId);
-                throw;
-            }
-        }
 
         public async Task<bool> UpdateCountryAsync(StoreMarketCountryUpdateDto dto)
         {

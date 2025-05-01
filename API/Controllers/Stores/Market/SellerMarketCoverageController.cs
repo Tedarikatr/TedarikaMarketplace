@@ -18,9 +18,10 @@ namespace API.Controllers.Stores.Market
         private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerMarketCoverageController> _logger;
 
-        public SellerMarketCoverageController(IStoreMarketCoverageService coverageService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
+        public SellerMarketCoverageController(IStoreMarketCoverageService coverageService, IMarketLocationService marketLocationService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
         {
             _coverageService = coverageService;
+            _marketLocationService = marketLocationService;
             _userHelper = userHelper;
             _logger = logger;
         }
@@ -70,101 +71,22 @@ namespace API.Controllers.Stores.Market
             }
         }
 
-        [HttpGet("my-countries")]
-        public async Task<IActionResult> GetMyCountries()
+        [HttpGet("my-coverage-hierarchy")]
+        public async Task<IActionResult> GetMyCoverageHierarchy()
         {
             try
             {
                 var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetCountrysByStoreIdAsync(storeId);
-                return Ok(result);
+                var data = await _coverageService.GetCoverageHierarchyByStoreIdAsync(storeId);
+                return Ok(data);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ülke kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
+                _logger.LogError(ex, "Kapsam hiyerarşisi getirilirken hata.");
+                return StatusCode(500, new { Error = ex.Message });
             }
         }
 
-        [HttpGet("my-provinces")]
-        public async Task<IActionResult> GetMyProvinces()
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetProvincesByStoreIdAsync(storeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İl kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpGet("my-districts")]
-        public async Task<IActionResult> GetMyDistricts()
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetDistrictsByStoreIdAsync(storeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İlçe kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpGet("my-neighborhoods")]
-        public async Task<IActionResult> GetMyNeighborhoods()
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetNeighborhoodsByStoreIdAsync(storeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mahalle kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpGet("my-regions")]
-        public async Task<IActionResult> GetMyRegions()
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetRegionsByStoreIdAsync(storeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpGet("my-states")]
-        public async Task<IActionResult> GetMyStates()
-        {
-            try
-            {
-                var storeId = await _userHelper.GetStoreId(User);
-                var result = await _coverageService.GetStatesByStoreIdAsync(storeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Eyalet kapsamları getirilirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
 
         [HttpPut("update-country")]
         public async Task<IActionResult> UpdateCountry([FromBody] StoreMarketCountryUpdateDto dto)

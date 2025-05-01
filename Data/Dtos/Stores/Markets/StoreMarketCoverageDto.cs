@@ -227,4 +227,15 @@
         public List<int> RegionIds { get; set; } = new();
     }
 
+    public class StoreMarketCoverageHierarchyDto
+    {
+        public List<StoreMarketCountryDto> Countries { get; set; } = new();
+        public List<StoreMarketProvinceDto> Provinces { get; set; } = new();
+        public List<StoreMarketDistrictDto> Districts { get; set; } = new();
+        public List<StoreMarketNeighborhoodDto> Neighborhoods { get; set; } = new();
+        public List<StoreMarketStateDto> States { get; set; } = new();
+        public List<StoreMarketRegionDto> Regions { get; set; } = new();
+    }
+
+
 }
