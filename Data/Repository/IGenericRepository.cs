@@ -11,6 +11,7 @@ namespace Data.Repository
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
         Task RemoveAsync(T entity);
+        Task RemoveRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);
         Task<bool> RemoveBoolAsync(T entity);
         Task<bool> UpdateBoolAsync(T entity); 

@@ -2,6 +2,7 @@
 using Data.Dtos.Stores.Markets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Markets.IServices;
 using Services.Stores.Markets.IServices;
 
 namespace API.Controllers.Stores.Market
@@ -13,6 +14,7 @@ namespace API.Controllers.Stores.Market
     public class SellerMarketCoverageController : ControllerBase
     {
         private readonly IStoreMarketCoverageService _coverageService;
+        private readonly IMarketLocationService _marketLocationService;
         private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerMarketCoverageController> _logger;
 
@@ -21,6 +23,27 @@ namespace API.Controllers.Stores.Market
             _coverageService = coverageService;
             _userHelper = userHelper;
             _logger = logger;
+        }
+
+        [HttpGet("location-hierarchy")]
+        public async Task<IActionResult> GetFullLocationHierarchy()
+        {
+            try
+            {
+                _logger.LogInformation("🌍 Lokasyon hiyerarşisi yükleniyor...");
+                var result = await _marketLocationService.GetFullLocationHierarchyAsync();
+
+                return Ok(new
+                {
+                    Message = "Lokasyon verileri başarıyla getirildi.",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Lokasyon hiyerarşisi yüklenirken hata oluştu.");
+                return StatusCode(500, new { Error = "Veriler getirilirken bir hata oluştu. Lütfen tekrar deneyiniz." });
+            }
         }
 
         [HttpPost("add-coverage")]
@@ -232,95 +255,51 @@ namespace API.Controllers.Stores.Market
                 return BadRequest(new { Error = ex.Message });
             }
         }
-        [HttpDelete("delete-country/{id}")]
-        public async Task<IActionResult> DeleteCountry(int id)
+
+
+        [HttpPost("delete-coverage")]
+        public async Task<IActionResult> DeleteCompositeCoverage([FromBody] StoreMarketCoverageCompositeDeleteDto dto)
         {
             try
             {
-                var result = await _coverageService.DeleteCountryAsync(id);
-                return result ? Ok(new { Message = "Ülke kapsamı silindi." }) : BadRequest("Silme başarısız.");
+                var storeId = await _userHelper.GetStoreId(User);
+                dto.StoreId = storeId;
+
+                var deletedCount = await _coverageService.DeleteCompositeCoverageAsync(dto);
+
+                if (deletedCount == 0)
+                {
+                    return NotFound(new
+                    {
+                        Message = "Silinecek kapsam bulunamadı.",
+                        DeletedCount = 0
+                    });
+                }
+
+                return Ok(new
+                {
+                    Message = "Kapsamlar başarıyla silindi.",
+                    DeletedCount = deletedCount
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "⚠️ Composite silme işleminde uygulama hatası.");
+                return BadRequest(new
+                {
+                    Message = "Kapsam silinirken bir hata oluştu.",
+                    Error = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ülke kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
+                _logger.LogError(ex, "❌ Composite silme işleminde beklenmeyen hata.");
+                return StatusCode(500, new
+                {
+                    Message = "Sunucu hatası. Lütfen daha sonra tekrar deneyin.",
+                    Error = ex.Message
+                });
             }
         }
-
-        [HttpDelete("delete-province/{id}")]
-        public async Task<IActionResult> DeleteProvince(int id)
-        {
-            try
-            {
-                var result = await _coverageService.DeleteProvinceAsync(id);
-                return result ? Ok(new { Message = "İl kapsamı silindi." }) : BadRequest("Silme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İl kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpDelete("delete-district/{id}")]
-        public async Task<IActionResult> DeleteDistrict(int id)
-        {
-            try
-            {
-                var result = await _coverageService.DeleteDistrictAsync(id);
-                return result ? Ok(new { Message = "İlçe kapsamı silindi." }) : BadRequest("Silme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "İlçe kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpDelete("delete-neighborhood/{id}")]
-        public async Task<IActionResult> DeleteNeighborhood(int id)
-        {
-            try
-            {
-                var result = await _coverageService.DeleteNeighborhoodAsync(id);
-                return result ? Ok(new { Message = "Mahalle kapsamı silindi." }) : BadRequest("Silme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mahalle kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpDelete("delete-region/{id}")]
-        public async Task<IActionResult> DeleteRegion(int id)
-        {
-            try
-            {
-                var result = await _coverageService.DeleteRegionAsync(id);
-                return result ? Ok(new { Message = "Bölge kapsamı silindi." }) : BadRequest("Silme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
-        [HttpDelete("delete-state/{id}")]
-        public async Task<IActionResult> DeleteState(int id)
-        {
-            try
-            {
-                var result = await _coverageService.DeleteStateAsync(id);
-                return result ? Ok(new { Message = "Eyalet kapsamı silindi." }) : BadRequest("Silme başarısız.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Eyalet kapsamı silinirken hata oluştu.");
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-
     }
 }

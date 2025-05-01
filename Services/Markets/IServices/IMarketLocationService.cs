@@ -16,7 +16,8 @@ namespace Services.Markets.IServices
         Task<bool> ToggleNeighborhoodStatusAsync(int neighborhoodId, bool isActive);
         Task<bool> ToggleStateStatusAsync(int stateId, bool isActive);
 
-
+        Task<MarketLocationHierarchyDto> GetFullLocationHierarchyAsync();
+        Task<List<RegionDto>> GetCountriesByRegionIdAsync(int regionId);
         Task<List<CountryDto>> GetAllCountriesAsync();
         Task<List<ProvinceDto>> GetProvincesByCountryIdAsync(int countryId);
         Task<List<DistrictDto>> GetDistrictsByProvinceIdAsync(int provinceId);

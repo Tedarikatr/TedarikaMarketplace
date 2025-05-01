@@ -51,6 +51,11 @@ namespace Data.Repository
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
         }
+        public async Task RemoveRangeAsync(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task UpdateAsync(T entity)
         {

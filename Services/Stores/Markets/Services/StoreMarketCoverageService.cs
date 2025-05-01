@@ -442,125 +442,95 @@ namespace Services.Stores.Markets.Services
             }
         }
 
-        public async Task<bool> DeleteCountryAsync(int id)
+        public async Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto)
         {
+            var totalDeleted = 0;
+
             try
             {
-                var entity = await _countryRepo.GetByIdAsync(id);
-                if (entity == null)
+                _logger.LogInformation("📦 Composite silme işlemi başlatıldı. StoreId: {StoreId}", dto.StoreId);
+
+                // 1️⃣ Ülkeler
+                if (dto.CountryIds?.Any() == true)
                 {
-                    _logger.LogWarning("Country kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
+                    var entities = await _countryRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.CountryIds.Contains(x.CountryId));
+                    if (entities.Any())
+                    {
+                        await _countryRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} ülke kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
                 }
-                await _countryRepo.RemoveAsync(entity);
-                _logger.LogInformation("Country kapsamı silindi. Id: {Id}", id);
-                return true;
+
+                // 2️⃣ İller
+                if (dto.ProvinceIds?.Any() == true)
+                {
+                    var entities = await _provinceRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.ProvinceIds.Contains(x.ProvinceId));
+                    if (entities.Any())
+                    {
+                        await _provinceRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} il kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
+                }
+
+                // 3️⃣ İlçeler
+                if (dto.DistrictIds?.Any() == true)
+                {
+                    var entities = await _districtRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.DistrictIds.Contains(x.DistrictId));
+                    if (entities.Any())
+                    {
+                        await _districtRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} ilçe kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
+                }
+
+                // 4️⃣ Mahalleler
+                if (dto.NeighborhoodIds?.Any() == true)
+                {
+                    var entities = await _neighborhoodRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.NeighborhoodIds.Contains(x.NeighborhoodId));
+                    if (entities.Any())
+                    {
+                        await _neighborhoodRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} mahalle kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
+                }
+
+                // 5️⃣ Eyaletler
+                if (dto.StateIds?.Any() == true)
+                {
+                    var entities = await _stateRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.StateIds.Contains(x.StateId));
+                    if (entities.Any())
+                    {
+                        await _stateRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} eyalet kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
+                }
+
+                // 6️⃣ Bölgeler
+                if (dto.RegionIds?.Any() == true)
+                {
+                    var entities = await _regionRepo.FindAsync(x => x.StoreId == dto.StoreId && dto.RegionIds.Contains(x.RegionId));
+                    if (entities.Any())
+                    {
+                        await _regionRepo.RemoveRangeAsync(entities);
+                        totalDeleted += entities.Count();
+                        _logger.LogInformation("✅ {Count} bölge kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
+                    }
+                }
+
+                _logger.LogInformation("🧾 Composite silme işlemi tamamlandı. Toplam silinen kayıt: {TotalDeleted}. StoreId: {StoreId}", totalDeleted, dto.StoreId);
+                return totalDeleted;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Country kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
+                _logger.LogError(ex, "❌ Composite silme sırasında beklenmeyen hata oluştu. StoreId: {StoreId}", dto.StoreId);
+                throw new InvalidOperationException("Kapsam silme işlemi sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.", ex);
             }
         }
-        public async Task<bool> DeleteProvinceAsync(int id)
-        {
-            try
-            {
-                var entity = await _provinceRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Province kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
-                }
-                await _provinceRepo.RemoveAsync(entity);
-                _logger.LogInformation("Province kapsamı silindi. Id: {Id}", id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Province kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
-            }
-        }
-        public async Task<bool> DeleteDistrictAsync(int id)
-        {
-            try
-            {
-                var entity = await _districtRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("District kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
-                }
-                await _districtRepo.RemoveAsync(entity);
-                _logger.LogInformation("District kapsamı silindi. Id: {Id}", id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "District kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
-            }
-        }
-        public async Task<bool> DeleteNeighborhoodAsync(int id)
-        {
-            try
-            {
-                var entity = await _neighborhoodRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Neighborhood kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
-                }
-                await _neighborhoodRepo.RemoveAsync(entity);
-                _logger.LogInformation("Neighborhood kapsamı silindi. Id: {Id}", id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Neighborhood kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
-            }
-        }
-        public async Task<bool> DeleteRegionAsync(int id)
-        {
-            try
-            {
-                var entity = await _regionRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("Region kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
-                }
-                await _regionRepo.RemoveAsync(entity);
-                _logger.LogInformation("Region kapsamı silindi. Id: {Id}", id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Region kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
-            }
-        }
-        public async Task<bool> DeleteStateAsync(int id)
-        {
-            try
-            {
-                var entity = await _stateRepo.GetByIdAsync(id);
-                if (entity == null)
-                {
-                    _logger.LogWarning("State kapsamı bulunamadı. Id: {Id}", id);
-                    return false;
-                }
-                await _stateRepo.RemoveAsync(entity);
-                _logger.LogInformation("State kapsamı silindi. Id: {Id}", id);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "State kapsamı silinirken hata oluştu. Id: {Id}", id);
-                throw;
-            }
-        }
+
     }
 }

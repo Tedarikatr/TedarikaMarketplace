@@ -1,5 +1,13 @@
 ﻿namespace Data.Dtos.Markets
 {
+    public class RegionDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public bool IsActive { get; set; }
+    }
+
     public class CountryDto
     {
         public int Id { get; set; }
@@ -81,4 +89,15 @@
         public string Name { get; set; }
         public int CountryId { get; set; }
     }
+
+    public class MarketLocationHierarchyDto
+    {
+        public List<RegionDto> Regions { get; set; }
+        public List<CountryDto> Countries { get; set; }
+        public List<StateDto> States { get; set; }
+        public List<ProvinceDto> Provinces { get; set; }
+        public List<DistrictDto> Districts { get; set; }
+        public List<NeighborhoodDto> Neighborhoods { get; set; }
+    }
+
 }

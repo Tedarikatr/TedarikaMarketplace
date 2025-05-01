@@ -20,11 +20,7 @@ namespace Services.Stores.Markets.IServices
         Task<bool> UpdateRegionAsync(StoreMarketRegionUpdateDto dto);
         Task<bool> UpdateStateAsync(StoreMarketStateUpdateDto dto);
 
-        Task<bool> DeleteCountryAsync(int id);
-        Task<bool> DeleteProvinceAsync(int id);
-        Task<bool> DeleteDistrictAsync(int id);
-        Task<bool> DeleteNeighborhoodAsync(int id);
-        Task<bool> DeleteRegionAsync(int id);
-        Task<bool> DeleteStateAsync(int id);
+        Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto);
+
     }
 }

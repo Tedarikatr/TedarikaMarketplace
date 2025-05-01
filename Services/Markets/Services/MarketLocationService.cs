@@ -50,7 +50,6 @@ namespace Services.Markets.Services
             return country.Id;
         }
 
-
         public async Task<int> AddProvinceAsync(ProvinceCreateDto dto)
         {
             var province = new Province
@@ -80,7 +79,6 @@ namespace Services.Markets.Services
             return district.Id;
         }
 
-
         public async Task<int> AddNeighborhoodAsync(NeighborhoodCreateDto dto)
         {
             var neighborhood = new Neighborhood
@@ -95,7 +93,6 @@ namespace Services.Markets.Services
             _logger.LogInformation("Yeni mahalle eklendi: {Name}", dto.Name);
             return neighborhood.Id;
         }
-
 
         public async Task<int> AddStateAsync(StateCreateDto dto)
         {
@@ -171,6 +168,38 @@ namespace Services.Markets.Services
             return true;
         }
 
+        public async Task<MarketLocationHierarchyDto> GetFullLocationHierarchyAsync()
+        {
+            var regions = await _regionRepo.GetAllAsync();
+            var countries = await _countryRepo.GetAllAsync();
+            var states = await _stateRepo.GetAllAsync();
+            var provinces = await _provinceRepo.GetAllAsync();
+            var districts = await _districtRepo.GetAllAsync();
+            var neighborhoods = await _neighborhoodRepo.GetAllAsync();
+
+            return new MarketLocationHierarchyDto
+            {
+                Regions = regions.Select(r => new RegionDto { Id = r.Id, Name = r.Name }).ToList(),
+                Countries = countries.Select(c => new CountryDto { Id = c.Id, Name = c.Name, Code = c.Code }).ToList(),
+                States = states.Select(s => new StateDto { Id = s.Id, Name = s.Name, CountryId = s.CountryId }).ToList(),
+                Provinces = provinces.Select(p => new ProvinceDto { Id = p.Id, Name = p.Name, CountryId = p.CountryId }).ToList(),
+                Districts = districts.Select(d => new DistrictDto { Id = d.Id, Name = d.Name, ProvinceId = d.ProvinceId }).ToList(),
+                Neighborhoods = neighborhoods.Select(n => new NeighborhoodDto { Id = n.Id, Name = n.Name, DistrictId = n.DistrictId }).ToList()
+            };
+        }
+
+        public async Task<List<RegionDto>> GetCountriesByRegionIdAsync(int regionId)
+        {
+            var countries = await _countryRepo.FindAsync(c => c.RegionId == regionId);
+            return countries.Select(c => new RegionDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Code = c.Code,
+                IsActive = c.IsActive
+            }).ToList();
+        }
+
         public async Task<List<CountryDto>> GetAllCountriesAsync()
         {
             var countries = await _countryRepo.GetAllAsync();
@@ -192,7 +221,6 @@ namespace Services.Markets.Services
                 CountryId = p.CountryId,
             }).ToList();
         }
-
 
         public async Task<List<DistrictDto>> GetDistrictsByProvinceIdAsync(int provinceId)
         {
@@ -339,10 +367,5 @@ namespace Services.Markets.Services
             await _regionRepo.RemoveAsync(entity);
             return true;
         }
-
-
-
-
-
     }
 }

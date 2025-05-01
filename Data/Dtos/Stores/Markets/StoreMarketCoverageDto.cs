@@ -214,4 +214,17 @@
         public bool CascadeDistrictFromProvince { get; set; } = false;
         public bool CascadeNeighborhoodFromDistrict { get; set; } = false;
     }
+
+    public class StoreMarketCoverageCompositeDeleteDto
+    {
+        public int StoreId { get; set; }
+
+        public List<int> CountryIds { get; set; } = new();
+        public List<int> ProvinceIds { get; set; } = new();
+        public List<int> DistrictIds { get; set; } = new();
+        public List<int> NeighborhoodIds { get; set; } = new();
+        public List<int> StateIds { get; set; } = new();
+        public List<int> RegionIds { get; set; } = new();
+    }
+
 }
