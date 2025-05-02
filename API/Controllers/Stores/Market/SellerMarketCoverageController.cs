@@ -26,27 +26,6 @@ namespace API.Controllers.Stores.Market
             _logger = logger;
         }
 
-        [HttpGet("location-hierarchy")]
-        public async Task<IActionResult> GetFullLocationHierarchy()
-        {
-            try
-            {
-                _logger.LogInformation("🌍 Lokasyon hiyerarşisi yükleniyor...");
-                var result = await _marketLocationService.GetFullLocationHierarchyAsync();
-
-                return Ok(new
-                {
-                    Message = "Lokasyon verileri başarıyla getirildi.",
-                    Data = result
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "❌ Lokasyon hiyerarşisi yüklenirken hata oluştu.");
-                return StatusCode(500, new { Error = "Veriler getirilirken bir hata oluştu. Lütfen tekrar deneyiniz." });
-            }
-        }
-
         [HttpPost("add-coverage")]
         public async Task<IActionResult> AddCoverage([FromBody] StoreMarketCoverageCompositeCreateDto dto)
         {
@@ -87,7 +66,6 @@ namespace API.Controllers.Stores.Market
             }
         }
 
-
         [HttpPut("update-coverage/{type}")]
         public async Task<IActionResult> UpdateCoverage([FromRoute] CoverageType type, [FromBody] StoreMarketCoverageUpdateBaseDto dto)
         {
@@ -126,8 +104,6 @@ namespace API.Controllers.Stores.Market
                 });
             }
         }
-
-
 
         [HttpPost("delete-coverage")]
         public async Task<IActionResult> DeleteCompositeCoverage([FromBody] StoreMarketCoverageCompositeDeleteDto dto)

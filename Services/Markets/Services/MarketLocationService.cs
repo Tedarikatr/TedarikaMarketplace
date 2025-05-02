@@ -212,26 +212,27 @@ namespace Services.Markets.Services
             }
         }
 
-        public async Task<List<RegionDto>> GetCountriesByRegionIdAsync(int regionId)
+        public async Task<List<RegionDto>> GetRegions()
+        {
+            var regions = await _regionRepo.GetAllAsync();
+            return regions.Select(r => new RegionDto()
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Code = r.Code,
+                IsActive = r.IsActive,
+            }).ToList();   
+        }
+
+        public async Task<List<CountryDto>> GetCountriesByRegionIdAsync(int regionId)
         {
             var countries = await _countryRepo.FindAsync(c => c.RegionId == regionId);
-            return countries.Select(c => new RegionDto
+            return countries.Select(c => new CountryDto
             {
                 Id = c.Id,
                 Name = c.Name,
                 Code = c.Code,
                 IsActive = c.IsActive
-            }).ToList();
-        }
-
-        public async Task<List<CountryDto>> GetAllCountriesAsync()
-        {
-            var countries = await _countryRepo.GetAllAsync();
-            return countries.Select(c => new CountryDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Code = c.Code
             }).ToList();
         }
 
@@ -280,6 +281,9 @@ namespace Services.Markets.Services
                 CountryId = s.CountryId
             }).ToList();
         }
+
+
+
 
         public async Task<bool> UpdateCountryAsync(int id, CountryCreateDto dto)
         {

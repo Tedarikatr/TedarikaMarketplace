@@ -87,26 +87,7 @@ namespace API.Controllers.Markets
             return result ? Ok() : BadRequest();
         }
 
-        // Listeleme
-        [HttpGet("countries")]
-        public async Task<IActionResult> GetCountries() => Ok(await _locationService.GetAllCountriesAsync());
-
-        [HttpGet("provinces/{countryId}")]
-        public async Task<IActionResult> GetProvinces(int countryId) => Ok(await _locationService.GetProvincesByCountryIdAsync(countryId));
-
-        [HttpGet("districts/{provinceId}")]
-        public async Task<IActionResult> GetDistricts(int provinceId) => Ok(await _locationService.GetDistrictsByProvinceIdAsync(provinceId));
-
-        [HttpGet("neighborhoods/{districtId}")]
-        public async Task<IActionResult> GetNeighborhoods(int districtId) => Ok(await _locationService.GetNeighborhoodsByDistrictIdAsync(districtId));
-
-        [HttpGet("country/{countryId}/states")]
-        public async Task<IActionResult> GetStatesByCountry(int countryId)
-        {
-            var states = await _locationService.GetStatesByCountryIdAsync(countryId);
-            return Ok(states);
-        }
-
+       
         // Silme
         [HttpDelete("countries/{id}")]
         public async Task<IActionResult> DeleteCountry(int id) =>

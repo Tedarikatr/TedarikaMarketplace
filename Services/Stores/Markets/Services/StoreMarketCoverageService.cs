@@ -49,175 +49,187 @@ namespace Services.Stores.Markets.Services
         {
             var addedIds = new List<int>();
 
-            // 1️⃣ Ülkeler
+            // 1️⃣ COUNTRY
             foreach (var countryId in dto.CountryIds.Distinct())
             {
-                bool exists = await _countryRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.CountryId == countryId);
+                if (countryId <= 0) continue;
+
+                var master = await _masterCountryRepo.GetByIdAsync(countryId);
+                if (master is null) continue;
+
+                bool exists = await _countryRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.CountryId == countryId);
                 if (exists)
                 {
-                    _logger.LogInformation("Country zaten eklenmiş. StoreId: {StoreId}, CountryId: {CountryId}", dto.StoreId, countryId);
+                    _logger.LogInformation("Country already exists. StoreId: {StoreId}, CountryId: {CountryId}", dto.StoreId, countryId);
                     continue;
                 }
 
-                var country = await _masterCountryRepo.GetByIdAsync(countryId);
-                if (country == null) continue;
-
-                var entity = new StoreMarketCountry
+                var entity = _mapper.Map<StoreMarketCountry>(new StoreMarketCountryCreateDto
                 {
                     StoreId = dto.StoreId,
                     CountryId = countryId,
-                    CountryName = country.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.CountryName = master.Name;
 
                 await _countryRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeProvinceFromCountry)
                 {
-                    var provinces = await _masterProvinceRepo.FindAsync(p => p.CountryId == countryId);
-                    dto.ProvinceIds.AddRange(provinces.Select(p => p.Id));
+                    var children = await _masterProvinceRepo.FindAsync(x => x.CountryId == countryId);
+                    dto.ProvinceIds.AddRange(children.Select(x => x.Id));
                 }
             }
 
-            // 2️⃣ İller
+            // 2️⃣ PROVINCE
             foreach (var provinceId in dto.ProvinceIds.Distinct())
             {
-                bool exists = await _provinceRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.ProvinceId == provinceId);
+                if (provinceId <= 0) continue;
+
+                var master = await _masterProvinceRepo.GetByIdAsync(provinceId);
+                if (master is null) continue;
+
+                bool exists = await _provinceRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.ProvinceId == provinceId);
                 if (exists)
                 {
-                    _logger.LogInformation("Province zaten eklenmiş. StoreId: {StoreId}, ProvinceId: {ProvinceId}", dto.StoreId, provinceId);
+                    _logger.LogInformation("Province already exists. StoreId: {StoreId}, ProvinceId: {ProvinceId}", dto.StoreId, provinceId);
                     continue;
                 }
 
-                var province = await _masterProvinceRepo.GetByIdAsync(provinceId);
-                if (province == null) continue;
-
-                var entity = new StoreMarketProvince
+                var entity = _mapper.Map<StoreMarketProvince>(new StoreMarketProvinceCreateDto
                 {
                     StoreId = dto.StoreId,
                     ProvinceId = provinceId,
-                    ProvinceName = province.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.ProvinceName = master.Name;
 
                 await _provinceRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeDistrictFromProvince)
                 {
-                    var districts = await _masterDistrictRepo.FindAsync(d => d.ProvinceId == provinceId);
-                    dto.DistrictIds.AddRange(districts.Select(d => d.Id));
+                    var children = await _masterDistrictRepo.FindAsync(x => x.ProvinceId == provinceId);
+                    dto.DistrictIds.AddRange(children.Select(x => x.Id));
                 }
             }
 
-            // 3️⃣ İlçeler
+            // 3️⃣ DISTRICT
             foreach (var districtId in dto.DistrictIds.Distinct())
             {
-                bool exists = await _districtRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.DistrictId == districtId);
+                if (districtId <= 0) continue;
+
+                var master = await _masterDistrictRepo.GetByIdAsync(districtId);
+                if (master is null) continue;
+
+                bool exists = await _districtRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.DistrictId == districtId);
                 if (exists)
                 {
-                    _logger.LogInformation("District zaten eklenmiş. StoreId: {StoreId}, DistrictId: {DistrictId}", dto.StoreId, districtId);
+                    _logger.LogInformation("District already exists. StoreId: {StoreId}, DistrictId: {DistrictId}", dto.StoreId, districtId);
                     continue;
                 }
 
-                var district = await _masterDistrictRepo.GetByIdAsync(districtId);
-                if (district == null) continue;
-
-                var entity = new StoreMarketDistrict
+                var entity = _mapper.Map<StoreMarketDistrict>(new StoreMarketDistrictCreateDto
                 {
                     StoreId = dto.StoreId,
                     DistrictId = districtId,
-                    DistrictName = district.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.DistrictName = master.Name;
 
                 await _districtRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeNeighborhoodFromDistrict)
                 {
-                    var neighborhoods = await _masterNeighborhoodRepo.FindAsync(n => n.DistrictId == districtId);
-                    dto.NeighborhoodIds.AddRange(neighborhoods.Select(n => n.Id));
+                    var children = await _masterNeighborhoodRepo.FindAsync(x => x.DistrictId == districtId);
+                    dto.NeighborhoodIds.AddRange(children.Select(x => x.Id));
                 }
             }
 
-            // 4️⃣ Mahalleler
+            // 4️⃣ NEIGHBORHOOD
             foreach (var neighborhoodId in dto.NeighborhoodIds.Distinct())
             {
-                bool exists = await _neighborhoodRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.NeighborhoodId == neighborhoodId);
+                if (neighborhoodId <= 0) continue;
+
+                var master = await _masterNeighborhoodRepo.GetByIdAsync(neighborhoodId);
+                if (master is null) continue;
+
+                bool exists = await _neighborhoodRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.NeighborhoodId == neighborhoodId);
                 if (exists)
                 {
-                    _logger.LogInformation("Neighborhood zaten eklenmiş. StoreId: {StoreId}, NeighborhoodId: {NeighborhoodId}", dto.StoreId, neighborhoodId);
+                    _logger.LogInformation("Neighborhood already exists. StoreId: {StoreId}, NeighborhoodId: {NeighborhoodId}", dto.StoreId, neighborhoodId);
                     continue;
                 }
 
-                var neighborhood = await _masterNeighborhoodRepo.GetByIdAsync(neighborhoodId);
-                if (neighborhood == null) continue;
-
-                var entity = new StoreMarketNeighborhood
+                var entity = _mapper.Map<StoreMarketNeighborhood>(new StoreMarketNeighborhoodCreateDto
                 {
                     StoreId = dto.StoreId,
                     NeighborhoodId = neighborhoodId,
-                    NeighborhoodName = neighborhood.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.NeighborhoodName = master.Name;
 
                 await _neighborhoodRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
             }
 
-            // 5️⃣ Eyaletler
+            // 5️⃣ STATE
             foreach (var stateId in dto.StateIds.Distinct())
             {
-                bool exists = await _stateRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.StateId == stateId);
+                if (stateId <= 0) continue;
+
+                var master = await _masterStateRepo.GetByIdAsync(stateId);
+                if (master is null) continue;
+
+                bool exists = await _stateRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.StateId == stateId);
                 if (exists)
                 {
-                    _logger.LogInformation("State zaten eklenmiş. StoreId: {StoreId}, StateId: {StateId}", dto.StoreId, stateId);
+                    _logger.LogInformation("State already exists. StoreId: {StoreId}, StateId: {StateId}", dto.StoreId, stateId);
                     continue;
                 }
 
-                var state = await _masterStateRepo.GetByIdAsync(stateId);
-                if (state == null) continue;
-
-                var entity = new StoreMarketState
+                var entity = _mapper.Map<StoreMarketState>(new StoreMarketStateCreateDto
                 {
                     StoreId = dto.StoreId,
                     StateId = stateId,
-                    StateName = state.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.StateName = master.Name;
 
                 await _stateRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
             }
 
-            // 6️⃣ Bölgeler
+            // 6️⃣ REGION
             foreach (var regionId in dto.RegionIds.Distinct())
             {
-                bool exists = await _regionRepo.GetQueryable().AnyAsync(x => x.StoreId == dto.StoreId && x.RegionId == regionId);
+                if (regionId <= 0) continue;
+
+                var master = await _masterRegionRepo.GetByIdAsync(regionId);
+                if (master is null) continue;
+
+                bool exists = await _regionRepo.GetQueryable()
+                    .AnyAsync(x => x.StoreId == dto.StoreId && x.RegionId == regionId);
                 if (exists)
                 {
-                    _logger.LogInformation("Region zaten eklenmiş. StoreId: {StoreId}, RegionId: {RegionId}", dto.StoreId, regionId);
+                    _logger.LogInformation("Region already exists. StoreId: {StoreId}, RegionId: {RegionId}", dto.StoreId, regionId);
                     continue;
                 }
 
-                var region = await _masterRegionRepo.GetByIdAsync(regionId);
-                if (region == null) continue;
-
-                var entity = new StoreMarketRegion
+                var entity = _mapper.Map<StoreMarketRegion>(new StoreMarketRegionCreateDto
                 {
                     StoreId = dto.StoreId,
                     RegionId = regionId,
-                    RegionName = region.Name,
-                    DeliveryTimeFrame = dto.DeliveryTimeFrame,
-                    IsActive = true
-                };
+                    DeliveryTimeFrame = dto.DeliveryTimeFrame
+                });
+                entity.RegionName = master.Name;
 
                 await _regionRepo.AddAsync(entity);
                 addedIds.Add(entity.Id);
@@ -273,7 +285,6 @@ namespace Services.Stores.Markets.Services
                 throw new ApplicationException("Mağaza kapsam bilgileri alınırken bir hata oluştu.", ex);
             }
         }
-
 
         public async Task<bool> UpdateCoverageAsync(StoreMarketCoverageUpdateBaseDto dto, CoverageType type)
         {
@@ -370,7 +381,6 @@ namespace Services.Stores.Markets.Services
             }
         }
 
-
         public async Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto)
         {
             var totalDeleted = 0;
@@ -460,6 +470,5 @@ namespace Services.Stores.Markets.Services
                 throw new InvalidOperationException("Kapsam silme işlemi sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.", ex);
             }
         }
-
     }
 }

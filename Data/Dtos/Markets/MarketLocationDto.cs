@@ -99,5 +99,10 @@
         public List<DistrictDto> Districts { get; set; }
         public List<NeighborhoodDto> Neighborhoods { get; set; }
     }
-
+    public class LocationFilterDto
+    {
+        public List<int> CountryIds { get; set; } = new();
+        public List<int> ProvinceIds { get; set; } = new();
+        public List<int> DistrictIds { get; set; } = new();
+    }
 }
