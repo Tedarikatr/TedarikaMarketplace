@@ -285,7 +285,6 @@ namespace Data.Databases
             modelBuilder.Entity<Payment>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreInvoice>().Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreProduct>().Property(sp => sp.Price).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<StoreProductRequest>().Property(sp => sp.Price).HasPrecision(18,2);
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Product.IServices;
 using Services.Stores.Product.IServices;
 
 namespace API.Controllers.Stores.Products
@@ -11,16 +12,53 @@ namespace API.Controllers.Stores.Products
     [ApiExplorerSettings(GroupName = "seller")]
     public class SellerStoreProductController : ControllerBase
     {
+        private readonly IProductService _productService;
         private readonly IStoreProductService _storeProductService;
         private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerStoreProductController> _logger;
 
-        public SellerStoreProductController(IStoreProductService storeProductService, SellerUserContextHelper userHelper, ILogger<SellerStoreProductController> logger)
+        public SellerStoreProductController(IProductService productService, IStoreProductService storeProductService, SellerUserContextHelper userHelper, ILogger<SellerStoreProductController> logger)
         {
+            _productService = productService;
             _storeProductService = storeProductService;
             _userHelper = userHelper;
             _logger = logger;
         }
+
+        [HttpGet("product-database-list-all")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            try
+            {
+                _logger.LogInformation("Tüm ürünler listeleniyor.");
+                var products = await _productService.GetAllProductsAsync();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Tüm ürünleri listelerken bir hata oluştu.");
+                return StatusCode(500, new { Error = "Ürün listesi alınırken bir hata oluştu." });
+            }
+        }
+
+        [HttpGet("my-products")]
+        public async Task<IActionResult> GetAllStoreProducts()
+        {
+            try
+            {
+                var storeId = _userHelper.GetSellerId(User);
+                _logger.LogInformation("Satıcıya ait ürünler listeleniyor. StoreId: {StoreId}", storeId);
+
+                var result = await _storeProductService.GetAllProductsByShopDirectIdAsync(storeId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Satıcıya ait ürünler listelenirken bir hata oluştu.");
+                return StatusCode(500, new { error = "Mağaza ürünleri listelenirken bir hata oluştu." });
+            }
+        }
+
 
         [HttpPost("{productId}/add")]
         public async Task<IActionResult> AddProductToStore(int productId)

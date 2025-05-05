@@ -4,7 +4,7 @@ namespace Services.Stores.Product.IServices
 {
     public interface IStoreProductService
     {
-        Task<IEnumerable<StoreProductDto>> GetAllProductsByShopDirectIdAsync(int shopDirectId);
+        Task<IEnumerable<StoreProductDto>> GetAllProductsByShopDirectIdAsync(int storeId);
         Task<string> AddProductToStoreAsync(int storeId, int productId);
         Task<string> UpdateStoreProductPriceAsync(int storeId, int productId, decimal price);
         Task<string> SetProductActiveStatusAsync(int storeId, int productId, bool isActive);

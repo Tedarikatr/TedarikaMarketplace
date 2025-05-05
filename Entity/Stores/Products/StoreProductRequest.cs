@@ -1,4 +1,5 @@
-﻿using Entity.Products;
+﻿using Entity.Categories;
+using Entity.Products;
 
 namespace Entity.Stores.Products
 {
@@ -16,12 +17,7 @@ namespace Entity.Stores.Products
         public UnitType UnitType { get; set; }
         public string UnitTypes { get; set; }
 
-
         public string Specifications { get; set; }
-
-        public decimal Price { get; set; }
-        public int MinOrderQuantity { get; set; }
-        public int MaxOrderQuantity { get; set; }
 
         public string ImageUrl { get; set; }
 
@@ -30,7 +26,12 @@ namespace Entity.Stores.Products
         public bool AllowedInternational { get; set; }
 
         public int? CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public Category Category { get; set; }
+
         public int? CategorySubId { get; set; }
+        public string CategorySubName { get; set; }
+        public CategorySub CategorySub { get; set; }
 
         public StoreProductRequestStatus Status { get; set; }
         public string AdminNote { get; set; }

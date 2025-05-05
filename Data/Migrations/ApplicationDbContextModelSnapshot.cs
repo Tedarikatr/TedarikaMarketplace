@@ -1179,8 +1179,14 @@ namespace Data.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("CategorySubId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CategorySubName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -1194,18 +1200,8 @@ namespace Data.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MaxOrderQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinOrderQuantity")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("ReviewedAt")
                         .HasColumnType("datetime2");
@@ -1226,6 +1222,10 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategorySubId");
 
                     b.HasIndex("StoreId");
 
@@ -1711,11 +1711,23 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entity.Stores.Products.StoreProductRequest", b =>
                 {
+                    b.HasOne("Entity.Categories.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Entity.Categories.CategorySub", "CategorySub")
+                        .WithMany()
+                        .HasForeignKey("CategorySubId");
+
                     b.HasOne("Entity.Stores.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("CategorySub");
 
                     b.Navigation("Store");
                 });

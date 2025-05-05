@@ -7,6 +7,7 @@ using Data.Dtos.Markets;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Data.Dtos.Stores.Markets;
+using Data.Dtos.Stores.Products;
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
@@ -15,6 +16,7 @@ using Entity.Markets.Locations;
 using Entity.Products;
 using Entity.Stores;
 using Entity.Stores.Markets;
+using Entity.Stores.Products;
 
 namespace API.Mappings
 {
@@ -277,6 +279,11 @@ namespace API.Mappings
                 profile.CreateMap<StoreStatusDto, Store>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForAllMembers(opt => opt.Ignore());
+
+                profile.CreateMap<StoreProduct, StoreProductDto>()
+                     .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.Price))
+                     .ForMember(dest => dest.ProductNumber, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductNumber : null));
+
             }
         }
         #endregion

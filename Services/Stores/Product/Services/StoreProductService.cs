@@ -1,8 +1,11 @@
-﻿using Data.Dtos.Stores.Products;
+﻿using AutoMapper;
+using Data.Dtos.Stores.Products;
 using Entity.Stores.Products;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 using Repository.Stores.Product.IRepositorys;
+using Services.Files.IServices;
 using Services.Stores.Product.IServices;
 
 namespace Services.Stores.Product.Services
@@ -11,27 +14,33 @@ namespace Services.Stores.Product.Services
     {
         private readonly IStoreProductRepository _storeProductRepo;
         private readonly IProductRepository _productRepo;
+        private readonly IFilesService _filesService;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
         private readonly ILogger<StoreProductService> _logger;
 
-        public StoreProductService(IStoreProductRepository storeProductRepo, IProductRepository productRepo, ILogger<StoreProductService> logger)
+        public StoreProductService(IStoreProductRepository storeProductRepo, IProductRepository productRepo, IFilesService filesService, IMediator mediator, IMapper mapper, ILogger<StoreProductService> logger)
         {
             _storeProductRepo = storeProductRepo;
             _productRepo = productRepo;
+            _filesService = filesService;
+            _mediator = mediator;
+            _mapper = mapper;
             _logger = logger;
         }
 
-        public async Task<IEnumerable<StoreProductDto>> GetAllProductsByShopDirectIdAsync(int shopDirectId)
+        public async Task<IEnumerable<StoreProductDto>> GetAllProductsByShopDirectIdAsync(int storeId)
         {
-            _logger.LogInformation("Mağazaya ait ürünler listeleniyor. ShopDirectId: {ShopDirectId}", shopDirectId);
+            _logger.LogInformation("Mağazaya ait ürünler listeleniyor. ShopDirectId: {ShopDirectId}", storeId);
             try
             {
-                var products = await _storeProductRepo.FindAsync(p => p.StoreId == shopDirectId);
-                _logger.LogInformation("{Count} ürün başarıyla getirildi. ShopDirectId: {ShopDirectId}", products.Count(), shopDirectId);
+                var products = await _storeProductRepo.FindAsync(p => p.StoreId == storeId);
+                _logger.LogInformation("{Count} ürün başarıyla getirildi. ShopDirectId: {ShopDirectId}", products.Count(), storeId);
                 return _mapper.Map<IEnumerable<StoreProductDto>>(products);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Mağazaya ait ürünler listelenirken bir hata oluştu. ShopDirectId: {ShopDirectId}", shopDirectId);
+                _logger.LogError(ex, "Mağazaya ait ürünler listelenirken bir hata oluştu. ShopDirectId: {ShopDirectId}", storeId);
                 throw new ApplicationException("Mağazaya ait ürünler listelenirken bir hata oluştu.", ex);
             }
         }
