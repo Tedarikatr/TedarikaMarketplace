@@ -14,5 +14,20 @@ namespace Repository.Stores.Product.Repositorys
         {
             return await _dbSet.FirstOrDefaultAsync(sp => sp.StoreId == storeId && sp.ProductId == productId);
         }
+
+        public async Task<bool> UpdateMinMaxOrderQuantityAsync(int storeId, int productId, int minOrderQuantity, int maxOrderQuantity)
+        {
+            var product = await _context.StoreProducts
+                .SingleOrDefaultAsync(p => p.StoreId == storeId && p.Id == productId);
+
+            if (product == null)
+                return false;
+
+            product.MinOrderQuantity = minOrderQuantity;
+            product.MaxOrderQuantity = maxOrderQuantity;
+
+            _context.StoreProducts.Update(product);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

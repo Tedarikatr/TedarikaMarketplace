@@ -1,4 +1,5 @@
-﻿using Entity.Stores.Products;
+﻿using Data.Dtos.Stores.Products;
+using Entity.Stores.Products;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 using Repository.Stores.Product.IRepositorys;
@@ -17,6 +18,22 @@ namespace Services.Stores.Product.Services
             _storeProductRepo = storeProductRepo;
             _productRepo = productRepo;
             _logger = logger;
+        }
+
+        public async Task<IEnumerable<StoreProductDto>> GetAllProductsByShopDirectIdAsync(int shopDirectId)
+        {
+            _logger.LogInformation("Mağazaya ait ürünler listeleniyor. ShopDirectId: {ShopDirectId}", shopDirectId);
+            try
+            {
+                var products = await _storeProductRepo.FindAsync(p => p.StoreId == shopDirectId);
+                _logger.LogInformation("{Count} ürün başarıyla getirildi. ShopDirectId: {ShopDirectId}", products.Count(), shopDirectId);
+                return _mapper.Map<IEnumerable<StoreProductDto>>(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağazaya ait ürünler listelenirken bir hata oluştu. ShopDirectId: {ShopDirectId}", shopDirectId);
+                throw new ApplicationException("Mağazaya ait ürünler listelenirken bir hata oluştu.", ex);
+            }
         }
 
         public async Task<string> AddProductToStoreAsync(int storeId, int productId)
@@ -169,5 +186,35 @@ namespace Services.Stores.Product.Services
                 throw;
             }
         }
+
+        public async Task<bool> UpdateMinMaxOrderQuantityAsync(int storeId, int productId, int minOrderQuantity, int maxOrderQuantity)
+        {
+            _logger.LogInformation("Min/Max sipariş miktarı güncelleniyor. ShopDirectId: {ShopDirectId}, ProductId: {ProductId}, MinOrderQuantity: {MinOrderQuantity}, MaxOrderQuantity: {MaxOrderQuantity}",
+                storeId, productId, minOrderQuantity, maxOrderQuantity);
+
+            try
+            {
+                var result = await _storeProductRepo.UpdateMinMaxOrderQuantityAsync(storeId, productId, minOrderQuantity, maxOrderQuantity);
+
+                if (result)
+                {
+                    _logger.LogInformation("Min/Max sipariş miktarı başarıyla güncellendi. ShopDirectId: {ShopDirectId}, ProductId: {ProductId}", storeId, productId);
+                }
+                else
+                {
+                    _logger.LogWarning("Min/Max sipariş miktarı güncellenemedi. Ürün bulunamadı. ShopDirectId: {ShopDirectId}, ProductId: {ProductId}", storeId, productId);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Min/Max sipariş miktarı güncellenirken bir hata oluştu. ShopDirectId: {ShopDirectId}, ProductId: {ProductId}, MinOrderQuantity: {MinOrderQuantity}, MaxOrderQuantity: {MaxOrderQuantity}",
+                    storeId, productId, minOrderQuantity, maxOrderQuantity);
+                throw new ApplicationException($"Min/Max sipariş miktarı güncellenirken bir hata oluştu: {ex.Message}");
+            }
+        }
+
+
     }
 }
