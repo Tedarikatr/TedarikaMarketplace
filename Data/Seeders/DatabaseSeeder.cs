@@ -335,7 +335,7 @@ namespace Data.Seeders
                         AllowedDomestic = true,
                         AllowedInternational = true,
                         ImageUrl = product.ImageUrl,
-                        StoreImageUrl = product.ImageUrl,
+                        StoreProductImageUrl = product.ImageUrl,
                         CategoryName = "Bakliyat",
                         CategorySubName = "Nohut"
                     };

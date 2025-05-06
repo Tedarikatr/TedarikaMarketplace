@@ -1,4 +1,5 @@
 ﻿using Data.Dtos.Stores.Products;
+using Microsoft.AspNetCore.Http;
 
 namespace Services.Stores.Product.IServices
 {
@@ -11,7 +12,7 @@ namespace Services.Stores.Product.IServices
         Task<string> SetProductOnSaleStatusAsync(int storeId, int productId, bool isOnSale);
         Task<string> SetMinMaxQuantityAsync(int storeId, int productId, int minQty, int maxQty);
         Task<string> SetAllowedRegionsAsync(int storeId, int productId, bool allowedDomestic, bool allowedInternational);
-        Task<string> UpdateStoreImageAsync(int storeId, int productId, string imageUrl);
+        Task<string> UploadAndSetStoreImageAsync(int storeId, int productId, IFormFile file);
         Task<bool> UpdateMinMaxOrderQuantityAsync(int shopDirectId, int productId, int minOrderQuantity, int maxOrderQuantity);
 
     }

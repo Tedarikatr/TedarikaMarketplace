@@ -78,99 +78,121 @@ namespace API.Controllers.Stores.Products
             }
         }
 
-        [HttpPatch("{productId}/price")]
-        public async Task<IActionResult> UpdatePrice(int productId, [FromQuery] decimal price)
+        [HttpPut("update-price")]
+        public async Task<IActionResult> UpdatePriceAsync(int productId, decimal price)
         {
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
+                int storeId = await _userHelper.GetStoreId(User);
                 var result = await _storeProductService.UpdateStoreProductPriceAsync(storeId, productId, price);
-                return Ok(new { message = result });
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ürün fiyatı güncellenemedi.");
-                return StatusCode(500, new { error = "Fiyat güncellenirken bir hata oluştu." });
+                _logger.LogError(ex, "Fiyat güncelleme hatası.");
+                return StatusCode(500, "Fiyat güncellenemedi.");
             }
         }
 
-        [HttpPatch("{productId}/status")]
-        public async Task<IActionResult> SetActiveStatus(int productId, [FromQuery] bool isActive)
+        [HttpPut("set-active-status")]
+        public async Task<IActionResult> SetActiveStatusAsync(int productId, bool isActive)
         {
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
+                int storeId = await _userHelper.GetStoreId(User);
                 var result = await _storeProductService.SetProductActiveStatusAsync(storeId, productId, isActive);
-                return Ok(new { message = result });
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ürün aktiflik durumu değiştirilemedi.");
-                return StatusCode(500, new { error = "Aktiflik durumu güncellenemedi." });
+                _logger.LogError(ex, "Aktiflik durumu değiştirilemedi.");
+                return StatusCode(500, "İşlem başarısız.");
             }
         }
 
-        [HttpPatch("{productId}/sale")]
-        public async Task<IActionResult> SetSaleStatus(int productId, [FromQuery] bool isOnSale)
+        [HttpPut("set-on-sale")]
+        public async Task<IActionResult> SetOnSaleStatusAsync(int productId, bool isOnSale)
         {
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
+                int storeId = await _userHelper.GetStoreId(User);
                 var result = await _storeProductService.SetProductOnSaleStatusAsync(storeId, productId, isOnSale);
-                return Ok(new { message = result });
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Satış durumu güncellenemedi.");
-                return StatusCode(500, new { error = "Satış durumu güncellenirken hata oluştu." });
+                return StatusCode(500, "İşlem başarısız.");
             }
         }
 
-        [HttpPatch("{productId}/quantity")]
-        public async Task<IActionResult> SetMinMaxQuantity(int productId, [FromQuery] int minQty, [FromQuery] int maxQty)
+        [HttpPut("set-quantity-limits")]
+        public async Task<IActionResult> SetQuantityLimitsAsync(int productId, int minQty, int maxQty)
         {
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
+                int storeId = await _userHelper.GetStoreId(User);
                 var result = await _storeProductService.SetMinMaxQuantityAsync(storeId, productId, minQty, maxQty);
-                return Ok(new { message = result });
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Min/Max sipariş miktarları güncellenemedi.");
-                return StatusCode(500, new { error = "Sipariş sınırları güncellenirken hata oluştu." });
+                _logger.LogError(ex, "Min/Max miktar güncellemesi başarısız.");
+                return StatusCode(500, "İşlem başarısız.");
             }
         }
 
-        [HttpPatch("{productId}/regions")]
-        public async Task<IActionResult> SetAllowedRegions(int productId, [FromQuery] bool allowedDomestic, [FromQuery] bool allowedInternational)
+        [HttpPut("set-allowed-regions")]
+        public async Task<IActionResult> SetAllowedRegionsAsync(int productId, bool allowedDomestic, bool allowedInternational)
         {
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
+                int storeId = await _userHelper.GetStoreId(User);
                 var result = await _storeProductService.SetAllowedRegionsAsync(storeId, productId, allowedDomestic, allowedInternational);
-                return Ok(new { message = result });
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Bölgesel izinler güncellenemedi.");
-                return StatusCode(500, new { error = "Bölgesel izinler güncellenirken hata oluştu." });
+                _logger.LogError(ex, "Bölge izinleri güncellenemedi.");
+                return StatusCode(500, "İşlem başarısız.");
             }
         }
 
-        [HttpPatch("{productId}/image")]
-        public async Task<IActionResult> UpdateStoreImage(int productId, [FromQuery] string imageUrl)
+        [HttpPost("upload-image")]
+        public async Task<IActionResult> UploadImageAsync(int productId, IFormFile file)
         {
+            if (file == null || file.Length == 0)
+                return BadRequest("Geçerli bir dosya yükleyiniz.");
+
             try
             {
-                var storeId = _userHelper.GetSellerId(User);
-                var result = await _storeProductService.UpdateStoreImageAsync(storeId, productId, imageUrl);
-                return Ok(new { message = result });
+                int storeId = await _userHelper.GetStoreId(User);
+                var result = await _storeProductService.UploadAndSetStoreImageAsync(storeId, productId, file);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Mağaza görseli güncellenemedi.");
-                return StatusCode(500, new { error = "Mağaza görseli güncellenirken bir hata oluştu." });
+                _logger.LogError(ex, "Görsel yükleme işlemi başarısız.");
+                return StatusCode(500, "Görsel yüklenirken bir hata oluştu.");
+            }
+        }
+
+        [HttpPut("update-order-quantity")]
+        public async Task<IActionResult> UpdateOrderQuantityAsync(int productId, int minOrderQuantity, int maxOrderQuantity)
+        {
+            try
+            {
+                int storeId = await _userHelper.GetStoreId(User);
+                var success = await _storeProductService.UpdateMinMaxOrderQuantityAsync(storeId, productId, minOrderQuantity, maxOrderQuantity);
+                if (!success)
+                    return NotFound("Ürün mağazada bulunamadı.");
+
+                return Ok("Sipariş miktar aralığı güncellendi.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Sipariş miktar aralığı güncellenemedi.");
+                return StatusCode(500, "İşlem başarısız.");
             }
         }
     }

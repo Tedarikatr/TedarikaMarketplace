@@ -2,6 +2,7 @@
 using Data.Dtos.Stores.Products;
 using Entity.Stores.Products;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Repository.Product.IRepositorys;
 using Repository.Stores.Product.IRepositorys;
@@ -179,23 +180,29 @@ namespace Services.Stores.Product.Services
             }
         }
 
-        public async Task<string> UpdateStoreImageAsync(int storeId, int productId, string imageUrl)
+        public async Task<string> UploadAndSetStoreImageAsync(int storeId, int productId, IFormFile file)
         {
             try
             {
                 var sp = await _storeProductRepo.GetByStoreAndProductIdAsync(storeId, productId);
-                if (sp == null) return "Ürün mağazada bulunamadı.";
+                if (sp == null)
+                    return "Ürün mağazada bulunamadı.";
 
-                sp.StoreImageUrl = imageUrl;
+                var uploadResult = await _filesService.UploadFileAsync(file, "storeproduct-images");
+                sp.StoreProductImageUrl = uploadResult.Url;
+
                 await _storeProductRepo.UpdateAsync(sp);
-                return "Mağaza görseli güncellendi.";
+                _logger.LogInformation("Görsel yüklendi ve ürün güncellendi. StoreId: {storeId}, ProductId: {productId}", storeId, productId);
+
+                return "Görsel başarıyla yüklendi ve ürünle ilişkilendirildi.";
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Görsel güncelleme hatası.");
-                throw;
+                _logger.LogError(ex, "Görsel yükleme ve ilişkilendirme hatası.");
+                throw new ApplicationException("Görsel yüklenirken bir hata oluştu.");
             }
         }
+
 
         public async Task<bool> UpdateMinMaxOrderQuantityAsync(int storeId, int productId, int minOrderQuantity, int maxOrderQuantity)
         {

@@ -32,7 +32,7 @@ namespace Entity.Stores.Products
         public bool AllowedInternational { get; set; }
 
         public string ImageUrl { get; set; }
-        public string StoreImageUrl { get; set; }
+        public string StoreProductImageUrl { get; set; }
 
 
         public string CategoryName { get; set; }
