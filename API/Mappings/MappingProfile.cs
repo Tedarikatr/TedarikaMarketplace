@@ -32,6 +32,7 @@ namespace API.Mappings
             DeliveryAddressMappings.RegisterMappings(this);
             LocationMappings.RegisterMappings(this);
             MarketMappings.RegisterMappings(this);
+            StoreProductRequestMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -580,5 +581,71 @@ namespace API.Mappings
             }
         }
         #endregion
+
+        private static class StoreProductRequestMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                // 🔁 StoreProductRequest ➝ StoreProductRequestDto
+                profile.CreateMap<StoreProductRequest, StoreProductRequestDto>();
+
+                // 🔁 StoreProductRequest ➝ StoreProductRequestDetailDto
+                profile.CreateMap<StoreProductRequest, StoreProductRequestDetailDto>();
+
+                // 🔁 StoreProductRequestCreateDto ➝ StoreProductRequest
+                profile.CreateMap<StoreProductRequestCreateDto, StoreProductRequest>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.Store, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreId, opt => opt.Ignore())
+                    .ForMember(dest => dest.ImageUrl, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.IsApproved, opt => opt.MapFrom(_ => false))
+                    .ForMember(dest => dest.CategoryName, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore())
+                    .ForMember(dest => dest.Category, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => StoreProductRequestStatus.Pending))
+                    .ForMember(dest => dest.Specifications, opt => opt.Ignore())
+                    .ForMember(dest => dest.ReviewedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.ApprovedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.AdminNote, opt => opt.Ignore());
+
+                // 🔁 StoreProductRequestUpdateDto ➝ StoreProductRequest
+                profile.CreateMap<StoreProductRequestUpdateDto, StoreProductRequest>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.StoreId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Store, opt => opt.Ignore())
+                    .ForMember(dest => dest.UnitType, opt => opt.Ignore()) // Enum DTO'da yok
+                    .ForMember(dest => dest.Specifications, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Category, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoryName, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySubId, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore())
+                    .ForMember(dest => dest.Status, opt => opt.Ignore())
+                    .ForMember(dest => dest.AdminNote, opt => opt.Ignore())
+                    .ForMember(dest => dest.ImageUrl, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.ReviewedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.ApprovedAt, opt => opt.Ignore());
+
+                // 🆕 StoreProductRequest ➝ Product (Admin onay sonrası dönüşüm)
+                profile.CreateMap<StoreProductRequest, Product>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.ProductNumber, opt => opt.Ignore()) // Controller veya Service'de atanmalı
+                    .ForMember(dest => dest.Barcode, opt => opt.Ignore()) // Otomatik üretilecekse burada bırakılmalı
+                    .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                    .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.PreparationTime, opt => opt.Ignore())
+                    .ForMember(dest => dest.ExpirationDate, opt => opt.Ignore())
+                    .ForMember(dest => dest.Category, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
+                    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName))
+                    .ForMember(dest => dest.CategorySubName, opt => opt.MapFrom(src => src.CategorySubName));
+            }
+        }
+
     }
 }

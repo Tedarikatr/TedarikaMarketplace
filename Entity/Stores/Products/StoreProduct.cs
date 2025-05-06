@@ -9,6 +9,7 @@ namespace Entity.Stores.Products
         public string Description { get; set; }
         public string Specifications { get; set; }
         public string Brand { get; set; }
+        public string ProductNumber { get; set; }
 
         public int UnitTypes { get; set; }
         public UnitType UnitType { get; set; }

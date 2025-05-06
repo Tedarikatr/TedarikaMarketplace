@@ -12,9 +12,6 @@ namespace Repository.Stores.Product.Repositorys
         {
         }
 
-        public async Task<IEnumerable<StoreProductRequest>> GetPendingRequestsAsync()
-        {
-            return await _dbSet.Where(x => !x.IsApproved).ToListAsync();
-        }
+     
     }
 }

@@ -68,6 +68,7 @@ namespace Services.Stores.Product.Services
                     ImageUrl = product.ImageUrl,
                     CategoryName = product.CategoryName,
                     CategorySubName = product.CategorySubName,
+                    ProductNumber = product.ProductNumber,
                 };
 
                 await _storeProductRepo.AddAsync(storeProduct);
