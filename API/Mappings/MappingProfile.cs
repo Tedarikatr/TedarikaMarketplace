@@ -5,6 +5,7 @@ using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.DeliveryAddresses;
 using Data.Dtos.Markets;
+using Data.Dtos.Payments;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Data.Dtos.Stores.Markets;
@@ -15,6 +16,7 @@ using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Markets.Locations;
+using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
 using Entity.Stores.Markets;
@@ -36,6 +38,7 @@ namespace API.Mappings
             MarketMappings.RegisterMappings(this);
             StoreProductRequestMappings.RegisterMappings(this);
             BasketMappings.RegisterMappings(this);
+            PaymentMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -680,6 +683,24 @@ namespace API.Mappings
             }
         }
         #endregion
+
+        private static class PaymentMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Payment, PaymentDto>();
+
+                profile.CreateMap<PaymentCreateDto, Payment>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.OrderId, opt => opt.Ignore())
+                    .ForMember(dest => dest.BuyerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Status, opt => opt.Ignore())
+                    .ForMember(dest => dest.PaymentReference, opt => opt.Ignore())
+                    .ForMember(dest => dest.ErrorMessage, opt => opt.Ignore())
+                    .ForMember(dest => dest.ErrorCode, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+            }
+        }
 
     }
 }
