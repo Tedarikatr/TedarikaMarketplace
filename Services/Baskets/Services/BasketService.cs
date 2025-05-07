@@ -125,7 +125,7 @@ namespace Services.Baskets.Services
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex, "Sepet eşzamanlı güncellenemedi. Retry: IncreaseQuantityAsync");
-                return await IncreaseQuantityAsync(userId, productId); // Retry
+                return await IncreaseQuantityAsync(userId, productId);
             }
         }
 
@@ -157,7 +157,7 @@ namespace Services.Baskets.Services
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex, "Concurrency hatası: DecreaseQuantityAsync tekrar deneniyor.");
-                return await DecreaseQuantityAsync(userId, productId); // Retry
+                return await DecreaseQuantityAsync(userId, productId); 
             }
         }
 

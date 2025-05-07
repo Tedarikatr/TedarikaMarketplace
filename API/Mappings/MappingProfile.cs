@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Auths;
+using Data.Dtos.Baskets;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.DeliveryAddresses;
@@ -9,6 +10,7 @@ using Data.Dtos.Stores;
 using Data.Dtos.Stores.Markets;
 using Data.Dtos.Stores.Products;
 using Entity.Auths;
+using Entity.Baskets;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
@@ -33,6 +35,7 @@ namespace API.Mappings
             LocationMappings.RegisterMappings(this);
             MarketMappings.RegisterMappings(this);
             StoreProductRequestMappings.RegisterMappings(this);
+            BasketMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -582,6 +585,8 @@ namespace API.Mappings
         }
         #endregion
 
+        #region 8️⃣ StoreProductRequestMappings Mappings
+
         private static class StoreProductRequestMappings
         {
             public static void RegisterMappings(Profile profile)
@@ -646,6 +651,35 @@ namespace API.Mappings
                     .ForMember(dest => dest.CategorySubName, opt => opt.MapFrom(src => src.CategorySubName));
             }
         }
+        #endregion
+
+        #region 8️⃣ BASKET Mappings
+        private static class BasketMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                // Basket <-> BasketDto
+                profile.CreateMap<Basket, BasketDto>()
+                    .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+                    .ReverseMap()
+                    .ForMember(dest => dest.BuyerId, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+
+                // BasketItem <-> BasketItemDto
+                profile.CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+
+                // AddToBasketDto -> BasketItem (sadece map ihtiyacı varsa)
+                profile.CreateMap<AddToBasketDto, BasketItem>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.BasketId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Basket, opt => opt.Ignore())
+                    .ForMember(dest => dest.ProductName, opt => opt.Ignore())
+                    .ForMember(dest => dest.UnitPrice, opt => opt.Ignore())
+                    .ForMember(dest => dest.TotalPrice, opt => opt.Ignore());
+            }
+        }
+        #endregion
 
     }
 }

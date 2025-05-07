@@ -3,7 +3,7 @@
     public class BasketDto
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public int BuyerId { get; set; }
         public decimal TotalAmount { get; set; }
 
         public List<BasketItemDto> Items { get; set; }
