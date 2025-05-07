@@ -1,6 +1,7 @@
 ﻿using Entity.Auths;
 using Entity.Carriers;
 using Entity.Companies;
+using Entity.DeliveryAddresses;
 using Entity.Payments;
 using Entity.Stores;
 
@@ -16,18 +17,26 @@ namespace Entity.Orders
         public int? BuyerCompanyId { get; set; }
         public Company BuyerCompany { get; set; }
 
-        public int PaymentId { get; set; }
+        public int? PaymentId { get; set; }
         public Payment Payment { get; set; }
 
         public int StoreId { get; set; }
         public Store Store { get; set; }
 
-        public DateTime OrderDate { get; set; }
+        public int? SelectedCarrierId { get; set; }
+        public Carrier SelectedCarrier { get; set; }
+
+        public int DeliveryAddressId { get; set; }
+        public DeliveryAddress DeliveryAddress { get; set; }
+
+        public string OrderNumber { get; set; } = string.Empty;
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; }
 
-        public int? SelectedCarrierId { get; set; }
-        public Carrier SelectedCarrier { get; set; }
+
 
         public OrderStatus Status { get; set; } 
 
@@ -36,11 +45,12 @@ namespace Entity.Orders
 
     public enum OrderStatus
     {
-        Pending, // Bekliyor
-        Processing, // İşleniyor
-        Shipped, // Kargolandı
-        Delivered, // Teslim Edildi
-        Canceled // İptal Edildi
+        Created = 1,
+        AwaitingPayment = 2,
+        Paid = 3,
+        Shipped = 4,
+        Delivered = 5,
+        Cancelled = 6
     }
 
 }
