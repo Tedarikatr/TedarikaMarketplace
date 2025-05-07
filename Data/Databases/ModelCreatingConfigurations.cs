@@ -18,6 +18,7 @@ namespace Data.Databases
         public static void ApplyAllConfigurations(ModelBuilder modelBuilder)
         {
             ConfigureUserEntities(modelBuilder);
+            ConfigureBasketEntities(modelBuilder);
             ConfigureCompanyEntities(modelBuilder);
             ConfigureStoreEntities(modelBuilder);
             ConfigureLocationEntities(modelBuilder);
@@ -49,6 +50,20 @@ namespace Data.Databases
                 .OnDelete(DeleteBehavior.Restrict);
 
         }
+
+        private static void ConfigureBasketEntities(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Basket>()
+                .HasMany(b => b.Items)
+                .WithOne(i => i.Basket)
+                .HasForeignKey(i => i.BasketId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Basket>()
+                .Property(b => b.Currency)
+                .HasMaxLength(10);
+        }
+
 
         private static void ConfigureCompanyEntities(ModelBuilder modelBuilder)
         {
@@ -177,6 +192,24 @@ namespace Data.Databases
                 .HasForeignKey(o => o.StoreId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.DeliveryAddress)
+                .WithMany()
+                .HasForeignKey(o => o.DeliveryAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.SelectedCarrier)
+                .WithMany()
+                .HasForeignKey(o => o.SelectedCarrierId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Payment)
+                .WithOne()
+                .HasForeignKey<Order>(o => o.PaymentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
@@ -192,7 +225,16 @@ namespace Data.Databases
 
         private static void ConfigurePaymentEntities(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<Payment>()
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Currency)
+                .HasMaxLength(10);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.OrderNumber)
+                .HasMaxLength(50);
         }
 
         private static void ConfigureStoreMarketEntities(ModelBuilder modelBuilder)
@@ -276,9 +318,15 @@ namespace Data.Databases
             modelBuilder.Entity<Basket>().Property(b => b.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<BasketItem>().Property(bi => bi.TotalPrice).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<BasketItem>().Property(bi => bi.UnitPrice).HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<Order>().Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<OrderItem>().Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<OrderItem>().Ignore(oi => oi.TotalPrice); 
+
             modelBuilder.Entity<Payment>().Property(p => p.TotalAmount).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Payment>().Property(p => p.PaidPrice).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Payment>().Property(p => p.PaidAmount).HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<StoreInvoice>().Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreProduct>().Property(sp => sp.UnitPrice).HasColumnType("decimal(18,2)");
         }
