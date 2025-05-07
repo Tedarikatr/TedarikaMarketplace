@@ -654,6 +654,7 @@ namespace Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Specifications = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnitTypes = table.Column<int>(type: "int", nullable: false),
                     UnitType = table.Column<int>(type: "int", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: false),
@@ -667,7 +668,7 @@ namespace Data.Migrations
                     AllowedDomestic = table.Column<bool>(type: "bit", nullable: false),
                     AllowedInternational = table.Column<bool>(type: "bit", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StoreImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StoreProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategorySubName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

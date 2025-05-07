@@ -282,7 +282,7 @@ namespace API.Mappings
                     .ForAllMembers(opt => opt.Ignore());
 
                 profile.CreateMap<StoreProduct, StoreProductDto>()
-                     .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.Price))
+                     .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
                      .ForMember(dest => dest.ProductNumber, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductNumber : null));
 
             }

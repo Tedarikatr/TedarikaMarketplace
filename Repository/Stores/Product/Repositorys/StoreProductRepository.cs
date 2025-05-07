@@ -12,7 +12,7 @@ namespace Repository.Stores.Product.Repositorys
 
         public async Task<StoreProduct> GetByStoreAndProductIdAsync(int storeId, int productId)
         {
-            return await _dbSet.FirstOrDefaultAsync(sp => sp.StoreId == storeId && sp.ProductId == productId);
+            return await _dbSet.FirstOrDefaultAsync(sp => sp.StoreId == storeId && sp.Id == productId);
         }
 
         public async Task<bool> UpdateMinMaxOrderQuantityAsync(int storeId, int productId, int minOrderQuantity, int maxOrderQuantity)

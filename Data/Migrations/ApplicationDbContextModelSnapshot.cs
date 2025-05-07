@@ -1120,7 +1120,7 @@ namespace Data.Migrations
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
 
-                    b.Property<string>("StoreImageUrl")
+                    b.Property<string>("StoreProductImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UnitType")

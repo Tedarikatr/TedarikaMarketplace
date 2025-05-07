@@ -67,7 +67,7 @@ namespace Domain.Products.Handlers
                     AllowedInternational = false,
                     MinOrderQuantity = 1,
                     MaxOrderQuantity = 100,
-                    Price = 0
+                    UnitPrice = 0
                 };
 
                 await _storeProductRepository.AddAsync(newStoreProduct);

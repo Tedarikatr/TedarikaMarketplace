@@ -326,7 +326,7 @@ namespace Data.Seeders
                         UnitType = UnitType.kg,
                         ProductId = product.Id,
                         StoreId = store.Id,
-                        Price = 45.00m,
+                        UnitPrice = 45.00m,
                         StockQuantity = 500,
                         MinOrderQuantity = 10,
                         MaxOrderQuantity = 100,

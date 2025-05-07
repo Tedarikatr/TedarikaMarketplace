@@ -10,15 +10,10 @@ namespace Entity.Baskets
         public int BuyerId { get; set; }
 
         public string Currency { get; set; } = "TRY";
-        public decimal TotalAmount { get; set; }
-
+        public decimal TotalAmount { get; set; } 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        [JsonProperty(ItemTypeNameHandling = TypeNameHandling.All)]
         public ICollection<BasketItem> Items { get; set; } = new List<BasketItem>();
-
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
     }
 }

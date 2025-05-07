@@ -20,7 +20,7 @@ namespace Entity.Stores.Products
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
 
         public int StockQuantity { get; set; }
         public int MinOrderQuantity { get; set; }

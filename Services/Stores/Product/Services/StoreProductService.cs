@@ -90,7 +90,7 @@ namespace Services.Stores.Product.Services
                 var storeProduct = await _storeProductRepo.GetByStoreAndProductIdAsync(storeId, productId);
                 if (storeProduct == null) return "Ürün mağazanıza ekli değil.";
 
-                storeProduct.Price = price;
+                storeProduct.UnitPrice = price;
                 await _storeProductRepo.UpdateAsync(storeProduct);
 
                 return "Ürün fiyatı güncellendi.";
