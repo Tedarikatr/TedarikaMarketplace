@@ -13,13 +13,14 @@
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
+        public string? StoreProductImageUrl { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
 
         public decimal Total => UnitPrice * Quantity;
     }
 
-    public class AddToBasketDto
+    public class BasketAddToDto
     {
         public int ProductId { get; set; }
         public int Quantity { get; set; }

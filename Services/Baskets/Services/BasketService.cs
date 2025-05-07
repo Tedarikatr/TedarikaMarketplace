@@ -34,7 +34,7 @@ namespace Services.Baskets.Services
             return _mapper.Map<BasketDto>(basket);
         }
 
-        public async Task AddItemAsync(int userId, AddToBasketDto dto)
+        public async Task AddItemAsync(int userId, BasketAddToDto dto)
         {
             var product = await _storeProductRepository.GetByIdAsync(dto.ProductId);
             if (product == null)

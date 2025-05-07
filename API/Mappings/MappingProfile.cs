@@ -661,7 +661,6 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // Basket <-> BasketDto
                 profile.CreateMap<Basket, BasketDto>()
                     .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
                     .ReverseMap()
@@ -669,17 +668,19 @@ namespace API.Mappings
                     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
-                // BasketItem <-> BasketItemDto
-                profile.CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+                profile.CreateMap<BasketItem, BasketItemDto>().ReverseMap()
+                    .ForMember(dest => dest.StoreProductImageUrl, opt => opt.MapFrom(src => src.StoreProductImageUrl));
 
-                // AddToBasketDto -> BasketItem (sadece map ihtiyacı varsa)
-                profile.CreateMap<AddToBasketDto, BasketItem>()
+
+                profile.CreateMap<BasketAddToDto, BasketItem>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.BasketId, opt => opt.Ignore())
                     .ForMember(dest => dest.Basket, opt => opt.Ignore())
                     .ForMember(dest => dest.ProductName, opt => opt.Ignore())
                     .ForMember(dest => dest.UnitPrice, opt => opt.Ignore())
-                    .ForMember(dest => dest.TotalPrice, opt => opt.Ignore());
+                    .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
+                    .ForMember(dest => dest.StoreProductImageUrl, opt => opt.Ignore()); // 🔧 Bu eksikti!
+
             }
         }
         #endregion
@@ -698,7 +699,11 @@ namespace API.Mappings
                     .ForMember(dest => dest.PaymentReference, opt => opt.Ignore())
                     .ForMember(dest => dest.ErrorMessage, opt => opt.Ignore())
                     .ForMember(dest => dest.ErrorCode, opt => opt.Ignore())
-                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.PaidAmount, opt => opt.Ignore())
+                    .ForMember(dest => dest.PaidPrice, opt => opt.Ignore())
+                    .ForMember(dest => dest.OrderNumber, opt => opt.Ignore());
+
             }
         }
 

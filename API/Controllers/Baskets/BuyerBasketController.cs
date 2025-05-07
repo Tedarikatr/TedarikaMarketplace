@@ -47,7 +47,7 @@ namespace API.Controllers.Baskets
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddItem([FromBody] AddToBasketDto dto)
+        public async Task<IActionResult> AddItem([FromBody] BasketAddToDto dto)
         {
             try
             {

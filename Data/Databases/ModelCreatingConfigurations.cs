@@ -192,11 +192,7 @@ namespace Data.Databases
 
         private static void ConfigurePaymentEntities(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Order)
-                .WithOne(o => o.Payment)
-                .HasForeignKey<Payment>(p => p.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+            
         }
 
         private static void ConfigureStoreMarketEntities(ModelBuilder modelBuilder)
@@ -282,7 +278,7 @@ namespace Data.Databases
             modelBuilder.Entity<BasketItem>().Property(bi => bi.UnitPrice).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<Order>().Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<OrderItem>().Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<Payment>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Payment>().Property(p => p.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreInvoice>().Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreProduct>().Property(sp => sp.UnitPrice).HasColumnType("decimal(18,2)");
         }

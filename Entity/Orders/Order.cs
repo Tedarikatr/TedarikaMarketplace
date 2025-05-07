@@ -34,9 +34,6 @@ namespace Entity.Orders
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public decimal TotalAmount { get; set; }
-        public string ShippingAddress { get; set; }
-
-
 
         public OrderStatus Status { get; set; } 
 

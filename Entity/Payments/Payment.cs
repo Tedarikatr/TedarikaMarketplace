@@ -12,8 +12,10 @@ namespace Entity.Payments
         public PaymentStatus Status { get; set; }
 
         public decimal TotalAmount { get; set; }
+        public decimal PaidPrice { get; set; }
         public decimal PaidAmount { get; set; }
         public string Currency { get; set; } = "TRY";
+        public string OrderNumber { get; set; } 
 
         public string? PaymentReference { get; set; } 
         public string? ErrorMessage { get; set; }
@@ -27,7 +29,8 @@ namespace Entity.Payments
         CashOnDelivery = 1,
         CreditCard = 2,
         WireTransfer = 3,
-        Iyzico = 4
+        Iyzico = 4,
+        Online = 5
     }
 
     public enum PaymentStatus

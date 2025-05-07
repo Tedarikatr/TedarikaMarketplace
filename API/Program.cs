@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Auths.IRepositorys;
 using Repository.Auths.Repositorys;
+using Repository.Baskets.IRepositorys;
+using Repository.Baskets.Repositorys;
 using Repository.Categories.IRepositorys;
 using Repository.Categories.Repositorys;
 using Repository.Companys.IRepositorys;
@@ -21,6 +23,10 @@ using Repository.DeliveryAddresses.IRepositorys;
 using Repository.DeliveryAddresses.Repositorys;
 using Repository.Markets.IRepositorys;
 using Repository.Markets.Repositorys;
+using Repository.Orders.IRepositorys;
+using Repository.Orders.Repositorys;
+using Repository.Payments.IRepositorys;
+using Repository.Payments.Repositorys;
 using Repository.Product.IRepositorys;
 using Repository.Product.Repositorys;
 using Repository.Stores;
@@ -32,6 +38,8 @@ using Serilog;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
 using Services.Auths.Services;
+using Services.Baskets.IServices;
+using Services.Baskets.Services;
 using Services.Categories.IServices;
 using Services.Categories.Services;
 using Services.Companys.IServices;
@@ -45,6 +53,10 @@ using Services.Markets.Services;
 using Services.Notification.HelperService;
 using Services.Notification.IServices;
 using Services.Notification.Service;
+using Services.Orders.IServices;
+using Services.Orders.Service;
+using Services.Payments.IServices;
+using Services.Payments.Services;
 using Services.Product.IServices;
 using Services.Product.Services;
 using Services.Stores;
@@ -122,6 +134,11 @@ builder.Services.AddScoped<AdminUserContextHelper>();
 builder.Services.AddScoped<BuyerUserContextHelper>();
 builder.Services.AddScoped<SellerUserContextHelper>();
 
+//Baskets
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddScoped<IBasketService, BasketService>();
+
+
 //Categories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -156,6 +173,14 @@ builder.Services.AddScoped<ISmsSender, SmsSender>();
 builder.Services.AddScoped<IPushSender, PushSender>();
 builder.Services.AddScoped<IWebSocketSender, WebSocketSender>();
 builder.Services.AddSignalR();
+
+//Ordes
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+//Payments
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 //Products
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
