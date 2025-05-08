@@ -1,6 +1,4 @@
-﻿using Entity.Markets;
-
-namespace Entity.Stores.Products
+﻿namespace Entity.Stores.Products
 {
     public class StoreProductShippingRegion
     {

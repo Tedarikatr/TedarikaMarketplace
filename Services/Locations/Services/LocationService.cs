@@ -1,5 +1,4 @@
 ﻿using Data.Dtos.Locations;
-using Entity.Markets.Locations;
 using Microsoft.Extensions.Logging;
 using Repository.Locations.IRepositorys;
 using Services.Locations.IServices;
@@ -37,7 +36,7 @@ namespace Services.Locations.Services
 
         public async Task<int> AddCountryAsync(CountryCreateDto dto)
         {
-            var country = new Country
+            var country = new Entity.Locations.Country
             {
                 Name = dto.Name,
                 Code = dto.Code,
@@ -52,7 +51,7 @@ namespace Services.Locations.Services
 
         public async Task<int> AddProvinceAsync(ProvinceCreateDto dto)
         {
-            var province = new Province
+            var province = new Entity.Locations.Province
             {
                 Name = dto.Name,
                 CountryId = dto.CountryId,
@@ -67,7 +66,7 @@ namespace Services.Locations.Services
 
         public async Task<int> AddDistrictAsync(DistrictCreateDto dto)
         {
-            var district = new District
+            var district = new Entity.Locations.District
             {
                 Name = dto.Name,
                 ProvinceId = dto.ProvinceId,
@@ -81,7 +80,7 @@ namespace Services.Locations.Services
 
         public async Task<int> AddNeighborhoodAsync(NeighborhoodCreateDto dto)
         {
-            var neighborhood = new Neighborhood
+            var neighborhood = new Entity.Locations.Neighborhood
             {
                 Name = dto.Name,
                 DistrictId = dto.DistrictId,
@@ -96,7 +95,7 @@ namespace Services.Locations.Services
 
         public async Task<int> AddStateAsync(StateCreateDto dto)
         {
-            var state = new State
+            var state = new Entity.Locations.State
             {
                 Name = dto.Name,
                 CountryId = dto.CountryId,

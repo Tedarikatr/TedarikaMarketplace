@@ -2,10 +2,9 @@
 using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
-using Entity.Markets.Locations;
 using Entity.Products;
-using Entity.Stores.Products;
 using Entity.Stores;
+using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
