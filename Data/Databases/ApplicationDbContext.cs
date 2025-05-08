@@ -10,7 +10,7 @@ using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
 using Entity.Stores.Carriers;
-using Entity.Stores.Markets;
+using Entity.Stores.Locations;
 using Entity.Stores.Payments;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
@@ -71,12 +71,12 @@ namespace Data.Databases
         // Mağaza & Marketler
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
-        public DbSet<StoreMarketCountry> StoreMarketCountries { get; set; }
-        public DbSet<StoreMarketDistrict> StoreMarketDistricts { get; set; }
-        public DbSet<StoreMarketNeighborhood> StoreMarketNeighborhoods { get; set; }
-        public DbSet<StoreMarketProvince> StoreMarketProvinces { get; set; }
-        public DbSet<StoreMarketRegion> StoreMarketRegions { get; set; }
-        public DbSet<StoreMarketState> StoreMarketStates { get; set; }
+        public DbSet<StoreLocationCountry> StoreMarketCountries { get; set; }
+        public DbSet<StoreLocationDistrict> StoreMarketDistricts { get; set; }
+        public DbSet<StoreLocationNeighborhood> StoreMarketNeighborhoods { get; set; }
+        public DbSet<StoreLocationProvince> StoreMarketProvinces { get; set; }
+        public DbSet<StoreLocationRegion> StoreMarketRegions { get; set; }
+        public DbSet<StoreLocationState> StoreMarketStates { get; set; }
 
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }

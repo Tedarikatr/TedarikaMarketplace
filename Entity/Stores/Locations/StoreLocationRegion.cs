@@ -1,8 +1,8 @@
 ﻿using Entity.Locations;
 
-namespace Entity.Stores.Markets
+namespace Entity.Stores.Locations
 {
-    public class StoreMarketRegion
+    public class StoreLocationRegion
     {
         public int Id { get; set; }
         public int StoreId { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Entity.Locations;
 
-namespace Entity.Stores.Markets
+namespace Entity.Stores.Locations
 {
-    public class StoreMarketCountry
+    public class StoreLocationCountry
     {
         public int Id { get; set; }
         public int StoreId { get; set; }
@@ -13,7 +13,7 @@ namespace Entity.Stores.Markets
 
         public Region Region => Country?.Region;
 
-        public string CountryName { get; set; } 
+        public string CountryName { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; } = true;
     }

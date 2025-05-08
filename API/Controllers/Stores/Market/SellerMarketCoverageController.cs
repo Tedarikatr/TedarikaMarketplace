@@ -13,12 +13,12 @@ namespace API.Controllers.Stores.Market
     [Authorize]
     public class SellerMarketCoverageController : ControllerBase
     {
-        private readonly IStoreMarketCoverageService _coverageService;
+        private readonly IStoreLocationCoverageService _coverageService;
         private readonly ILocationService _marketLocationService;
         private readonly SellerUserContextHelper _userHelper;
         private readonly ILogger<SellerMarketCoverageController> _logger;
 
-        public SellerMarketCoverageController(IStoreMarketCoverageService coverageService, ILocationService marketLocationService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
+        public SellerMarketCoverageController(IStoreLocationCoverageService coverageService, ILocationService marketLocationService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
         {
             _coverageService = coverageService;
             _marketLocationService = marketLocationService;

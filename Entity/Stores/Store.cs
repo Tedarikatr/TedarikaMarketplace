@@ -2,7 +2,7 @@
 using Entity.Companies;
 using Entity.Orders;
 using Entity.Stores.Carriers;
-using Entity.Stores.Markets;
+using Entity.Stores.Locations;
 using Entity.Stores.Products;
 
 namespace Entity.Stores
@@ -32,12 +32,12 @@ namespace Entity.Stores
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }
 
-        public ICollection<StoreMarketCountry> MarketCountries { get; set; }
-        public ICollection<StoreMarketProvince> MarketProvinces { get; set; }
-        public ICollection<StoreMarketDistrict> MarketDistricts { get; set; }
-        public ICollection<StoreMarketNeighborhood> MarketNeighborhoods { get; set; }
-        public ICollection<StoreMarketRegion> MarketRegions { get; set; }
-        public ICollection<StoreMarketState> MarketStates { get; set; }
+        public ICollection<StoreLocationCountry> MarketCountries { get; set; }
+        public ICollection<StoreLocationProvince> MarketProvinces { get; set; }
+        public ICollection<StoreLocationDistrict> MarketDistricts { get; set; }
+        public ICollection<StoreLocationNeighborhood> MarketNeighborhoods { get; set; }
+        public ICollection<StoreLocationRegion> MarketRegions { get; set; }
+        public ICollection<StoreLocationState> MarketStates { get; set; }
 
 
     }

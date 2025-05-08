@@ -1,23 +1,23 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores.Markets;
-using Entity.Stores.Markets;
+using Entity.Stores.Locations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Locations.IRepositorys;
-using Repository.Stores.Markets.IRepositorys;
+using Repository.Stores.Locations.IRepositorys;
 using Services.Stores.Markets.IServices;
 
 namespace Services.Stores.Markets.Services
 {
-    public class StoreMarketCoverageService : IStoreMarketCoverageService
+    public class StoreLocationCoverageService : IStoreLocationCoverageService
     {
 
-        private readonly IStoreMarketCountryRepository _countryRepo;
-        private readonly IStoreMarketProvinceRepository _provinceRepo;
-        private readonly IStoreMarketDistrictRepository _districtRepo;
-        private readonly IStoreMarketNeighborhoodRepository _neighborhoodRepo;
-        private readonly IStoreMarketRegionRepository _regionRepo;
-        private readonly IStoreMarketStateRepository _stateRepo;
+        private readonly IStoreLocationCountryRepository _countryRepo;
+        private readonly IStoreLocationProvinceRepository _provinceRepo;
+        private readonly IStoreLocationDistrictRepository _districtRepo;
+        private readonly IStoreLocationNeighborhoodRepository _neighborhoodRepo;
+        private readonly IStoreLocationRegionRepository _regionRepo;
+        private readonly IStoreLocationStateRepository _stateRepo;
         private readonly ICountryRepository _masterCountryRepo;
         private readonly IProvinceRepository _masterProvinceRepo;
         private readonly IDistrictRepository _masterDistrictRepo;
@@ -25,9 +25,9 @@ namespace Services.Stores.Markets.Services
         private readonly IStateRepository _masterStateRepo;
         private readonly IRegionRepository _masterRegionRepo;
         private readonly IMapper _mapper;
-        private readonly ILogger<StoreMarketCoverageService> _logger;
+        private readonly ILogger<StoreLocationCoverageService> _logger;
 
-        public StoreMarketCoverageService(IStoreMarketCountryRepository countryRepo, IStoreMarketProvinceRepository provinceRepo, IStoreMarketDistrictRepository districtRepo, IStoreMarketNeighborhoodRepository neighborhoodRepo, IStoreMarketRegionRepository regionRepo, IStoreMarketStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreMarketCoverageService> logger)
+        public StoreLocationCoverageService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreLocationCoverageService> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
@@ -65,7 +65,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketCountry>(new StoreMarketCountryCreateDto
+                var entity = _mapper.Map<StoreLocationCountry>(new StoreMarketCountryCreateDto
                 {
                     StoreId = dto.StoreId,
                     CountryId = countryId,
@@ -99,7 +99,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketProvince>(new StoreMarketProvinceCreateDto
+                var entity = _mapper.Map<StoreLocationProvince>(new StoreMarketProvinceCreateDto
                 {
                     StoreId = dto.StoreId,
                     ProvinceId = provinceId,
@@ -133,7 +133,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketDistrict>(new StoreMarketDistrictCreateDto
+                var entity = _mapper.Map<StoreLocationDistrict>(new StoreMarketDistrictCreateDto
                 {
                     StoreId = dto.StoreId,
                     DistrictId = districtId,
@@ -167,7 +167,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketNeighborhood>(new StoreMarketNeighborhoodCreateDto
+                var entity = _mapper.Map<StoreLocationNeighborhood>(new StoreMarketNeighborhoodCreateDto
                 {
                     StoreId = dto.StoreId,
                     NeighborhoodId = neighborhoodId,
@@ -195,7 +195,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketState>(new StoreMarketStateCreateDto
+                var entity = _mapper.Map<StoreLocationState>(new StoreMarketStateCreateDto
                 {
                     StoreId = dto.StoreId,
                     StateId = stateId,
@@ -223,7 +223,7 @@ namespace Services.Stores.Markets.Services
                     continue;
                 }
 
-                var entity = _mapper.Map<StoreMarketRegion>(new StoreMarketRegionCreateDto
+                var entity = _mapper.Map<StoreLocationRegion>(new StoreMarketRegionCreateDto
                 {
                     StoreId = dto.StoreId,
                     RegionId = regionId,

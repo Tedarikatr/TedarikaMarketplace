@@ -7,7 +7,7 @@ using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
-using Entity.Stores.Markets;
+using Entity.Stores.Locations;
 using Entity.Stores.Payments;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
@@ -280,73 +280,73 @@ namespace Data.Databases
 
         private static void ConfigureStoreMarketEntities(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<StoreMarketCountry>()
+            modelBuilder.Entity<StoreLocationCountry>()
                 .HasOne(smc => smc.Store)
                 .WithMany(s => s.MarketCountries)
                 .HasForeignKey(smc => smc.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketCountry>()
+            modelBuilder.Entity<StoreLocationCountry>()
                 .HasOne(smc => smc.Country)
                 .WithMany()
                 .HasForeignKey(smc => smc.CountryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarketProvince>()
+            modelBuilder.Entity<StoreLocationProvince>()
                 .HasOne(smp => smp.Store)
                 .WithMany(s => s.MarketProvinces)
                 .HasForeignKey(smp => smp.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketProvince>()
+            modelBuilder.Entity<StoreLocationProvince>()
                 .HasOne(smp => smp.Province)
                 .WithMany()
                 .HasForeignKey(smp => smp.ProvinceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarketDistrict>()
+            modelBuilder.Entity<StoreLocationDistrict>()
                 .HasOne(smd => smd.Store)
                 .WithMany(s => s.MarketDistricts)
                 .HasForeignKey(smd => smd.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketDistrict>()
+            modelBuilder.Entity<StoreLocationDistrict>()
                 .HasOne(smd => smd.District)
                 .WithMany()
                 .HasForeignKey(smd => smd.DistrictId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarketNeighborhood>()
+            modelBuilder.Entity<StoreLocationNeighborhood>()
                 .HasOne(smn => smn.Store)
                 .WithMany(s => s.MarketNeighborhoods)
                 .HasForeignKey(smn => smn.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketNeighborhood>()
+            modelBuilder.Entity<StoreLocationNeighborhood>()
                 .HasOne(smn => smn.Neighborhood)
                 .WithMany()
                 .HasForeignKey(smn => smn.NeighborhoodId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarketState>()
+            modelBuilder.Entity<StoreLocationState>()
                 .HasOne(sms => sms.Store)
                 .WithMany(s => s.MarketStates)
                 .HasForeignKey(sms => sms.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketState>()
+            modelBuilder.Entity<StoreLocationState>()
                 .HasOne(sms => sms.State)
                 .WithMany()
                 .HasForeignKey(sms => sms.StateId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<StoreMarketRegion>()
+            modelBuilder.Entity<StoreLocationRegion>()
                 .HasOne(smr => smr.Store)
                 .WithMany(s => s.MarketRegions)
                 .HasForeignKey(smr => smr.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreMarketRegion>()
+            modelBuilder.Entity<StoreLocationRegion>()
                 .HasOne(smr => smr.Region)
                 .WithMany()
                 .HasForeignKey(smr => smr.RegionId)
