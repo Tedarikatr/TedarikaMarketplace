@@ -3,6 +3,7 @@
     public class DeliveryAddressDto
     {
         public int Id { get; set; }
+        public int BuyerUserId { get; set; }
         public string CountryName { get; set; }
         public string StateName { get; set; }
         public string ProvinceName { get; set; }
