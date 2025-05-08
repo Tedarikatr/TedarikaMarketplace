@@ -1,9 +1,9 @@
 ﻿using Data.Databases;
 using Data.Repository;
-using Entity.Markets.Locations;
-using Repository.Markets.IRepositorys;
+using Entity.Locations;
+using Repository.Locations.IRepositorys;
 
-namespace Repository.Markets.Repositorys
+namespace Repository.Locations.Repositorys
 {
     public class CountryRepository : GenericRepository<Country>, ICountryRepository
     {
@@ -17,7 +17,7 @@ namespace Repository.Markets.Repositorys
 
     public class DistrictRepository : GenericRepository<District>, IDistrictRepository
     {
-        public DistrictRepository(ApplicationDbContext context): base(context) { }
+        public DistrictRepository(ApplicationDbContext context) : base(context) { }
     }
 
     public class NeighborhoodRepository : GenericRepository<Neighborhood>, INeighborhoodRepository

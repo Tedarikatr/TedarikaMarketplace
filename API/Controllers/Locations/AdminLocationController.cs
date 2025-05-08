@@ -1,18 +1,18 @@
-﻿using Data.Dtos.Markets;
+﻿using Data.Dtos.Locations;
 using Microsoft.AspNetCore.Mvc;
-using Services.Markets.IServices;
+using Services.Locations.IServices;
 
-namespace API.Controllers.Markets
+namespace API.Controllers.Locations
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "admin")]
     //[Authorize]
-    public class AdminMarketLocationController : ControllerBase
+    public class AdminLocationController : ControllerBase
     {
-        private readonly IMarketLocationService _locationService;
+        private readonly ILocationService _locationService;
 
-        public AdminMarketLocationController(IMarketLocationService locationService)
+        public AdminLocationController(ILocationService locationService)
         {
             _locationService = locationService;
         }
@@ -87,7 +87,7 @@ namespace API.Controllers.Markets
             return result ? Ok() : BadRequest();
         }
 
-       
+
         // Silme
         [HttpDelete("countries/{id}")]
         public async Task<IActionResult> DeleteCountry(int id) =>

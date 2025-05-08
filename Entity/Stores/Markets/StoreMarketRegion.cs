@@ -1,4 +1,4 @@
-﻿using Entity.Markets.Locations;
+﻿using Entity.Locations;
 
 namespace Entity.Stores.Markets
 {

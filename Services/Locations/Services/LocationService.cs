@@ -1,12 +1,12 @@
-﻿using Data.Dtos.Markets;
+﻿using Data.Dtos.Locations;
 using Entity.Markets.Locations;
 using Microsoft.Extensions.Logging;
-using Repository.Markets.IRepositorys;
-using Services.Markets.IServices;
+using Repository.Locations.IRepositorys;
+using Services.Locations.IServices;
 
-namespace Services.Markets.Services
+namespace Services.Locations.Services
 {
-    public class MarketLocationService : IMarketLocationService
+    public class LocationService : ILocationService
     {
         private readonly ICountryRepository _countryRepo;
         private readonly IProvinceRepository _provinceRepo;
@@ -14,16 +14,16 @@ namespace Services.Markets.Services
         private readonly INeighborhoodRepository _neighborhoodRepo;
         private readonly IStateRepository _stateRepo;
         private readonly IRegionRepository _regionRepo;
-        private readonly ILogger<MarketLocationService> _logger;
+        private readonly ILogger<LocationService> _logger;
 
-        public MarketLocationService(
+        public LocationService(
             ICountryRepository countryRepo,
             IProvinceRepository provinceRepo,
             IDistrictRepository districtRepo,
             INeighborhoodRepository neighborhoodRepo,
             IStateRepository stateRepo,
             IRegionRepository regionRepo,
-            ILogger<MarketLocationService> logger)
+            ILogger<LocationService> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
@@ -221,7 +221,7 @@ namespace Services.Markets.Services
                 Name = r.Name,
                 Code = r.Code,
                 IsActive = r.IsActive,
-            }).ToList();   
+            }).ToList();
         }
 
         public async Task<List<CountryDto>> GetCountriesByRegionIdAsync(int regionId)

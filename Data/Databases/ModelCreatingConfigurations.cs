@@ -1,7 +1,7 @@
 ﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Companies;
-using Entity.Markets.Locations;
+using Entity.Locations;
 using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;

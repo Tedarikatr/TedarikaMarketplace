@@ -1,7 +1,7 @@
 ﻿using Data.Repository;
-using Entity.Markets.Locations;
+using Entity.Locations;
 
-namespace Repository.Markets.IRepositorys
+namespace Repository.Locations.IRepositorys
 {
     public interface ICountryRepository : IGenericRepository<Country> { }
     public interface IProvinceRepository : IGenericRepository<Province> { }

@@ -1,4 +1,4 @@
-﻿namespace Data.Dtos.Markets
+﻿namespace Data.Dtos.Locations
 {
     public class RegionDto
     {
@@ -36,7 +36,7 @@
     {
         public string Name { get; set; }
         public int CountryId { get; set; }
-        public int? StateId { get; set; } 
+        public int? StateId { get; set; }
     }
 
     public class DistrictDto

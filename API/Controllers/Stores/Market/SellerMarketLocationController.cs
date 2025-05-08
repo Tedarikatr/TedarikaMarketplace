@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Services.Markets.IServices;
+using Services.Locations.IServices;
 
 namespace API.Controllers.Stores.Market
 {
@@ -8,9 +8,9 @@ namespace API.Controllers.Stores.Market
     [ApiExplorerSettings(GroupName = "seller")]
     public class SellerMarketLocationController : ControllerBase
     {
-        private readonly IMarketLocationService _locationService;
+        private readonly ILocationService _locationService;
 
-        public SellerMarketLocationController(IMarketLocationService locationService)
+        public SellerMarketLocationController(ILocationService locationService)
         {
             _locationService = locationService;
         }

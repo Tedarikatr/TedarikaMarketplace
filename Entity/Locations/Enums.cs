@@ -1,4 +1,4 @@
-﻿namespace Entity.Markets.Locations
+﻿namespace Entity.Locations
 {
     public enum MarketCoverageLevel
     {

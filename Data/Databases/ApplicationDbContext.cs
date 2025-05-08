@@ -4,7 +4,7 @@ using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
-using Entity.Markets.Locations;
+using Entity.Locations;
 using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;
