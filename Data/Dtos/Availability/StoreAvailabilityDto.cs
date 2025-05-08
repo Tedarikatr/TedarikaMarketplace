@@ -1,20 +1,28 @@
-﻿using Data.Dtos.Stores;
-using Data.Dtos.Stores.Products;
-
-namespace Data.Dtos.Availability
+﻿namespace Data.Dtos.Availability
 {
-    public class StoreAvailabilityDto
+    public class StoreAvailabilityFilterDto
+    {
+        public string Region { get; set; }
+        public string Country { get; set; }
+        public string Province { get; set; }
+        public string District { get; set; }
+        public string State { get; set; }
+        public string Neighborhood { get; set; }
+    }
+
+    public class AvailableStoreDto
     {
         public int StoreId { get; set; }
         public string StoreName { get; set; }
         public string CompanyName { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
-        public List<StoreProductDto> Products { get; set; } = new();
+        public List<AvailableStoreProductDto> Products { get; set; }
     }
-    public class AvailableStoreWithProductsDto
+
+    public class AvailableStoreProductDto
     {
-        public StoreDto Store { get; set; }
-        public List<StoreProductDto> Products { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string ImageUrl { get; set; }
+        public decimal UnitPrice { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Auths;
+using Data.Dtos.Availability;
 using Data.Dtos.Baskets;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
@@ -39,6 +40,7 @@ namespace API.Mappings
             StoreProductRequestMappings.RegisterMappings(this);
             BasketMappings.RegisterMappings(this);
             PaymentMappings.RegisterMappings(this);
+            AvailabilityMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -345,6 +347,7 @@ namespace API.Mappings
                 profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.Country, opt => opt.Ignore())
                     .ForMember(dest => dest.State, opt => opt.Ignore())
                     .ForMember(dest => dest.Province, opt => opt.Ignore())
@@ -354,6 +357,7 @@ namespace API.Mappings
                 profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
+                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.Country, opt => opt.Ignore())
                     .ForMember(dest => dest.State, opt => opt.Ignore())
                     .ForMember(dest => dest.Province, opt => opt.Ignore())
@@ -718,5 +722,23 @@ namespace API.Mappings
             }
         }
 
+        private static class AvailabilityMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Store, AvailableStoreDto>()
+                    .ForMember(dest => dest.StoreId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName))
+                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
+                    .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.StoreProducts));
+
+                profile.CreateMap<StoreProduct, AvailableStoreProductDto>()
+                    .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+                    .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
+                    .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.StoreProductImageUrl))
+                    .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice));
+            }
+
+        }
     }
 }
