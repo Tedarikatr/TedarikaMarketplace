@@ -4,6 +4,7 @@ using Entity.Categories;
 using Entity.Companies;
 using Entity.Products;
 using Entity.Stores;
+using Entity.Stores.Locations;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -243,109 +244,6 @@ namespace Data.Seeders
                     _logger.LogInformation("Product verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
-                //SellerUser
-                if (!await _context.SellerUsers.AnyAsync())
-                {
-                    // 1️⃣ Seller User
-                    var seller = new SellerUser
-                    {
-                        Name = "Ali",
-                        LastName = "Yılmaz",
-                        Email = "ali@tedarika.com",
-                        Phone = "+905551112233",
-                        Password = BCrypt.Net.BCrypt.HashPassword("123456"),
-                        UserNumber = "S1001",
-                        UserGuidNumber = Guid.NewGuid(),
-                        Status = true,
-                        UserType = UserType.Seller
-                    };
-                    await _context.SellerUsers.AddAsync(seller);
-                    await _context.SaveChangesAsync();
-
-                    // 2️⃣ Company
-                    var company = new Company
-                    {
-                        Name = "Yılmaz Gıda Sanayi",
-                        TaxNumber = "1234567890",
-                        TaxOffice = "İstanbul Vergi Dairesi",
-                        Country = "Türkiye",
-                        City = "İstanbul",
-                        Address = "Organize Sanayi Bölgesi",
-                        Email = "info@yilmazgida.com",
-                        Phone = "+902124567890",
-                        CompanyNumber = "C2024",
-                        Industry = "Gıda",
-                        IsVerified = true,
-                        IsActive = true,
-                        BuyerAccount = false,
-                        SellerAccount = true,
-                        Type = CompanyType.Seller,
-                        SellerUserId = seller.Id
-                    };
-                    await _context.Companies.AddAsync(company);
-                    await _context.SaveChangesAsync();
-
-                    // 3️⃣ Store
-                    var store = new Store
-                    {
-                        StoreName = "Yılmaz Toptan",
-                        SellerId = seller.Id,
-                        IsApproved = true,
-                        IsActive = true,
-                        CompanyId = company.Id,
-                        StoreProvince = "İstanbul",
-                        StoreDistrict = "Beyoğlu"
-                    };
-                    await _context.Stores.AddAsync(store);
-                    await _context.SaveChangesAsync();
-
-                    // 4️⃣ Ana Ürün
-                    var product = new Product
-                    {
-                        Name = "Kuru Nohut",
-                        Description = "İri taneli, doğal kuru nohut.",
-                        Brand = "Tedarika Agro",
-                        UnitTypes = "Kg",
-                        UnitType = UnitType.kg,
-                        ProductNumber = "P1001",
-                        Barcode = "8690000000011",
-                        ImageUrl = "https://cdn.tedarika.com/images/kuru-nohut.jpg",
-                        CreatedAt = DateTime.UtcNow
-                    };
-                    await _context.Products.AddAsync(product);
-                    await _context.SaveChangesAsync();
-
-                    // 5️⃣ StoreProduct bağlantısı
-                    var storeProduct = new StoreProduct
-                    {
-                        Name = product.Name,
-                        Description = product.Description,
-                        Brand = product.Brand,
-                        UnitTypes = (int)UnitType.kg,
-                        UnitType = UnitType.kg,
-                        ProductId = product.Id,
-                        StoreId = store.Id,
-                        UnitPrice = 45.00m,
-                        StockQuantity = 500,
-                        MinOrderQuantity = 10,
-                        MaxOrderQuantity = 100,
-                        IsActive = true,
-                        IsOnSale = true,
-                        AllowedDomestic = true,
-                        AllowedInternational = true,
-                        ImageUrl = product.ImageUrl,
-                        StoreProductImageUrl = product.ImageUrl,
-                        CategoryName = "Bakliyat",
-                        CategorySubName = "Nohut"
-                    };
-                    await _context.StoreProducts.AddAsync(storeProduct);
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    _logger.LogInformation("SellerUser verileri zaten mevcut, ekleme yapılmadı.");
-                }
-
                 //Region
                 if (!await _context.Regions.AnyAsync())
                 {
@@ -359,7 +257,6 @@ namespace Data.Seeders
                 {
                     _logger.LogInformation("Region verileri zaten mevcut, ekleme yapılmadı.");
                 }
-
 
                 // Avrupa Country 
                 var europeanRegion = await _context.Regions.FirstOrDefaultAsync(r => r.Code == "EU");
@@ -547,6 +444,123 @@ namespace Data.Seeders
                     await _context.SaveChangesAsync();
 
                     _logger.LogInformation("Almanya şehirleri (Province) başarıyla eklendi.");
+                }
+
+                //SellerUser
+                if (!await _context.SellerUsers.AnyAsync())
+                {
+                    // 1️⃣ Seller User
+                    var seller = new SellerUser
+                    {
+                        Name = "Ali",
+                        LastName = "Yılmaz",
+                        Email = "ali@tedarika.com",
+                        Phone = "+905551112233",
+                        Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+                        UserNumber = "S1001",
+                        UserGuidNumber = Guid.NewGuid(),
+                        Status = true,
+                        UserType = UserType.Seller
+                    };
+                    await _context.SellerUsers.AddAsync(seller);
+                    await _context.SaveChangesAsync();
+
+                    // 2️⃣ Company
+                    var company = new Company
+                    {
+                        Name = "Yılmaz Gıda Sanayi",
+                        TaxNumber = "1234567890",
+                        TaxOffice = "İstanbul Vergi Dairesi",
+                        Country = "Türkiye",
+                        City = "İstanbul",
+                        Address = "Organize Sanayi Bölgesi",
+                        Email = "info@yilmazgida.com",
+                        Phone = "+902124567890",
+                        CompanyNumber = "C2024",
+                        Industry = "Gıda",
+                        IsVerified = true,
+                        IsActive = true,
+                        BuyerAccount = false,
+                        SellerAccount = true,
+                        Type = CompanyType.Seller,
+                        SellerUserId = seller.Id
+                    };
+                    await _context.Companies.AddAsync(company);
+                    await _context.SaveChangesAsync();
+
+                    // 3️⃣ Store
+                    var store = new Store
+                    {
+                        StoreName = "Yılmaz Toptan",
+                        SellerId = seller.Id,
+                        IsApproved = true,
+                        IsActive = true,
+                        CompanyId = company.Id,
+                        StoreProvince = "İstanbul",
+                        StoreDistrict = "Beyoğlu"
+                    };
+                    await _context.Stores.AddAsync(store);
+                    await _context.SaveChangesAsync();
+
+                    var allProvinces = await _context.Provinces.Where(p => p.Country.Code == "TR").ToListAsync();
+                    foreach (var province in allProvinces)
+                    {
+                        var storeProvince = new StoreLocationProvince
+                        {
+                            StoreId = store.Id,
+                            ProvinceId = province.Id,
+                            IsActive = true
+                        };
+                        await _context.StoreLocationProvinces.AddAsync(storeProvince);
+                    }
+                    await _context.SaveChangesAsync();
+
+
+                    // 4️⃣ Ana Ürün
+                    var product = new Product
+                    {
+                        Name = "Kuru Nohut",
+                        Description = "İri taneli, doğal kuru nohut.",
+                        Brand = "Tedarika Agro",
+                        UnitTypes = "Kg",
+                        UnitType = UnitType.kg,
+                        ProductNumber = "P1001",
+                        Barcode = "8690000000011",
+                        ImageUrl = "https://cdn.tedarika.com/images/kuru-nohut.jpg",
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _context.Products.AddAsync(product);
+                    await _context.SaveChangesAsync();
+
+                    // 5️⃣ StoreProduct bağlantısı
+                    var storeProduct = new StoreProduct
+                    {
+                        Name = product.Name,
+                        Description = product.Description,
+                        Brand = product.Brand,
+                        UnitTypes = (int)UnitType.kg,
+                        UnitType = UnitType.kg,
+                        ProductId = product.Id,
+                        StoreId = store.Id,
+                        UnitPrice = 45.00m,
+                        StockQuantity = 500,
+                        MinOrderQuantity = 10,
+                        MaxOrderQuantity = 100,
+                        IsActive = true,
+                        IsOnSale = true,
+                        AllowedDomestic = true,
+                        AllowedInternational = true,
+                        ImageUrl = product.ImageUrl,
+                        StoreProductImageUrl = product.ImageUrl,
+                        CategoryName = "Bakliyat",
+                        CategorySubName = "Nohut"
+                    };
+                    await _context.StoreProducts.AddAsync(storeProduct);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _logger.LogInformation("SellerUser verileri zaten mevcut, ekleme yapılmadı.");
                 }
 
                 _logger.LogInformation("Database seeding tamamlandı.");

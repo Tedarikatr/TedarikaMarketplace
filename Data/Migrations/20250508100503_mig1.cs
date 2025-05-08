@@ -58,11 +58,10 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BuyerId = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Currency = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,6 +118,31 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuyerId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    OrderNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PaymentReference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ErrorCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Regions",
                 columns: table => new
                 {
@@ -162,16 +186,13 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuyerId = table.Column<int>(type: "int", nullable: false),
-                    ShopDirectId = table.Column<int>(type: "int", nullable: false),
-                    ShopDirectProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShopDirectProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BasketId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StoreProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BasketId = table.Column<int>(type: "int", nullable: true)
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,32 +201,6 @@ namespace Data.Migrations
                         name: "FK_BasketItems_Baskets_BasketId",
                         column: x => x.BasketId,
                         principalTable: "Baskets",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DeliveryAddresses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BuyerUserId = table.Column<int>(type: "int", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Province = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Neighborhood = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DeliveryAddresses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DeliveryAddresses_BuyerUsers_BuyerUserId",
-                        column: x => x.BuyerUserId,
-                        principalTable: "BuyerUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -419,49 +414,6 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BuyerId = table.Column<int>(type: "int", nullable: false),
-                    BuyerCompanyId = table.Column<int>(type: "int", nullable: true),
-                    PaymentId = table.Column<int>(type: "int", nullable: false),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ShippingAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SelectedCarrierId = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_BuyerUsers_BuyerId",
-                        column: x => x.BuyerId,
-                        principalTable: "BuyerUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Carriers_SelectedCarrierId",
-                        column: x => x.SelectedCarrierId,
-                        principalTable: "Carriers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_Companies_BuyerCompanyId",
-                        column: x => x.BuyerCompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "StoreCarriers",
                 columns: table => new
                 {
@@ -488,7 +440,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketCountries",
+                name: "StoreLocationCountries",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -501,15 +453,15 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketCountries", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationCountries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketCountries_Countries_CountryId",
+                        name: "FK_StoreLocationCountries_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketCountries_Stores_StoreId",
+                        name: "FK_StoreLocationCountries_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -517,7 +469,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketRegions",
+                name: "StoreLocationRegions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -530,15 +482,15 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketRegions", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationRegions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketRegions_Regions_RegionId",
+                        name: "FK_StoreLocationRegions_Regions_RegionId",
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketRegions_Stores_StoreId",
+                        name: "FK_StoreLocationRegions_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -546,7 +498,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketStates",
+                name: "StoreLocationStates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -559,15 +511,15 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketStates", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationStates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketStates_States_StateId",
+                        name: "FK_StoreLocationStates_States_StateId",
                         column: x => x.StateId,
                         principalTable: "States",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketStates_Stores_StoreId",
+                        name: "FK_StoreLocationStates_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -659,7 +611,7 @@ namespace Data.Migrations
                     UnitType = table.Column<int>(type: "int", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StockQuantity = table.Column<int>(type: "int", nullable: false),
                     MinOrderQuantity = table.Column<int>(type: "int", nullable: false),
                     MaxOrderQuantity = table.Column<int>(type: "int", nullable: false),
@@ -711,7 +663,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketProvinces",
+                name: "StoreLocationProvinces",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -724,99 +676,17 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketProvinces", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationProvinces", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketProvinces_Provinces_ProvinceId",
+                        name: "FK_StoreLocationProvinces_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
                         principalTable: "Provinces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketProvinces_Stores_StoreId",
+                        name: "FK_StoreLocationProvinces_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreInvoices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    InvoiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreInvoices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StoreInvoices_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StoreInvoices_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -887,7 +757,7 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketDistricts",
+                name: "StoreLocationDistricts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -900,15 +770,15 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketDistricts", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationDistricts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketDistricts_Districts_DistrictId",
+                        name: "FK_StoreLocationDistricts_Districts_DistrictId",
                         column: x => x.DistrictId,
                         principalTable: "Districts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketDistricts_Stores_StoreId",
+                        name: "FK_StoreLocationDistricts_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -916,7 +786,64 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreMarketNeighborhoods",
+                name: "DeliveryAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuyerUserId = table.Column<int>(type: "int", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: true),
+                    ProvinceId = table.Column<int>(type: "int", nullable: true),
+                    DistrictId = table.Column<int>(type: "int", nullable: true),
+                    NeighborhoodId = table.Column<int>(type: "int", nullable: true),
+                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeliveryAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_BuyerUsers_BuyerUserId",
+                        column: x => x.BuyerUserId,
+                        principalTable: "BuyerUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_Neighborhoods_NeighborhoodId",
+                        column: x => x.NeighborhoodId,
+                        principalTable: "Neighborhoods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreLocationNeighborhoods",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -929,17 +856,135 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreMarketNeighborhoods", x => x.Id);
+                    table.PrimaryKey("PK_StoreLocationNeighborhoods", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreMarketNeighborhoods_Neighborhoods_NeighborhoodId",
+                        name: "FK_StoreLocationNeighborhoods_Neighborhoods_NeighborhoodId",
                         column: x => x.NeighborhoodId,
                         principalTable: "Neighborhoods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_StoreMarketNeighborhoods_Stores_StoreId",
+                        name: "FK_StoreLocationNeighborhoods_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuyerId = table.Column<int>(type: "int", nullable: false),
+                    BuyerCompanyId = table.Column<int>(type: "int", nullable: true),
+                    PaymentId = table.Column<int>(type: "int", nullable: true),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    SelectedCarrierId = table.Column<int>(type: "int", nullable: true),
+                    DeliveryAddressId = table.Column<int>(type: "int", nullable: false),
+                    OrderNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_BuyerUsers_BuyerId",
+                        column: x => x.BuyerId,
+                        principalTable: "BuyerUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Carriers_SelectedCarrierId",
+                        column: x => x.SelectedCarrierId,
+                        principalTable: "Carriers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Orders_Companies_BuyerCompanyId",
+                        column: x => x.BuyerCompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_DeliveryAddresses_DeliveryAddressId",
+                        column: x => x.DeliveryAddressId,
+                        principalTable: "DeliveryAddresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Payments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Orders_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StoreProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreInvoices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    InvoiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreInvoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreInvoices_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StoreInvoices_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1003,6 +1048,31 @@ namespace Data.Migrations
                 column: "BuyerUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_CountryId",
+                table: "DeliveryAddresses",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_DistrictId",
+                table: "DeliveryAddresses",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_NeighborhoodId",
+                table: "DeliveryAddresses",
+                column: "NeighborhoodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_ProvinceId",
+                table: "DeliveryAddresses",
+                column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_StateId",
+                table: "DeliveryAddresses",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Districts_ProvinceId",
                 table: "Districts",
                 column: "ProvinceId");
@@ -1033,6 +1103,18 @@ namespace Data.Migrations
                 column: "BuyerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_DeliveryAddressId",
+                table: "Orders",
+                column: "DeliveryAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_PaymentId",
+                table: "Orders",
+                column: "PaymentId",
+                unique: true,
+                filter: "[PaymentId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_SelectedCarrierId",
                 table: "Orders",
                 column: "SelectedCarrierId");
@@ -1041,12 +1123,6 @@ namespace Data.Migrations
                 name: "IX_Orders_StoreId",
                 table: "Orders",
                 column: "StoreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_OrderId",
-                table: "Payments",
-                column: "OrderId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Barcode",
@@ -1108,63 +1184,63 @@ namespace Data.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketCountries_CountryId",
-                table: "StoreMarketCountries",
+                name: "IX_StoreLocationCountries_CountryId",
+                table: "StoreLocationCountries",
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketCountries_StoreId",
-                table: "StoreMarketCountries",
+                name: "IX_StoreLocationCountries_StoreId",
+                table: "StoreLocationCountries",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketDistricts_DistrictId",
-                table: "StoreMarketDistricts",
+                name: "IX_StoreLocationDistricts_DistrictId",
+                table: "StoreLocationDistricts",
                 column: "DistrictId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketDistricts_StoreId",
-                table: "StoreMarketDistricts",
+                name: "IX_StoreLocationDistricts_StoreId",
+                table: "StoreLocationDistricts",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketNeighborhoods_NeighborhoodId",
-                table: "StoreMarketNeighborhoods",
+                name: "IX_StoreLocationNeighborhoods_NeighborhoodId",
+                table: "StoreLocationNeighborhoods",
                 column: "NeighborhoodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketNeighborhoods_StoreId",
-                table: "StoreMarketNeighborhoods",
+                name: "IX_StoreLocationNeighborhoods_StoreId",
+                table: "StoreLocationNeighborhoods",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketProvinces_ProvinceId",
-                table: "StoreMarketProvinces",
+                name: "IX_StoreLocationProvinces_ProvinceId",
+                table: "StoreLocationProvinces",
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketProvinces_StoreId",
-                table: "StoreMarketProvinces",
+                name: "IX_StoreLocationProvinces_StoreId",
+                table: "StoreLocationProvinces",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketRegions_RegionId",
-                table: "StoreMarketRegions",
+                name: "IX_StoreLocationRegions_RegionId",
+                table: "StoreLocationRegions",
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketRegions_StoreId",
-                table: "StoreMarketRegions",
+                name: "IX_StoreLocationRegions_StoreId",
+                table: "StoreLocationRegions",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketStates_StateId",
-                table: "StoreMarketStates",
+                name: "IX_StoreLocationStates_StateId",
+                table: "StoreLocationStates",
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreMarketStates_StoreId",
-                table: "StoreMarketStates",
+                name: "IX_StoreLocationStates_StoreId",
+                table: "StoreLocationStates",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
@@ -1229,13 +1305,7 @@ namespace Data.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
-                name: "DeliveryAddresses");
-
-            migrationBuilder.DropTable(
                 name: "OrderItems");
-
-            migrationBuilder.DropTable(
-                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "StoreCarriers");
@@ -1244,22 +1314,22 @@ namespace Data.Migrations
                 name: "StoreInvoices");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketCountries");
+                name: "StoreLocationCountries");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketDistricts");
+                name: "StoreLocationDistricts");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketNeighborhoods");
+                name: "StoreLocationNeighborhoods");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketProvinces");
+                name: "StoreLocationProvinces");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketRegions");
+                name: "StoreLocationRegions");
 
             migrationBuilder.DropTable(
-                name: "StoreMarketStates");
+                name: "StoreLocationStates");
 
             migrationBuilder.DropTable(
                 name: "StorePaymentMethods");
@@ -1280,16 +1350,16 @@ namespace Data.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Neighborhoods");
-
-            migrationBuilder.DropTable(
                 name: "StoreProducts");
 
             migrationBuilder.DropTable(
                 name: "Carriers");
 
             migrationBuilder.DropTable(
-                name: "Districts");
+                name: "DeliveryAddresses");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -1298,7 +1368,7 @@ namespace Data.Migrations
                 name: "Stores");
 
             migrationBuilder.DropTable(
-                name: "Provinces");
+                name: "Neighborhoods");
 
             migrationBuilder.DropTable(
                 name: "CategoriesSubs");
@@ -1307,7 +1377,7 @@ namespace Data.Migrations
                 name: "Companies");
 
             migrationBuilder.DropTable(
-                name: "States");
+                name: "Districts");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -1317,6 +1387,12 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "SellerUsers");
+
+            migrationBuilder.DropTable(
+                name: "Provinces");
+
+            migrationBuilder.DropTable(
+                name: "States");
 
             migrationBuilder.DropTable(
                 name: "Countries");

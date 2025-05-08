@@ -403,35 +403,45 @@ namespace Data.Migrations
                     b.Property<int>("BuyerUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Neighborhood")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("NeighborhoodId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Province")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("StateId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerUserId");
 
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("NeighborhoodId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("StateId");
+
                     b.ToTable("DeliveryAddresses");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
+            modelBuilder.Entity("Entity.Locations.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +468,7 @@ namespace Data.Migrations
                     b.ToTable("Countries");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.District", b =>
+            modelBuilder.Entity("Entity.Locations.District", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -482,7 +492,7 @@ namespace Data.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Neighborhood", b =>
+            modelBuilder.Entity("Entity.Locations.Neighborhood", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -509,7 +519,7 @@ namespace Data.Migrations
                     b.ToTable("Neighborhoods");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
+            modelBuilder.Entity("Entity.Locations.Province", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -538,7 +548,7 @@ namespace Data.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Region", b =>
+            modelBuilder.Entity("Entity.Locations.Region", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -560,7 +570,7 @@ namespace Data.Migrations
                     b.ToTable("Regions");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+            modelBuilder.Entity("Entity.Locations.State", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -829,7 +839,7 @@ namespace Data.Migrations
                     b.ToTable("StoreCarriers");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketCountry", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationCountry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -858,10 +868,10 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketCountries");
+                    b.ToTable("StoreLocationCountries");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketDistrict", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationDistrict", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -890,10 +900,10 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketDistricts");
+                    b.ToTable("StoreLocationDistricts");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketNeighborhood", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationNeighborhood", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -922,10 +932,10 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketNeighborhoods");
+                    b.ToTable("StoreLocationNeighborhoods");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketProvince", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationProvince", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -954,10 +964,10 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketProvinces");
+                    b.ToTable("StoreLocationProvinces");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketRegion", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationRegion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -986,10 +996,10 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketRegions");
+                    b.ToTable("StoreLocationRegions");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketState", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1018,7 +1028,7 @@ namespace Data.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("StoreMarketStates");
+                    b.ToTable("StoreLocationStates");
                 });
 
             modelBuilder.Entity("Entity.Stores.Payments.StoreInvoice", b =>
@@ -1406,12 +1416,48 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Entity.Locations.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Entity.Locations.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entity.Locations.Neighborhood", "Neighborhood")
+                        .WithMany()
+                        .HasForeignKey("NeighborhoodId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entity.Locations.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Entity.Locations.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("BuyerUser");
+
+                    b.Navigation("Country");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Neighborhood");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("State");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
+            modelBuilder.Entity("Entity.Locations.Country", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Region", "Region")
+                    b.HasOne("Entity.Locations.Region", "Region")
                         .WithMany("Countries")
                         .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1420,9 +1466,9 @@ namespace Data.Migrations
                     b.Navigation("Region");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.District", b =>
+            modelBuilder.Entity("Entity.Locations.District", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Province", "Province")
+                    b.HasOne("Entity.Locations.Province", "Province")
                         .WithMany("Districts")
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1431,9 +1477,9 @@ namespace Data.Migrations
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Neighborhood", b =>
+            modelBuilder.Entity("Entity.Locations.Neighborhood", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.District", "District")
+                    b.HasOne("Entity.Locations.District", "District")
                         .WithMany("Neighborhoods")
                         .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1442,15 +1488,15 @@ namespace Data.Migrations
                     b.Navigation("District");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
+            modelBuilder.Entity("Entity.Locations.Province", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Country", "Country")
+                    b.HasOne("Entity.Locations.Country", "Country")
                         .WithMany("Provinces")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entity.Markets.Locations.State", "State")
+                    b.HasOne("Entity.Locations.State", "State")
                         .WithMany("Provinces")
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1460,9 +1506,9 @@ namespace Data.Migrations
                     b.Navigation("State");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+            modelBuilder.Entity("Entity.Locations.State", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Country", "Country")
+                    b.HasOne("Entity.Locations.Country", "Country")
                         .WithMany("States")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1572,9 +1618,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketCountry", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationCountry", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Country", "Country")
+                    b.HasOne("Entity.Locations.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1591,9 +1637,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketDistrict", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationDistrict", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.District", "District")
+                    b.HasOne("Entity.Locations.District", "District")
                         .WithMany()
                         .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1610,9 +1656,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketNeighborhood", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationNeighborhood", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Neighborhood", "Neighborhood")
+                    b.HasOne("Entity.Locations.Neighborhood", "Neighborhood")
                         .WithMany()
                         .HasForeignKey("NeighborhoodId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1629,9 +1675,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketProvince", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationProvince", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Province", "Province")
+                    b.HasOne("Entity.Locations.Province", "Province")
                         .WithMany()
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1648,9 +1694,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketRegion", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationRegion", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.Region", "Region")
+                    b.HasOne("Entity.Locations.Region", "Region")
                         .WithMany()
                         .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1667,9 +1713,9 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Markets.StoreMarketState", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationState", b =>
                 {
-                    b.HasOne("Entity.Markets.Locations.State", "State")
+                    b.HasOne("Entity.Locations.State", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1826,29 +1872,29 @@ namespace Data.Migrations
                     b.Navigation("Stores");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Country", b =>
+            modelBuilder.Entity("Entity.Locations.Country", b =>
                 {
                     b.Navigation("Provinces");
 
                     b.Navigation("States");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.District", b =>
+            modelBuilder.Entity("Entity.Locations.District", b =>
                 {
                     b.Navigation("Neighborhoods");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Province", b =>
+            modelBuilder.Entity("Entity.Locations.Province", b =>
                 {
                     b.Navigation("Districts");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.Region", b =>
+            modelBuilder.Entity("Entity.Locations.Region", b =>
                 {
                     b.Navigation("Countries");
                 });
 
-            modelBuilder.Entity("Entity.Markets.Locations.State", b =>
+            modelBuilder.Entity("Entity.Locations.State", b =>
                 {
                     b.Navigation("Provinces");
                 });

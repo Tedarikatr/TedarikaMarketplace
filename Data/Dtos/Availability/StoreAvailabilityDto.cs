@@ -2,12 +2,12 @@
 {
     public class StoreAvailabilityFilterDto
     {
-        public string Region { get; set; }
-        public string Country { get; set; }
-        public string Province { get; set; }
-        public string District { get; set; }
-        public string State { get; set; }
-        public string Neighborhood { get; set; }
+        public int? RegionId { get; set; }
+        public int? CountryId { get; set; }
+        public int? StateId { get; set; }
+        public int? ProvinceId { get; set; }
+        public int? DistrictId { get; set; }
+        public int? NeighborhoodId { get; set; }
     }
 
     public class AvailableStoreDto
@@ -24,5 +24,16 @@
         public string ProductName { get; set; }
         public string ImageUrl { get; set; }
         public decimal UnitPrice { get; set; }
+    }
+
+    public class AvailableStoreWithProductsDto
+    {
+        public int StoreId { get; set; }
+        public string StoreName { get; set; }
+        public string CompanyName { get; set; }
+        public bool IsApproved { get; set; }
+        public bool IsActive { get; set; }
+
+        public List<AvailableStoreProductDto> Products { get; set; } = new();
     }
 }
