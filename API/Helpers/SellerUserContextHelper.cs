@@ -37,20 +37,5 @@ namespace API.Helpers
 
             return store.Id;
         }
-
-        public  string GetSellerNumber(ClaimsPrincipal user) =>
-            user.FindFirst("UserNumber")?.Value ?? throw new UnauthorizedAccessException("Seller numarası bulunamadı.");
-
-        public  Guid GetSellerGuid(ClaimsPrincipal user) =>
-            Guid.Parse(user.FindFirst("UserGuid")?.Value ?? throw new UnauthorizedAccessException("Seller GUID bulunamadı."));
-
-        public  bool IsSellerActive(ClaimsPrincipal user) =>
-            bool.Parse(user.FindFirst("IsActive")?.Value ?? throw new UnauthorizedAccessException("Seller aktiflik durumu bulunamadı."));
-
-        public int? GetCompanyId(ClaimsPrincipal user)
-        {
-            var claim = user.FindFirst("CompanyId");
-            return claim != null ? int.Parse(claim.Value) : null;
-        }
     }
 }

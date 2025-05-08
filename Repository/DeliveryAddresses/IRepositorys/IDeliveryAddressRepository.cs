@@ -5,6 +5,6 @@ namespace Repository.DeliveryAddresses.IRepositorys
 {
     public interface IDeliveryAddressRepository : IGenericRepository<DeliveryAddress>
     {
-
+        Task<DeliveryAddress> GetDefaultAddressByBuyerIdAsync(int buyerId);
     }
 }
