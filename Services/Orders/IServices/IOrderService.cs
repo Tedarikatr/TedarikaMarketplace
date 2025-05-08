@@ -9,6 +9,8 @@ namespace Services.Orders.IServices
 
         Task<OrderDto> GetOrderByIdAsync(int orderId, int buyerId);
 
+        Task<List<OrderDto>> GetAllOrdersAsync();
+
         Task<List<OrderListDto>> GetOrdersByBuyerIdAsync(int buyerId);
 
         Task<OrderStatus> GetOrderStatusAsync(int orderId, int buyerId);

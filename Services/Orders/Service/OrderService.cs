@@ -120,6 +120,14 @@ namespace Services.Orders.Service
             return _mapper.Map<OrderDto>(order);
         }
 
+        public async Task<List<OrderDto>> GetAllOrdersAsync()
+        {
+            var orders = await _orderRepository.GetQueryable()
+                .Include(o => o.OrderItems)
+                .ToListAsync();
+            return _mapper.Map<List<OrderDto>>(orders);
+        }
+
         public async Task<List<OrderListDto>> GetOrdersByBuyerIdAsync(int buyerId)
         {
             var orders = await _orderRepository.GetQueryable()
