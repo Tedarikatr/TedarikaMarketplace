@@ -334,20 +334,31 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
+                // Entity <-> DTO dönüşümleri
                 profile.CreateMap<DeliveryAddress, DeliveryAddressDto>()
-                    .ReverseMap();
+                    .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name))
+                    .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State.Name))
+                    .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province.Name))
+                    .ForMember(dest => dest.DistrictName, opt => opt.MapFrom(src => src.District.Name))
+                    .ForMember(dest => dest.NeighborhoodName, opt => opt.MapFrom(src => src.Neighborhood.Name));
 
                 profile.CreateMap<DeliveryAddressCreateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.BuyerUserId, opt => opt.MapFrom(src => src.BuyerUserId))
-                    .ReverseMap();
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.State, opt => opt.Ignore())
+                    .ForMember(dest => dest.Province, opt => opt.Ignore())
+                    .ForMember(dest => dest.District, opt => opt.Ignore())
+                    .ForMember(dest => dest.Neighborhood, opt => opt.Ignore());
 
                 profile.CreateMap<DeliveryAddressUpdateDto, DeliveryAddress>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.BuyerUser, opt => opt.Ignore()) 
-                    .ReverseMap();
+                    .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.State, opt => opt.Ignore())
+                    .ForMember(dest => dest.Province, opt => opt.Ignore())
+                    .ForMember(dest => dest.District, opt => opt.Ignore())
+                    .ForMember(dest => dest.Neighborhood, opt => opt.Ignore());
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Entity.Auths;
 using Entity.Baskets;
 using Entity.Companies;
+using Entity.DeliveryAddresses;
 using Entity.Locations;
 using Entity.Orders;
 using Entity.Payments;
@@ -18,6 +19,7 @@ namespace Data.Databases
         public static void ApplyAllConfigurations(ModelBuilder modelBuilder)
         {
             ConfigureUserEntities(modelBuilder);
+            ConfigureDeliveryAddressEntities(modelBuilder);
             ConfigureBasketEntities(modelBuilder);
             ConfigureCompanyEntities(modelBuilder);
             ConfigureStoreEntities(modelBuilder);
@@ -51,6 +53,46 @@ namespace Data.Databases
 
         }
 
+        private static void ConfigureDeliveryAddressEntities(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.BuyerUser)
+                .WithMany()
+                .HasForeignKey(d => d.BuyerUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.Country)
+                .WithMany()
+                .HasForeignKey(d => d.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.State)
+                .WithMany()
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.Province)
+                .WithMany()
+                .HasForeignKey(d => d.ProvinceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.District)
+                .WithMany()
+                .HasForeignKey(d => d.DistrictId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.Neighborhood)
+                .WithMany()
+                .HasForeignKey(d => d.NeighborhoodId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+        }
+
         private static void ConfigureBasketEntities(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Basket>()
@@ -63,7 +105,6 @@ namespace Data.Databases
                 .Property(b => b.Currency)
                 .HasMaxLength(10);
         }
-
 
         private static void ConfigureCompanyEntities(ModelBuilder modelBuilder)
         {
@@ -311,7 +352,6 @@ namespace Data.Databases
                 .HasForeignKey(smr => smr.RegionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
-
 
         private static void ConfigureDecimal(ModelBuilder modelBuilder)
         {
