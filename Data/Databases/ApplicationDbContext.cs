@@ -24,7 +24,6 @@ namespace Data.Databases
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            await Helper.Companies.CompanyNumberGenerator.HandleNewCompanyNumbersAsync(this);
             return await base.SaveChangesAsync(cancellationToken);
         }
 
