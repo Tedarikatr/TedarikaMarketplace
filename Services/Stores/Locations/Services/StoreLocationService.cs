@@ -9,7 +9,7 @@ using Services.Stores.Markets.IServices;
 
 namespace Services.Stores.Markets.Services
 {
-    public class StoreLocationCoverageService : IStoreLocationCoverageService
+    public class StoreLocationService : IStoreLocationService
     {
 
         private readonly IStoreLocationCountryRepository _countryRepo;
@@ -25,9 +25,9 @@ namespace Services.Stores.Markets.Services
         private readonly IStateRepository _masterStateRepo;
         private readonly IRegionRepository _masterRegionRepo;
         private readonly IMapper _mapper;
-        private readonly ILogger<StoreLocationCoverageService> _logger;
+        private readonly ILogger<StoreLocationService> _logger;
 
-        public StoreLocationCoverageService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreLocationCoverageService> logger)
+        public StoreLocationService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreLocationService> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;

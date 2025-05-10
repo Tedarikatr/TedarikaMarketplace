@@ -1,10 +1,22 @@
 ﻿using Data.Databases;
 using Data.Repository;
 using Entity.Stores.Locations;
+using Microsoft.EntityFrameworkCore;
 using Repository.Stores.Locations.IRepositorys;
 
 namespace Repository.Stores.Locations.Repositorys
 {
+    public class StoreLocationCoverageRepository : GenericRepository<StoreLocationCoverage>, IStoreLocationCoverageRepository
+    {
+        public StoreLocationCoverageRepository(ApplicationDbContext context) : base(context) { }
+
+        public async Task<StoreLocationCoverage> GetByStoreIdAsync(int storeId)
+        {
+            return await _context.StoreLocationCoverages
+                .FirstOrDefaultAsync(c => c.StoreId == storeId);
+        }
+    }
+
     public class StoreLocationCountryRepository : GenericRepository<StoreLocationCountry>, IStoreLocationCountryRepository
     {
         public StoreLocationCountryRepository(ApplicationDbContext context) : base(context) { }

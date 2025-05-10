@@ -2,7 +2,7 @@
 
 namespace Services.Stores.Markets.IServices
 {
-    public interface IStoreLocationCoverageService
+    public interface IStoreLocationService
     {
         Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto);
 

@@ -196,7 +196,7 @@ builder.Services.AddScoped<IStoreLocationDistrictRepository, StoreLocationDistri
 builder.Services.AddScoped<IStoreLocationNeighborhoodRepository, StoreLocationNeighborhoodRepository>();
 builder.Services.AddScoped<IStoreLocationRegionRepository, StoreLocationRegionRepository>();
 builder.Services.AddScoped<IStoreLocationStateRepository, StoreLocationStateRepository>();
-builder.Services.AddScoped<IStoreLocationCoverageService, StoreLocationCoverageService>();
+builder.Services.AddScoped<IStoreLocationService, StoreLocationService>();
 
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 builder.Services.AddScoped<IStoreProductService, StoreProductService>();
