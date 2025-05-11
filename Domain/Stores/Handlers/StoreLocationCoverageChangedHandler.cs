@@ -1,4 +1,5 @@
 ﻿using Domain.Stores.Events;
+using Domain.Stores.Helpers;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -6,11 +7,11 @@ namespace Domain.Stores.Handlers
 {
     public class StoreLocationCoverageChangedHandler : INotificationHandler<StoreLocationCoverageChangedEvent>
     {
-        private readonly StoreLocationCoverageUpdatedHandler _coverageHandler;
+        private readonly StoreLocationCoverageUpdatedHelper _coverageHandler;
         private readonly ILogger<StoreLocationCoverageChangedHandler> _logger;
 
         public StoreLocationCoverageChangedHandler(
-            StoreLocationCoverageUpdatedHandler coverageHandler,
+            StoreLocationCoverageUpdatedHelper coverageHandler,
             ILogger<StoreLocationCoverageChangedHandler> logger)
         {
             _coverageHandler = coverageHandler;

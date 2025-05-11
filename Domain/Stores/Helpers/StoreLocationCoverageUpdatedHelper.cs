@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Repository.Stores.Locations.IRepositorys;
 
-namespace Domain.Stores.Handlers
+namespace Domain.Stores.Helpers
 {
-    public class StoreLocationCoverageUpdatedHandler
+    public class StoreLocationCoverageUpdatedHelper
     {
         private readonly IStoreLocationCountryRepository _countryRepo;
         private readonly IStoreLocationProvinceRepository _provinceRepo;
@@ -13,17 +13,9 @@ namespace Domain.Stores.Handlers
         private readonly IStoreLocationRegionRepository _regionRepo;
         private readonly IStoreLocationStateRepository _stateRepo;
         private readonly IStoreLocationCoverageRepository _coverageRepo;
-        private readonly ILogger<StoreLocationCoverageUpdatedHandler> _logger;
+        private readonly ILogger<StoreLocationCoverageUpdatedHelper> _logger;
 
-        public StoreLocationCoverageUpdatedHandler(
-            IStoreLocationCountryRepository countryRepo,
-            IStoreLocationProvinceRepository provinceRepo,
-            IStoreLocationDistrictRepository districtRepo,
-            IStoreLocationNeighborhoodRepository neighborhoodRepo,
-            IStoreLocationRegionRepository regionRepo,
-            IStoreLocationStateRepository stateRepo,
-            IStoreLocationCoverageRepository coverageRepo,
-            ILogger<StoreLocationCoverageUpdatedHandler> logger)
+        public StoreLocationCoverageUpdatedHelper(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, IStoreLocationCoverageRepository coverageRepo, ILogger<StoreLocationCoverageUpdatedHelper> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
