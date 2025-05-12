@@ -16,6 +16,8 @@
 
     public class DeliveryAddressCreateDto
     {
+
+        public int RegionId { get; set; }
         public int CountryId { get; set; }
         public int? StateId { get; set; }
         public int ProvinceId { get; set; }

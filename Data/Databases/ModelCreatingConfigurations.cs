@@ -64,6 +64,12 @@ namespace Data.Databases
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<DeliveryAddress>()
+                .HasOne(d => d.Region)
+                .WithMany()
+                .HasForeignKey(d => d.RegionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DeliveryAddress>()
                 .HasOne(d => d.Country)
                 .WithMany()
                 .HasForeignKey(d => d.CountryId)
@@ -131,6 +137,12 @@ namespace Data.Databases
                 .WithOne(o => o.Store)
                 .HasForeignKey<Store>(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Store>()
+                .HasOne(s => s.LocationCoverage)
+                .WithOne(c => c.Store)
+                .HasForeignKey<StoreLocationCoverage>(c => c.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StoreProduct>()
                 .HasOne(sp => sp.Store)
@@ -207,10 +219,8 @@ namespace Data.Databases
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StoreLocationCoverage>()
-                .HasOne(s => s.Store)
-                .WithMany()
-                .HasForeignKey(s => s.StoreId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .HasIndex(c => c.StoreId)
+                   .IsUnique();
         }
 
         private static void ConfigureProductEntities(ModelBuilder modelBuilder)

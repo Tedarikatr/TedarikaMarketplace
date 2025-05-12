@@ -65,15 +65,12 @@ namespace Services.Availability.Services
                             StoreName = store.StoreName,
                             StoreDescription = store.StoreDescription,
                             LogoUrl = store.ImageUrl,
-                            DeliveryTimeFrame = 2, // Opsiyonel: özel alan eklenebilir
-
                             RegionId = address.Country?.RegionId,
                             CountryId = address.CountryId,
                             StateId = address.StateId,
                             ProvinceId = address.ProvinceId,
                             DistrictId = address.DistrictId,
                             NeighborhoodId = address.NeighborhoodId,
-
                             Products = productDtos
                         };
 

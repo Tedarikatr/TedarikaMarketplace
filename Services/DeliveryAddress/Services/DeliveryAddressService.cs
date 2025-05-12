@@ -11,6 +11,7 @@ namespace Services.DeliveryAddress.Services
     public class DeliveryAddressService : IDeliveryAddressService
     {
         private readonly IDeliveryAddressRepository _deliveryAddressRepository;
+        private readonly IRegionRepository _regionRepository;
         private readonly ICountryRepository _countryRepository;
         private readonly IStateRepository _stateRepository;
         private readonly IProvinceRepository _provinceRepository;
@@ -19,17 +20,10 @@ namespace Services.DeliveryAddress.Services
         private readonly IMapper _mapper;
         private readonly ILogger<DeliveryAddressService> _logger;
 
-        public DeliveryAddressService(
-            IDeliveryAddressRepository deliveryAddressRepository,
-            ICountryRepository countryRepository,
-            IStateRepository stateRepository,
-            IProvinceRepository provinceRepository,
-            IDistrictRepository districtRepository,
-            INeighborhoodRepository neighborhoodRepository,
-            IMapper mapper,
-            ILogger<DeliveryAddressService> logger)
+        public DeliveryAddressService(IDeliveryAddressRepository deliveryAddressRepository, IRegionRepository regionRepository, ICountryRepository countryRepository, IStateRepository stateRepository, IProvinceRepository provinceRepository, IDistrictRepository districtRepository, INeighborhoodRepository neighborhoodRepository, IMapper mapper, ILogger<DeliveryAddressService> logger)
         {
             _deliveryAddressRepository = deliveryAddressRepository;
+            _regionRepository = regionRepository;
             _countryRepository = countryRepository;
             _stateRepository = stateRepository;
             _provinceRepository = provinceRepository;
@@ -168,6 +162,7 @@ namespace Services.DeliveryAddress.Services
 
         private async Task<bool> ValidateLocationAsync(DeliveryAddressCreateDto dto)
         {
+            var region = await _regionRepository.GetByIdAsync(dto.RegionId);
             var country = await _countryRepository.GetByIdAsync(dto.CountryId);
             var state = dto.StateId.HasValue ? await _stateRepository.GetByIdAsync(dto.StateId.Value) : null;
             var province = await _provinceRepository.GetByIdAsync(dto.ProvinceId);
