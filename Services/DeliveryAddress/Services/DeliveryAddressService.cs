@@ -40,6 +40,17 @@ namespace Services.DeliveryAddress.Services
                 var valid = await ValidateLocationAsync(dto);
                 if (!valid) throw new ArgumentException("Geçersiz lokasyon bilgileri.");
 
+                if (dto.IsDefault)
+                {
+                    var allAddresses = await _deliveryAddressRepository.FindAsync(a => a.BuyerUserId == buyerUserId);
+                    foreach (var addr in allAddresses)
+                    {
+                        addr.IsDefault = false;
+                    }
+
+                    await _deliveryAddressRepository.UpdateRangeAsync(allAddresses.ToList());
+                }
+
                 var entity = _mapper.Map<Entity.DeliveryAddresses.DeliveryAddress>(dto);
                 entity.BuyerUserId = buyerUserId;
                 await _deliveryAddressRepository.AddAsync(entity);
@@ -80,8 +91,9 @@ namespace Services.DeliveryAddress.Services
         {
             try
             {
-                var result = await _deliveryAddressRepository.FindAsync(a => a.BuyerUserId == buyerUserId);
+                var result = await _deliveryAddressRepository.GetAllWithLocationByBuyerIdAsync(buyerUserId);
                 return _mapper.Map<IEnumerable<DeliveryAddressDto>>(result);
+
             }
             catch (Exception ex)
             {
@@ -94,8 +106,9 @@ namespace Services.DeliveryAddress.Services
         {
             try
             {
-                var address = await _deliveryAddressRepository.GetByIdAsync(id);
+                var address = await _deliveryAddressRepository.GetWithLocationByIdAsync(id);
                 return _mapper.Map<DeliveryAddressDto>(address);
+
             }
             catch (Exception ex)
             {
@@ -108,11 +121,9 @@ namespace Services.DeliveryAddress.Services
         {
             try
             {
-                var address = await _deliveryAddressRepository
-                    .GetQueryable()
-                    .FirstOrDefaultAsync(a => a.BuyerUserId == buyerUserId && a.IsDefault);
-
+                var address = await _deliveryAddressRepository.GetDefaultWithLocationByBuyerIdAsync(buyerUserId);
                 return _mapper.Map<DeliveryAddressDto>(address);
+
             }
             catch (Exception ex)
             {
@@ -162,20 +173,68 @@ namespace Services.DeliveryAddress.Services
 
         private async Task<bool> ValidateLocationAsync(DeliveryAddressCreateDto dto)
         {
-            var region = await _regionRepository.GetByIdAsync(dto.RegionId);
-            var country = await _countryRepository.GetByIdAsync(dto.CountryId);
-            var state = dto.StateId.HasValue ? await _stateRepository.GetByIdAsync(dto.StateId.Value) : null;
-            var province = await _provinceRepository.GetByIdAsync(dto.ProvinceId);
-            var district = await _districtRepository.GetByIdAsync(dto.DistrictId);
-            var neighborhood = await _neighborhoodRepository.GetByIdAsync(dto.NeighborhoodId);
+            _logger.LogInformation("Lokasyon doğrulama başlatıldı. DTO: {@Dto}", dto);
 
-            return country != null && province != null && district != null && neighborhood != null &&
-                   (!dto.StateId.HasValue || state != null);
+            var region = await _regionRepository.GetByIdAsync(dto.RegionId);
+            if (region == null)
+            {
+                _logger.LogWarning("Region bulunamadı. RegionId: {RegionId}", dto.RegionId);
+            }
+
+            var country = await _countryRepository.GetByIdAsync(dto.CountryId);
+            if (country == null)
+            {
+                _logger.LogWarning("Country bulunamadı. CountryId: {CountryId}", dto.CountryId);
+            }
+
+            var state = dto.StateId.HasValue ? await _stateRepository.GetByIdAsync(dto.StateId.Value) : null;
+            if (dto.StateId.HasValue && state == null)
+            {
+                _logger.LogWarning("State bulunamadı. StateId: {StateId}", dto.StateId.Value);
+            }
+
+            var province = await _provinceRepository.GetByIdAsync(dto.ProvinceId);
+            if (province == null)
+            {
+                _logger.LogWarning("Province bulunamadı. ProvinceId: {ProvinceId}", dto.ProvinceId);
+            }
+
+            var district = await _districtRepository.GetByIdAsync(dto.DistrictId);
+            if (district == null)
+            {
+                _logger.LogWarning("District bulunamadı. DistrictId: {DistrictId}", dto.DistrictId);
+            }
+
+            var neighborhood = await _neighborhoodRepository.GetByIdAsync(dto.NeighborhoodId);
+            if (neighborhood == null)
+            {
+                _logger.LogWarning("Neighborhood bulunamadı. NeighborhoodId: {NeighborhoodId}", dto.NeighborhoodId);
+            }
+
+            bool isValid = region != null && country != null && province != null &&
+                           district != null && neighborhood != null &&
+                           (!dto.StateId.HasValue || state != null);
+
+            _logger.LogInformation("Lokasyon doğrulama sonucu: {IsValid}", isValid);
+
+            return isValid;
         }
 
         private async Task<bool> ValidateLocationAsync(DeliveryAddressUpdateDto dto)
         {
-            return await ValidateLocationAsync(_mapper.Map<DeliveryAddressCreateDto>(dto));
+            try
+            {
+                _logger.LogInformation("DeliveryAddressUpdateDto map işlemi başlatılıyor. DTO: {@Dto}", dto);
+                var createDto = _mapper.Map<DeliveryAddressCreateDto>(dto);
+                _logger.LogInformation("DTO map işlemi tamamlandı. Mapped DTO: {@CreateDto}", createDto);
+
+                return await ValidateLocationAsync(createDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DeliveryAddressUpdateDto mapping veya doğrulama sırasında hata oluştu.");
+                return false;
+            }
         }
     }
 }

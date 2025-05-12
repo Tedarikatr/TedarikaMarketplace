@@ -1,5 +1,4 @@
 ﻿using Data.Dtos.Availability;
-using Data.Dtos.Stores.Products;
 
 namespace Services.Availability.IServices
 {

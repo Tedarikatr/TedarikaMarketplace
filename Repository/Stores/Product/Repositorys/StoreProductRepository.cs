@@ -19,9 +19,11 @@ namespace Repository.Stores.Product.Repositorys
         {
             return await _dbSet
                 .Include(p => p.Product)
+                .Include(p => p.Store) 
                 .Where(p => storeIds.Contains(p.StoreId))
                 .ToListAsync();
         }
+
 
         public async Task<bool> UpdateMinMaxOrderQuantityAsync(int storeId, int productId, int minOrderQuantity, int maxOrderQuantity)
         {

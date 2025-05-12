@@ -3,7 +3,7 @@ using Data.Dtos.Stores.Markets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Locations.IServices;
-using Services.Stores.Markets.IServices;
+using Services.Stores.Locations.IServices;
 
 namespace API.Controllers.Stores.Market
 {

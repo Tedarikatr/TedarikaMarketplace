@@ -10,7 +10,7 @@ namespace Entity.DeliveryAddresses
         public int BuyerUserId { get; set; }
         public BuyerUser BuyerUser { get; set; }
 
-        public int RegionId { get; set; }
+        public int? RegionId { get; set; }
         public Region Region { get; set; }
 
         public int CountryId { get; set; }

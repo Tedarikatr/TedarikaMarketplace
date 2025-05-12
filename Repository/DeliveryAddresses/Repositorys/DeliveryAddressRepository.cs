@@ -12,15 +12,42 @@ namespace Repository.DeliveryAddresses.Repositorys
         {
         }
 
-        public async Task<DeliveryAddress> GetDefaultAddressByBuyerIdAsync(int buyerId)
+        public async Task<List<DeliveryAddress>> GetAllWithLocationByBuyerIdAsync(int buyerUserId)
         {
-            return await _dbSet
-                .Include(x => x.Country)
-                .Include(x => x.State)
-                .Include(x => x.Province)
-                .Include(x => x.District)
-                .Include(x => x.Neighborhood)
-                .FirstOrDefaultAsync(x => x.BuyerUserId == buyerId && x.IsDefault);
+            return await _context.DeliveryAddresses
+                .Where(a => a.BuyerUserId == buyerUserId)
+                .Include(a => a.Region)
+                .Include(a => a.Country)
+                .Include(a => a.State)
+                .Include(a => a.Province)
+                .Include(a => a.District)
+                .Include(a => a.Neighborhood)
+                .ToListAsync();
         }
+
+        public async Task<DeliveryAddress> GetWithLocationByIdAsync(int id)
+        {
+            return await _context.DeliveryAddresses
+                .Include(a => a.Region)
+                .Include(a => a.Country)
+                .Include(a => a.State)
+                .Include(a => a.Province)
+                .Include(a => a.District)
+                .Include(a => a.Neighborhood)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<DeliveryAddress> GetDefaultWithLocationByBuyerIdAsync(int buyerUserId)
+        {
+            return await _context.DeliveryAddresses
+                .Include(a => a.Region)
+                .Include(a => a.Country)
+                .Include(a => a.State)
+                .Include(a => a.Province)
+                .Include(a => a.District)
+                .Include(a => a.Neighborhood)
+                .FirstOrDefaultAsync(a => a.BuyerUserId == buyerUserId && a.IsDefault);
+        }
+
     }
 }

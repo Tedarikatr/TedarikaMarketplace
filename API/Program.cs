@@ -6,7 +6,7 @@ using Data.Databases;
 using Data.Seeders;
 using Domain.Companies.Events;
 using Domain.Products.Events;
-using Domain.Store.Events;
+using Domain.Stores.Events;
 using Domain.Stores.Handlers;
 using Domain.Stores.Helpers;
 using FluentValidation;
@@ -40,6 +40,8 @@ using Serilog;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
 using Services.Auths.Services;
+using Services.Availability.IServices;
+using Services.Availability.Services;
 using Services.Baskets.IServices;
 using Services.Baskets.Services;
 using Services.Categories.IServices;
@@ -62,8 +64,8 @@ using Services.Payments.Services;
 using Services.Product.IServices;
 using Services.Product.Services;
 using Services.Stores;
-using Services.Stores.Markets.IServices;
-using Services.Stores.Markets.Services;
+using Services.Stores.Locations.IServices;
+using Services.Stores.Locations.Services;
 using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
@@ -209,6 +211,8 @@ builder.Services.AddScoped<IStoreProductService, StoreProductService>();
 
 builder.Services.AddScoped<IStoreProductRequestRepository, StoreProductRequestRepository>();
 builder.Services.AddScoped<IStoreProductRequestService, StoreProductRequestService>();
+
+builder.Services.AddScoped<IStoreAvailabilityService, StoreAvailabilityService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();

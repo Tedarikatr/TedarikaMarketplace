@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores;
-using Domain.Store.Events;
+using Domain.Stores.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Companys.IRepositorys;

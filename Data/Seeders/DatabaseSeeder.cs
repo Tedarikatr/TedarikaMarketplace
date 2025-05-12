@@ -3,6 +3,7 @@ using Entity.Auths;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
+using Entity.Locations;
 using Entity.Stores;
 using Entity.Stores.Locations;
 using Entity.Stores.Products;
@@ -132,6 +133,7 @@ namespace Data.Seeders
                     buyer = await _context.BuyerUsers.FirstOrDefaultAsync();
                 }
 
+                //Region
                 if (!await _context.Regions.AnyAsync())
                 {
                     // 1. Region
@@ -382,6 +384,72 @@ namespace Data.Seeders
                                     _logger.LogInformation("İzmir ilçeleri StoreLocationDistrict'e başarıyla eklendi.");
                                 }
                             }
+
+                            // İzmir Mahalleleri (Neighborhood) eklenmesi
+                            var izmirDistrictsForNeighborhoods = await _context.Districts
+                                .Where(d => d.Province.Name == "İzmir" && d.Province.Country.Code == "TR")
+                                .ToListAsync();
+
+                            foreach (var district in izmirDistrictsForNeighborhoods)
+                            {
+                                List<Neighborhood> neighborhoods = district.Name switch
+                                {
+                                    "Balçova" => IzmirNeighborhoodSeeders.GetBalçovaNeighborhoods(district.Id),
+                                    "Bornova" => IzmirNeighborhoodSeeders.GetBornovaNeighborhoods(district.Id),
+                                    "Buca" => IzmirNeighborhoodSeeders.GetBucaNeighborhoods(district.Id),
+                                    "Çiğli" => IzmirNeighborhoodSeeders.GetÇi̇ğli̇Neighborhoods(district.Id),
+                                    "Gaziemir" => IzmirNeighborhoodSeeders.GetGazi̇emi̇rNeighborhoods(district.Id),
+                                    "Güzelbahçe" => IzmirNeighborhoodSeeders.GetGüzelbahçeNeighborhoods(district.Id),
+                                    "Karşıyaka" => IzmirNeighborhoodSeeders.GetKarsiyakaNeighborhoods(district.Id),
+                                    "Menderes" => IzmirNeighborhoodSeeders.GetMenderesNeighborhoods(district.Id),
+                                    "Menemen" => IzmirNeighborhoodSeeders.GetMenemenNeighborhoods(district.Id),
+                                    "Ödemiş" => IzmirNeighborhoodSeeders.GetÖdemi̇şNeighborhoods(district.Id),
+                                    "Seferihisar" => IzmirNeighborhoodSeeders.GetSeferi̇hi̇sarNeighborhoods(district.Id),
+                                    "Selçuk" => IzmirNeighborhoodSeeders.GetSelçukNeighborhoods(district.Id),
+                                    "Tire" => IzmirNeighborhoodSeeders.GetTi̇reNeighborhoods(district.Id),
+                                    "Torbalı" => IzmirNeighborhoodSeeders.GetTorbaliNeighborhoods(district.Id),
+                                    "Urla" => IzmirNeighborhoodSeeders.GetUrlaNeighborhoods(district.Id),
+                                    "Konak" => IzmirNeighborhoodSeeders.GetKonakNeighborhoods(district.Id),
+                                    "Narlıdere" => IzmirNeighborhoodSeeders.GetNarlidereNeighborhoods(district.Id),
+                                    "Aliağa" => IzmirNeighborhoodSeeders.GetAli̇agaNeighborhoods(district.Id),
+                                    "Bayındır" => IzmirNeighborhoodSeeders.GetBayindirNeighborhoods(district.Id),
+                                    "Bergama" => IzmirNeighborhoodSeeders.GetBergamaNeighborhoods(district.Id),
+                                    "Beydağ" => IzmirNeighborhoodSeeders.GetBeydağNeighborhoods(district.Id),
+                                    "Çeşme" => IzmirNeighborhoodSeeders.GetÇeşmeNeighborhoods(district.Id),
+                                    "Dikili" => IzmirNeighborhoodSeeders.GetDi̇ki̇li̇Neighborhoods(district.Id),
+                                    "Foça" => IzmirNeighborhoodSeeders.GetFoçaNeighborhoods(district.Id),
+                                    "Karaburun" => IzmirNeighborhoodSeeders.GetKaraburunNeighborhoods(district.Id),
+                                    "Kemalpaşa" => IzmirNeighborhoodSeeders.GetKemalpaşaNeighborhoods(district.Id),
+                                    "Kınık" => IzmirNeighborhoodSeeders.GetKinikNeighborhoods(district.Id),
+                                    "Kiraz" => IzmirNeighborhoodSeeders.GetKi̇razNeighborhoods(district.Id),
+                                    "Karabağlar" => IzmirNeighborhoodSeeders.GetKarabağlarNeighborhoods(district.Id),
+                                    "Bayraklı" => IzmirNeighborhoodSeeders.GetBayrakliNeighborhoods(district.Id),
+                                    _ => new List<Neighborhood>()
+                                };
+
+                                if (neighborhoods.Any())
+                                {
+                                    var existingNames = await _context.Neighborhoods
+                                        .Where(n => n.DistrictId == district.Id)
+                                        .Select(n => n.Name)
+                                        .ToListAsync();
+
+                                    var toAdd = neighborhoods
+                                        .Where(n => !existingNames.Contains(n.Name))
+                                        .ToList();
+
+                                    if (toAdd.Any())
+                                    {
+                                        await _context.Neighborhoods.AddRangeAsync(toAdd);
+                                        _logger.LogInformation("{DistrictName} için {Count} adet mahalle eklendi.", district.Name, toAdd.Count);
+                                    }
+                                    else
+                                    {
+                                        _logger.LogInformation("{DistrictName} için mahalleler zaten mevcut.", district.Name);
+                                    }
+                                }
+                            }
+                            await _context.SaveChangesAsync();
                         }
 
                         await _context.SaveChangesAsync(); // Tüm lokasyon verilerini tek seferde kaydet

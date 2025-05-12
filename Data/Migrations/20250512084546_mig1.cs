@@ -181,26 +181,6 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreLocationCoverages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    RegionIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CountryIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StateIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProvinceIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DistrictIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NeighborhoodIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreLocationCoverages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BasketItems",
                 columns: table => new
                 {
@@ -482,6 +462,32 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_StoreLocationCountries_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreLocationCoverages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    RegionIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CountryIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProvinceIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DistrictIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NeighborhoodIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreLocationCoverages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationCoverages_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -812,6 +818,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BuyerUserId = table.Column<int>(type: "int", nullable: false),
+                    RegionId = table.Column<int>(type: "int", nullable: true),
                     CountryId = table.Column<int>(type: "int", nullable: false),
                     StateId = table.Column<int>(type: "int", nullable: true),
                     ProvinceId = table.Column<int>(type: "int", nullable: true),
@@ -852,6 +859,12 @@ namespace Data.Migrations
                         name: "FK_DeliveryAddresses_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
                         principalTable: "Provinces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeliveryAddresses_Regions_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Regions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -1090,6 +1103,11 @@ namespace Data.Migrations
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeliveryAddresses_RegionId",
+                table: "DeliveryAddresses",
+                column: "RegionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddresses_StateId",
                 table: "DeliveryAddresses",
                 column: "StateId");
@@ -1214,6 +1232,12 @@ namespace Data.Migrations
                 name: "IX_StoreLocationCountries_StoreId",
                 table: "StoreLocationCountries",
                 column: "StoreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoreLocationCoverages_StoreId",
+                table: "StoreLocationCoverages",
+                column: "StoreId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_StoreLocationDistricts_DistrictId",

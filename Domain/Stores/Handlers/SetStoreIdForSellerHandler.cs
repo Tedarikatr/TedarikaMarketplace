@@ -1,9 +1,9 @@
 ﻿using Data.Databases;
-using Domain.Store.Events;
+using Domain.Stores.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Domain.Store.Handlers
+namespace Domain.Stores.Handlers
 {
     public class SetStoreIdForSellerHandler : INotificationHandler<StoreCreatedEvent>
     {

@@ -25,24 +25,35 @@ namespace Services.Availability.Services
             _mapper = mapper;
             _logger = logger;
         }
-
         public async Task<List<AvailableStoreWithProductsDto>> GetAvailableStoresWithProductsByAddressAsync(int buyerId)
         {
             var availableStores = new List<AvailableStoreWithProductsDto>();
 
             try
             {
-                var address = await _deliveryAddressRepository.GetDefaultAddressByBuyerIdAsync(buyerId);
+                var address = await _deliveryAddressRepository.GetDefaultWithLocationByBuyerIdAsync(buyerId);
                 if (address == null)
                 {
                     _logger.LogWarning("Teslimat adresi bulunamadı. BuyerId: {BuyerId}", buyerId);
                     return availableStores;
                 }
 
+                _logger.LogInformation("Buyer teslimat adresi -> BuyerId: {BuyerId}, CountryId: {CountryId}, StateId: {StateId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}, NeighborhoodId: {NeighborhoodId}, RegionId: {RegionId}",
+                    buyerId, address.CountryId, address.StateId, address.ProvinceId, address.DistrictId, address.NeighborhoodId, address.Country?.RegionId);
+
                 var allCoverages = await _storeLocationCoverageRepository.GetAllAsync();
 
                 foreach (var coverage in allCoverages)
                 {
+                    _logger.LogInformation("Store Coverage kontrol ediliyor -> StoreId: {StoreId}, RegionIds: {RegionIds}, CountryIds: {CountryIds}, StateIds: {StateIds}, ProvinceIds: {ProvinceIds}, DistrictIds: {DistrictIds}, NeighborhoodIds: {NeighborhoodIds}",
+                        coverage.StoreId,
+                        string.Join(",", coverage.RegionIds),
+                        string.Join(",", coverage.CountryIds),
+                        string.Join(",", coverage.StateIds),
+                        string.Join(",", coverage.ProvinceIds),
+                        string.Join(",", coverage.DistrictIds),
+                        string.Join(",", coverage.NeighborhoodIds));
+
                     bool isMatch =
                         (address.NeighborhoodId.HasValue && coverage.NeighborhoodIds.Contains(address.NeighborhoodId.Value)) ||
                         (address.DistrictId.HasValue && coverage.DistrictIds.Contains(address.DistrictId.Value)) ||
@@ -51,13 +62,20 @@ namespace Services.Availability.Services
                         (coverage.CountryIds.Contains(address.CountryId)) ||
                         (address.Country?.RegionId != null && coverage.RegionIds.Contains(address.Country.RegionId));
 
+                    _logger.LogInformation("StoreId {StoreId} için eşleşme sonucu: {IsMatch}", coverage.StoreId, isMatch);
+
                     if (isMatch)
                     {
                         var products = await _storeProductRepository.GetProductsByStoreIdsAsync(new List<int> { coverage.StoreId });
+                        _logger.LogInformation("StoreId {StoreId} için {ProductCount} ürün bulundu", coverage.StoreId, products.Count);
 
                         var productDtos = _mapper.Map<List<StoreProductListDto>>(products);
                         var store = products.FirstOrDefault()?.Store;
-                        if (store == null) continue;
+                        if (store == null)
+                        {
+                            _logger.LogWarning("StoreId {StoreId} için Store nesnesi null döndü", coverage.StoreId);
+                            continue;
+                        }
 
                         var storeDto = new AvailableStoreWithProductsDto
                         {
@@ -75,6 +93,7 @@ namespace Services.Availability.Services
                         };
 
                         availableStores.Add(storeDto);
+                        _logger.LogInformation("StoreId {StoreId} başarılı şekilde AvailableStore listesine eklendi.", store.Id);
                     }
                 }
             }
@@ -85,6 +104,8 @@ namespace Services.Availability.Services
 
             return availableStores;
         }
+
+
 
         public async Task<List<AvailableStoreDto>> GetAvailableStoresByAddressAsync(int buyerId)
         {
@@ -106,3 +127,4 @@ namespace Services.Availability.Services
         }
     }
 }
+

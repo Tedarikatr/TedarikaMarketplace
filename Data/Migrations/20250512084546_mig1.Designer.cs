@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250511093316_mig1")]
+    [Migration("20250512084546_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -424,6 +424,9 @@ namespace Data.Migrations
                     b.Property<int?>("ProvinceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RegionId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("StateId")
                         .HasColumnType("int");
 
@@ -436,6 +439,8 @@ namespace Data.Migrations
                     b.HasIndex("NeighborhoodId");
 
                     b.HasIndex("ProvinceId");
+
+                    b.HasIndex("RegionId");
 
                     b.HasIndex("StateId");
 
@@ -909,6 +914,9 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StoreId")
+                        .IsUnique();
 
                     b.ToTable("StoreLocationCoverages");
                 });
@@ -1479,6 +1487,11 @@ namespace Data.Migrations
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Entity.Locations.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Entity.Locations.State", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
@@ -1493,6 +1506,8 @@ namespace Data.Migrations
                     b.Navigation("Neighborhood");
 
                     b.Navigation("Province");
+
+                    b.Navigation("Region");
 
                     b.Navigation("State");
                 });
@@ -1669,12 +1684,23 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketCountries")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Country");
+
+                    b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("Entity.Stores.Locations.StoreLocationCoverage", b =>
+                {
+                    b.HasOne("Entity.Stores.Store", "Store")
+                        .WithOne("LocationCoverage")
+                        .HasForeignKey("Entity.Stores.Locations.StoreLocationCoverage", "StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Store");
                 });
@@ -1688,7 +1714,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketDistricts")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1707,7 +1733,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketNeighborhoods")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1726,7 +1752,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketProvinces")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1745,7 +1771,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketRegions")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1764,7 +1790,7 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity.Stores.Store", "Store")
-                        .WithMany("MarketStates")
+                        .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1955,17 +1981,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entity.Stores.Store", b =>
                 {
-                    b.Navigation("MarketCountries");
-
-                    b.Navigation("MarketDistricts");
-
-                    b.Navigation("MarketNeighborhoods");
-
-                    b.Navigation("MarketProvinces");
-
-                    b.Navigation("MarketRegions");
-
-                    b.Navigation("MarketStates");
+                    b.Navigation("LocationCoverage");
 
                     b.Navigation("Orders");
 

@@ -279,6 +279,14 @@ namespace API.Mappings
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForAllMembers(opt => opt.Ignore());
 
+                profile.CreateMap<StoreProduct, StoreProductListDto>()
+                     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Product.Name))
+                     .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Product.Brand))
+                     .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Product.ImageUrl))
+                     .ForMember(dest => dest.StoreProductImageUrl, opt => opt.MapFrom(src => src.StoreProductImageUrl));
+
+
+
                 profile.CreateMap<StoreProduct, StoreProductDto>()
                      .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
                      .ForMember(dest => dest.ProductNumber, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductNumber : null));
@@ -328,6 +336,7 @@ namespace API.Mappings
             {
                 // Entity <-> DTO dönüşümleri
                 profile.CreateMap<DeliveryAddress, DeliveryAddressDto>()
+                    .ForMember(dest => dest.RegionName, opt => opt.MapFrom(src => src.Region.Name))
                     .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name))
                     .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State.Name))
                     .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province.Name))
@@ -349,6 +358,7 @@ namespace API.Mappings
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.BuyerUserId, opt => opt.Ignore())
                     .ForMember(dest => dest.BuyerUser, opt => opt.Ignore())
+                    .ForMember(dest => dest.Region, opt => opt.Ignore())
                     .ForMember(dest => dest.Country, opt => opt.Ignore())
                     .ForMember(dest => dest.State, opt => opt.Ignore())
                     .ForMember(dest => dest.Province, opt => opt.Ignore())

@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Locations.IRepositorys;
 using Repository.Stores.Locations.IRepositorys;
-using Services.Stores.Markets.IServices;
+using Services.Stores.Locations.IServices;
 
-namespace Services.Stores.Markets.Services
+namespace Services.Stores.Locations.Services
 {
     public class StoreLocationService : IStoreLocationService
     {
