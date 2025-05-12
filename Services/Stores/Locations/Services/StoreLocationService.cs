@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Data.Dtos.Stores.Markets;
+using Domain.Stores.Events;
 using Entity.Stores.Locations;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Locations.IRepositorys;
@@ -25,9 +27,10 @@ namespace Services.Stores.Markets.Services
         private readonly IStateRepository _masterStateRepo;
         private readonly IRegionRepository _masterRegionRepo;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly ILogger<StoreLocationService> _logger;
 
-        public StoreLocationService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, ILogger<StoreLocationService> logger)
+        public StoreLocationService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, IMediator mediator, ILogger<StoreLocationService> logger)
         {
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
@@ -42,6 +45,7 @@ namespace Services.Stores.Markets.Services
             _masterStateRepo = masterStateRepo;
             _masterRegionRepo = masterRegionRepo;
             _mapper = mapper;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -74,6 +78,8 @@ namespace Services.Stores.Markets.Services
                 entity.CountryName = master.Name;
 
                 await _countryRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeProvinceFromCountry)
@@ -108,6 +114,8 @@ namespace Services.Stores.Markets.Services
                 entity.ProvinceName = master.Name;
 
                 await _provinceRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeDistrictFromProvince)
@@ -142,6 +150,8 @@ namespace Services.Stores.Markets.Services
                 entity.DistrictName = master.Name;
 
                 await _districtRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
 
                 if (dto.CascadeNeighborhoodFromDistrict)
@@ -176,6 +186,8 @@ namespace Services.Stores.Markets.Services
                 entity.NeighborhoodName = master.Name;
 
                 await _neighborhoodRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
             }
 
@@ -204,6 +216,8 @@ namespace Services.Stores.Markets.Services
                 entity.StateName = master.Name;
 
                 await _stateRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
             }
 
@@ -232,6 +246,8 @@ namespace Services.Stores.Markets.Services
                 entity.RegionName = master.Name;
 
                 await _regionRepo.AddAsync(entity);
+                await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                 addedIds.Add(entity.Id);
             }
 
@@ -304,6 +320,7 @@ namespace Services.Stores.Markets.Services
                         country.DeliveryTimeFrame = dto.DeliveryTimeFrame;
                         country.IsActive = dto.IsActive;
                         await _countryRepo.UpdateAsync(country);
+
                         break;
 
                     case CoverageType.Province:
@@ -396,6 +413,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _countryRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} ülke kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }
@@ -408,6 +427,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _provinceRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} il kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }
@@ -420,6 +441,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _districtRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} ilçe kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }
@@ -432,6 +455,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _neighborhoodRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} mahalle kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }
@@ -444,6 +469,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _stateRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} eyalet kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }
@@ -456,6 +483,8 @@ namespace Services.Stores.Markets.Services
                     if (entities.Any())
                     {
                         await _regionRepo.RemoveRangeAsync(entities);
+                        await _mediator.Publish(new StoreLocationCoverageChangedEvent(dto.StoreId));
+
                         totalDeleted += entities.Count();
                         _logger.LogInformation("✅ {Count} bölge kapsamı silindi. StoreId: {StoreId}", entities.Count(), dto.StoreId);
                     }

@@ -7,6 +7,8 @@ using Data.Seeders;
 using Domain.Companies.Events;
 using Domain.Products.Events;
 using Domain.Store.Events;
+using Domain.Stores.Handlers;
+using Domain.Stores.Helpers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -82,7 +84,8 @@ builder.Services.AddMediatR(cfg =>
         Assembly.GetExecutingAssembly(),                  
         typeof(CompanyCreatedEvent).Assembly,                
         typeof(ProductCategoryUpdatedEvent).Assembly,         
-        typeof(StoreCreatedEvent).Assembly         
+        typeof(StoreCreatedEvent).Assembly,
+        typeof(StoreLocationCoverageChangedHandler).Assembly    
     );
 });
 
@@ -121,6 +124,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+
+builder.Services.AddScoped<StoreLocationCoverageUpdatedHelper>();
 
 //Auth
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
@@ -196,6 +201,7 @@ builder.Services.AddScoped<IStoreLocationDistrictRepository, StoreLocationDistri
 builder.Services.AddScoped<IStoreLocationNeighborhoodRepository, StoreLocationNeighborhoodRepository>();
 builder.Services.AddScoped<IStoreLocationRegionRepository, StoreLocationRegionRepository>();
 builder.Services.AddScoped<IStoreLocationStateRepository, StoreLocationStateRepository>();
+builder.Services.AddScoped<IStoreLocationCoverageRepository, StoreLocationCoverageRepository>();
 builder.Services.AddScoped<IStoreLocationService, StoreLocationService>();
 
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();

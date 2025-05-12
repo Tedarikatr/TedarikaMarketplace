@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250510060531_mig2")]
-    partial class mig2
+    [Migration("20250511093316_mig1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -429,8 +429,6 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BuyerUserId");
-
                     b.HasIndex("CountryId");
 
                     b.HasIndex("DistrictId");
@@ -440,6 +438,10 @@ namespace Data.Migrations
                     b.HasIndex("ProvinceId");
 
                     b.HasIndex("StateId");
+
+                    b.HasIndex("BuyerUserId", "IsDefault")
+                        .IsUnique()
+                        .HasFilter("[IsDefault] = 1");
 
                     b.ToTable("DeliveryAddresses");
                 });

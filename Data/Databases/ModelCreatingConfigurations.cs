@@ -11,6 +11,8 @@ using Entity.Stores.Locations;
 using Entity.Stores.Payments;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Text.Json;
 
 namespace Data.Databases
 {
@@ -91,6 +93,10 @@ namespace Data.Databases
                 .HasForeignKey(d => d.NeighborhoodId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<DeliveryAddress>()
+                .HasIndex(d => new { d.BuyerUserId, d.IsDefault })
+                .IsUnique()
+                .HasFilter("[IsDefault] = 1");
         }
 
         private static void ConfigureBasketEntities(ModelBuilder modelBuilder)
@@ -342,7 +348,7 @@ namespace Data.Databases
 
             modelBuilder.Entity<StoreLocationRegion>()
                 .HasOne(smr => smr.Store)
-                .WithMany(s => s.MarketRegions)
+                .WithMany(s => s.MarketRegions) 
                 .HasForeignKey(smr => smr.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
 

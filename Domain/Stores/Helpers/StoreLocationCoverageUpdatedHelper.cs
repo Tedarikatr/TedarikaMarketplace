@@ -34,22 +34,22 @@ namespace Domain.Stores.Helpers
                 var coverage = await _coverageRepo.GetByStoreIdAsync(storeId) ?? new StoreLocationCoverage { StoreId = storeId };
 
                 coverage.RegionIds = (await _regionRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.RegionId).ToHashSet();
+                    .Select(x => x.RegionId).ToList();
 
                 coverage.CountryIds = (await _countryRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.CountryId).ToHashSet();
+                    .Select(x => x.CountryId).ToList();
 
                 coverage.StateIds = (await _stateRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.StateId).ToHashSet();
+                    .Select(x => x.StateId).ToList();
 
                 coverage.ProvinceIds = (await _provinceRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.ProvinceId).ToHashSet();
+                    .Select(x => x.ProvinceId).ToList();
 
                 coverage.DistrictIds = (await _districtRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.DistrictId).ToHashSet();
+                    .Select(x => x.DistrictId).ToList();
 
                 coverage.NeighborhoodIds = (await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.NeighborhoodId).ToHashSet();
+                    .Select(x => x.NeighborhoodId).ToList();
 
                 if (coverage.Id > 0)
                     await _coverageRepo.UpdateAsync(coverage);

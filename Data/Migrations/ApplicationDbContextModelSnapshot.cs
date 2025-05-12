@@ -426,8 +426,6 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BuyerUserId");
-
                     b.HasIndex("CountryId");
 
                     b.HasIndex("DistrictId");
@@ -437,6 +435,10 @@ namespace Data.Migrations
                     b.HasIndex("ProvinceId");
 
                     b.HasIndex("StateId");
+
+                    b.HasIndex("BuyerUserId", "IsDefault")
+                        .IsUnique()
+                        .HasFilter("[IsDefault] = 1");
 
                     b.ToTable("DeliveryAddresses");
                 });

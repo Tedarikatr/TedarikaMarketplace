@@ -181,6 +181,26 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StoreLocationCoverages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    RegionIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CountryIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProvinceIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DistrictIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NeighborhoodIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreLocationCoverages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BasketItems",
                 columns: table => new
                 {
@@ -1043,9 +1063,11 @@ namespace Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeliveryAddresses_BuyerUserId",
+                name: "IX_DeliveryAddresses_BuyerUserId_IsDefault",
                 table: "DeliveryAddresses",
-                column: "BuyerUserId");
+                columns: new[] { "BuyerUserId", "IsDefault" },
+                unique: true,
+                filter: "[IsDefault] = 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddresses_CountryId",
@@ -1315,6 +1337,9 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "StoreLocationCountries");
+
+            migrationBuilder.DropTable(
+                name: "StoreLocationCoverages");
 
             migrationBuilder.DropTable(
                 name: "StoreLocationDistricts");
