@@ -258,12 +258,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCountries, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketProvinces, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketDistricts, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketNeighborhoods, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketRegions, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketStates, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreUpdateDto, Store>()
@@ -277,12 +271,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketCountries, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketProvinces, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketDistricts, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketNeighborhoods, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketRegions, opt => opt.Ignore())
-                    .ForMember(dest => dest.MarketStates, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreStatusDto, Store>()
@@ -729,27 +717,14 @@ namespace API.Mappings
                 // Store -> AvailableStoreDto
                 profile.CreateMap<Store, AvailableStoreDto>()
                     .ForMember(dest => dest.StoreId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName))
-                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
-                    .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.StoreProducts
-                        .Where(p => p.IsActive && p.IsOnSale)));
+                    .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName));
 
                 // Store -> AvailableStoreWithProductsDto
                 profile.CreateMap<Store, AvailableStoreWithProductsDto>()
                     .ForMember(dest => dest.StoreId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName))
-                    .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company.Name))
-                    .ForMember(dest => dest.IsApproved, opt => opt.MapFrom(src => src.IsApproved))
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                     .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.StoreProducts
                         .Where(p => p.IsActive && p.IsOnSale)));
-
-                // StoreProduct -> AvailableStoreProductDto
-                profile.CreateMap<StoreProduct, AvailableStoreProductDto>()
-                    .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
-                    .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrl))
-                    .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice));
             }
 
         }

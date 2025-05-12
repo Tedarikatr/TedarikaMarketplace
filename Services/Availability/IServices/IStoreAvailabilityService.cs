@@ -8,8 +8,5 @@ namespace Services.Availability.IServices
         Task<List<AvailableStoreDto>> GetAvailableStoresByAddressAsync(int buyerId);
 
         Task<List<AvailableStoreWithProductsDto>> GetAvailableStoresWithProductsByAddressAsync(int buyerId);
-
-        Task<List<StoreProductDto>> GetAvailableProductsByAddressAsync(int buyerId);
-
     }
 }

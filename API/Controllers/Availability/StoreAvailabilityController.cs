@@ -56,20 +56,5 @@ namespace API.Controllers.Availability
 
             return Ok(result);
         }
-
-        [HttpGet("products")]
-        public async Task<ActionResult<List<StoreProductDto>>> GetAvailableProducts()
-        {
-            var buyerId = _contextHelper.GetBuyerId(User);
-            var result = await _storeAvailabilityService.GetAvailableProductsByAddressAsync(buyerId);
-
-            if (result == null || !result.Any())
-            {
-                _logger.LogInformation("BuyerId: {BuyerId} için uygun ürün bulunamadı.", buyerId);
-                return NotFound("Uygun ürün bulunamadı.");
-            }
-
-            return Ok(result);
-        }
     }
 }

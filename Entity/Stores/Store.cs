@@ -32,13 +32,7 @@ namespace Entity.Stores
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }
 
-        public ICollection<StoreLocationCountry> MarketCountries { get; set; }
-        public ICollection<StoreLocationProvince> MarketProvinces { get; set; }
-        public ICollection<StoreLocationDistrict> MarketDistricts { get; set; }
-        public ICollection<StoreLocationNeighborhood> MarketNeighborhoods { get; set; }
-        public ICollection<StoreLocationRegion> MarketRegions { get; set; }
-        public ICollection<StoreLocationState> MarketStates { get; set; }
-
+        public StoreLocationCoverage LocationCoverage { get; set; }
 
     }
 }
