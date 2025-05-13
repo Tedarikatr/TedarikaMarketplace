@@ -19,4 +19,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Carriers\Services\" />
+    <Folder Include="Stores\Carriers\Services\" />
+  </ItemGroup>
+
 </Project>
