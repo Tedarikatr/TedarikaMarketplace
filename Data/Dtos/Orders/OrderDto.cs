@@ -33,12 +33,9 @@ namespace Data.Dtos.Orders
 
     public class OrderCreateDto
     {
-        public int StoreId { get; set; }
         public int DeliveryAddressId { get; set; }
         public int? SelectedCarrierId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-
-        public List<OrderItemCreateDto> Items { get; set; }
     }
 
     public class OrderItemCreateDto

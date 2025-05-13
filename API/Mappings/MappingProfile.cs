@@ -691,6 +691,7 @@ namespace API.Mappings
                 profile.CreateMap<BasketAddToDto, BasketItem>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.BasketId, opt => opt.Ignore())
+                        .ForMember(dest => dest.StoreId, opt => opt.Ignore()) // ✔️ Doğru tercih
                     .ForMember(dest => dest.Basket, opt => opt.Ignore())
                     .ForMember(dest => dest.ProductName, opt => opt.Ignore())
                     .ForMember(dest => dest.UnitPrice, opt => opt.Ignore())

@@ -11,5 +11,8 @@ namespace Entity.Stores.Carriers
 
         public int CarrierId { get; set; }
         public Carrier Carrier { get; set; }
+
+        public string? StoreApiKey { get; set; }
+        public bool IsEnabled { get; set; } = true;
     }
 }

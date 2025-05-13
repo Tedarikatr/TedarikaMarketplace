@@ -11,6 +11,7 @@
 
     public class BasketItemDto
     {
+        public int StoreId { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string? StoreProductImageUrl { get; set; }

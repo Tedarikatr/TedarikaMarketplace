@@ -57,6 +57,13 @@ namespace Services.Baskets.Services
             }
 
             var basket = await EnsureBasketExists(userId);
+
+            if (basket.Items.Any() && basket.Items.First().StoreId != product.StoreId)
+            {
+                _logger.LogWarning("Sepette başka bir mağazaya ait ürün var. Yeni ürün eklenemez. ExistingStoreId: {Existing}, NewStoreId: {New}",
+                    basket.Items.First().StoreId, product.StoreId);
+                throw new InvalidOperationException("Sepete aynı anda sadece bir mağazaya ait ürün eklenebilir.");
+            }
             var existingItem = basket.Items.FirstOrDefault(i => i.ProductId == dto.ProductId);
 
             if (existingItem != null)
@@ -82,6 +89,7 @@ namespace Services.Baskets.Services
 
                 basket.Items.Add(new BasketItem
                 {
+                    StoreId = product.StoreId,
                     ProductId = product.Id,
                     ProductName = product.Name,
                     UnitPrice = product.UnitPrice,

@@ -7,6 +7,7 @@
         public int BasketId { get; set; }
         public Basket Basket { get; set; }
 
+        public int StoreId { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string StoreProductImageUrl { get; set; } = string.Empty;

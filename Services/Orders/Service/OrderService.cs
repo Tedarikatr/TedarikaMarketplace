@@ -39,50 +39,47 @@ namespace Services.Orders.Service
 
         public async Task<OrderDto> CreateOrderAsync(OrderCreateDto createDto, int buyerId)
         {
-            _logger.LogInformation("Siparis olusturuluyor... BuyerId: {BuyerId}", buyerId);
-
             var basket = await _basketRepository.GetQueryable()
                 .Include(b => b.Items)
                 .FirstOrDefaultAsync(b => b.BuyerId == buyerId);
 
             if (basket == null || !basket.Items.Any())
-                throw new InvalidOperationException("Sepet bos. Siparis olusturulamaz.");
+                throw new InvalidOperationException("Sepet boş. Sipariş oluşturulamaz.");
 
             var address = await _deliveryAddressRepository.GetQueryable()
                 .FirstOrDefaultAsync(a => a.Id == createDto.DeliveryAddressId && a.BuyerUserId == buyerId);
 
             if (address == null)
-            {
-                _logger.LogWarning("Gecersiz teslimat adresi. AddressId: {AddressId}, BuyerId: {BuyerId}",
-                    createDto.DeliveryAddressId, buyerId);
-                throw new InvalidOperationException("Secilen teslimat adresi bulunamadi.");
-            }
+                throw new InvalidOperationException("Teslimat adresi bulunamadı.");
 
             var order = new Order
             {
                 BuyerId = buyerId,
-                StoreId = createDto.StoreId,
                 DeliveryAddressId = createDto.DeliveryAddressId,
                 SelectedCarrierId = createDto.SelectedCarrierId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                OrderNumber = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper(),
+                OrderNumber = Guid.NewGuid().ToString("N")[..10].ToUpper(),
                 Status = createDto.PaymentMethod == PaymentMethod.Online ? OrderStatus.AwaitingPayment : OrderStatus.Created,
-                OrderItems = new List<OrderItem>(),
-                TotalAmount = basket.TotalAmount
-            };
-
-            foreach (var item in basket.Items)
-            {
-                order.OrderItems.Add(new OrderItem
+                TotalAmount = basket.TotalAmount,
+                OrderItems = basket.Items.Select(item => new OrderItem
                 {
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     StoreProductImageUrl = item.StoreProductImageUrl
-                });
+                }).ToList()
+            };
+
+            // opsiyonel: sepetteki ürünler birden fazla mağazaya aitse gruplama yapılabilir
+            if (basket.Items.Select(x => x.StoreId).Distinct().Count() > 1)
+            {
+                _logger.LogWarning("Birden fazla mağazaya ait ürün var. Çoklu mağaza sipariş desteği yok.");
+                throw new InvalidOperationException("Siparişte birden fazla mağaza ürünü bulunamaz.");
             }
+
+            order.StoreId = basket.Items.First().StoreId;
 
             if (createDto.PaymentMethod == PaymentMethod.Online)
             {
@@ -103,10 +100,16 @@ namespace Services.Orders.Service
             }
 
             await _orderRepository.AddAsync(order);
-            _logger.LogInformation("Siparis basariyla olusturuldu. OrderId: {OrderId}", order.Id);
+
+            // Sepeti temizle
+            basket.Items.Clear();
+            basket.TotalAmount = 0;
+            basket.UpdatedAt = DateTime.UtcNow;
+            await _basketRepository.UpdateAsync(basket);
 
             return _mapper.Map<OrderDto>(order);
         }
+
 
         public async Task<OrderDto> GetOrderByIdAsync(int orderId, int buyerId)
         {
