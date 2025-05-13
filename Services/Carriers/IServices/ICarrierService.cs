@@ -6,7 +6,7 @@ namespace Services.Carriers.IServices
     {
         Task<List<CarrierDto>> GetAllCarriersAsync();
         Task<CarrierDto> GetCarrierByIdAsync(int id);
-        Task<int> CreateCarrierAsync(CarrierCreateDto dto);
+        Task CreateCarrierAsync(CarrierCreateDto dto);
         Task<bool> DeleteCarrierAsync(int id);
     }
 }

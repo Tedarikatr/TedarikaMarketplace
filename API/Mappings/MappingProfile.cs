@@ -2,6 +2,7 @@
 using Data.Dtos.Auths;
 using Data.Dtos.Availability;
 using Data.Dtos.Baskets;
+using Data.Dtos.Carriers;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.DeliveryAddresses;
@@ -9,10 +10,12 @@ using Data.Dtos.Locations;
 using Data.Dtos.Payments;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
+using Data.Dtos.Stores.Carriers;
 using Data.Dtos.Stores.Markets;
 using Data.Dtos.Stores.Products;
 using Entity.Auths;
 using Entity.Baskets;
+using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
@@ -20,6 +23,7 @@ using Entity.Locations;
 using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
+using Entity.Stores.Carriers;
 using Entity.Stores.Locations;
 using Entity.Stores.Products;
 
@@ -31,6 +35,7 @@ namespace API.Mappings
         {
             AuthMappings.RegisterMappings(this);
             CompanyMappings.RegisterMappings(this);
+            CarrierMappings.RegisterMappings(this);
             CategoryMappings.RegisterMappings(this);
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
@@ -41,6 +46,7 @@ namespace API.Mappings
             BasketMappings.RegisterMappings(this);
             PaymentMappings.RegisterMappings(this);
             AvailabilityMappings.RegisterMappings(this);
+            StoreCarrierMappings.RegisterMappings(this);
         }
 
         #region 1️⃣ AUTH Mappings
@@ -48,7 +54,6 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // BuyerUser <-> BuyerUserDto
                 profile.CreateMap<BuyerUser, BuyerUserDto>().ReverseMap();
 
                 profile.CreateMap<BuyerUserCreateDto, BuyerUser>()
@@ -74,7 +79,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
                     .ForMember(dest => dest.Company, opt => opt.Ignore());
 
-                // SellerUser <-> SellerUserDto
                 profile.CreateMap<SellerUser, SellerUserDto>().ReverseMap();
 
                 profile.CreateMap<SellerRegisterDto, SellerUser>()
@@ -117,12 +121,10 @@ namespace API.Mappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // Company <-> CompanyDto
                 profile.CreateMap<Company, CompanyDto>()
                     .ReverseMap()
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
-                // CompanyCreateDto -> Company
                 profile.CreateMap<CompanyCreateDto, Company>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.IsVerified, opt => opt.Ignore())
@@ -137,7 +139,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.BuyerAccount, opt => opt.Ignore())
                     .ForMember(dest => dest.SellerAccount, opt => opt.Ignore());
 
-                // CompanyUpdateDto -> Company
                 profile.CreateMap<CompanyUpdateDto, Company>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.TaxDocument, opt => opt.Ignore()) 
@@ -153,7 +154,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
-                // Şirketin aktiflik durumu değiştirme (Admin)
                 profile.CreateMap<CompanyStatusDto, Company>()
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -178,7 +178,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.SellerUser, opt => opt.Ignore())
                     .ForMember(dest => dest.Stores, opt => opt.Ignore());
 
-                // Şirketin onay durumu değiştirme (Admin)
                 profile.CreateMap<CompanyVerifyDto, Company>()
                     .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.IsVerified))
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -285,8 +284,6 @@ namespace API.Mappings
                      .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Product.ImageUrl))
                      .ForMember(dest => dest.StoreProductImageUrl, opt => opt.MapFrom(src => src.StoreProductImageUrl));
 
-
-
                 profile.CreateMap<StoreProduct, StoreProductDto>()
                      .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
                      .ForMember(dest => dest.ProductNumber, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductNumber : null));
@@ -324,17 +321,14 @@ namespace API.Mappings
                     .ForMember(dest => dest.UnitTypes, opt => opt.MapFrom(src => src.UnitTypes));
             }
         }
-
-
         #endregion
 
-        #region 6️⃣ DeliveryAddress  Mappings
+        #region DeliveryAddress  Mappings
 
         private static class DeliveryAddressMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // Entity <-> DTO dönüşümleri
                 profile.CreateMap<DeliveryAddress, DeliveryAddressDto>()
                     .ForMember(dest => dest.RegionName, opt => opt.MapFrom(src => src.Region.Name))
                     .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name))
@@ -366,42 +360,37 @@ namespace API.Mappings
                     .ForMember(dest => dest.Neighborhood, opt => opt.Ignore());
             }
         }
-
         #endregion
 
-        #region 6️⃣ Locations  Mappings
+        #region Locations  Mappings
         private static class LocationMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // Country
                 profile.CreateMap<Country, CountryDto>().ReverseMap();
                 profile.CreateMap<CountryCreateDto, Country>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
                     .ForMember(dest => dest.Region, opt => opt.Ignore())
                     .ForMember(dest => dest.Provinces, opt => opt.Ignore())
-                    .ForMember(dest => dest.States, opt => opt.Ignore()); // ✔️ HATA BURADAN GELİYORDU
+                    .ForMember(dest => dest.States, opt => opt.Ignore());
 
-                // State
                 profile.CreateMap<State, StateDto>()
                     .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
                 profile.CreateMap<StateCreateDto, State>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore()) // ✔️ Id atlanmalı
-                    .ForMember(dest => dest.Country, opt => opt.Ignore()) // ✔️ Navigation property
-                    .ForMember(dest => dest.Provinces, opt => opt.Ignore()) // ✔️ ICollection ilişkisi
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true)); // ✔️ Varsayılan true
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.Provinces, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
-                // Province
                 profile.CreateMap<Province, ProvinceDto>().ReverseMap();
                 profile.CreateMap<ProvinceCreateDto, Province>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Country, opt => opt.Ignore())
-                    .ForMember(dest => dest.State, opt => opt.Ignore()) // ✔️ Eklenen navigation
+                    .ForMember(dest => dest.State, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Districts, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
 
-                // District
                 profile.CreateMap<District, DistrictDto>().ReverseMap();
                 profile.CreateMap<DistrictCreateDto, District>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -410,7 +399,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
                     .ForSourceMember(src => src.ProvinceName, opt => opt.DoNotValidate());
 
-                // Neighborhood
                 profile.CreateMap<Neighborhood, NeighborhoodDto>().ReverseMap();
                 profile.CreateMap<NeighborhoodCreateDto, Neighborhood>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -419,16 +407,13 @@ namespace API.Mappings
                     .ForSourceMember(src => src.DistrictName, opt => opt.DoNotValidate());
             }
         }
-
-
         #endregion
 
-        #region 7️⃣ MARKET COVERAGE Mappings
+        #region STOREMARKET COVERAGE Mappings
         private static class MarketMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // COUNTRY
                 profile.CreateMap<StoreMarketCountryCreateDto, StoreLocationCountry>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -446,8 +431,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationCountry, StoreMarketCountryDto>()
                     .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null));
 
-
-                // PROVINCE
                 profile.CreateMap<StoreMarketProvinceCreateDto, StoreLocationProvince>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -465,8 +448,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationProvince, StoreMarketProvinceDto>()
                     .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province != null ? src.Province.Name : null));
 
-
-                // DISTRICT
                 profile.CreateMap<StoreMarketDistrictCreateDto, StoreLocationDistrict>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -484,8 +465,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationDistrict, StoreMarketDistrictDto>()
                     .ForMember(dest => dest.DistrictName, opt => opt.MapFrom(src => src.District != null ? src.District.Name : null));
 
-
-                // NEIGHBORHOOD
                 profile.CreateMap<StoreMarketNeighborhoodCreateDto, StoreLocationNeighborhood>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -503,8 +482,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationNeighborhood, StoreMarketNeighborhoodDto>()
                     .ForMember(dest => dest.NeighborhoodName, opt => opt.MapFrom(src => src.Neighborhood != null ? src.Neighborhood.Name : null));
 
-
-                // REGION
                 profile.CreateMap<StoreMarketRegionCreateDto, StoreLocationRegion>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -522,8 +499,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationRegion, StoreMarketRegionDto>()
                     .ForMember(dest => dest.RegionName, opt => opt.MapFrom(src => src.Region != null ? src.Region.Name : null));
 
-
-                // STATE
                 profile.CreateMap<StoreMarketStateCreateDto, StoreLocationState>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -541,8 +516,6 @@ namespace API.Mappings
                 profile.CreateMap<StoreLocationState, StoreMarketStateDto>()
                     .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => src.State != null ? src.State.Name : null));
 
-
-                // MULTI - COUNTRY
                 profile.CreateMap<StoreMarketCountryMultiCreateDto, StoreLocationCountry>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.CountryId, opt => opt.Ignore())
@@ -551,8 +524,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.CountryName, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
-
-                // MULTI - PROVINCE
                 profile.CreateMap<StoreMarketProvinceMultiCreateDto, StoreLocationProvince>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.ProvinceId, opt => opt.Ignore())
@@ -561,8 +532,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.ProvinceName, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
-
-                // MULTI - DISTRICT
                 profile.CreateMap<StoreMarketDistrictMultiCreateDto, StoreLocationDistrict>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.DistrictId, opt => opt.Ignore())
@@ -571,8 +540,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.DistrictName, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
-
-                // MULTI - NEIGHBORHOOD
                 profile.CreateMap<StoreMarketNeighborhoodMultiCreateDto, StoreLocationNeighborhood>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.NeighborhoodId, opt => opt.Ignore())
@@ -581,8 +548,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.NeighborhoodName, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
-
-                // MULTI - REGION
                 profile.CreateMap<StoreMarketRegionMultiCreateDto, StoreLocationRegion>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.RegionId, opt => opt.Ignore())
@@ -591,8 +556,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.RegionName, opt => opt.Ignore())
                     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
 
-
-                // MULTI - STATE
                 profile.CreateMap<StoreMarketStateMultiCreateDto, StoreLocationState>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.StateId, opt => opt.Ignore())
@@ -604,19 +567,16 @@ namespace API.Mappings
         }
         #endregion
 
-        #region 8️⃣ StoreProductRequestMappings Mappings
+        #region StoreProductRequestMappings Mappings
 
         private static class StoreProductRequestMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // 🔁 StoreProductRequest ➝ StoreProductRequestDto
                 profile.CreateMap<StoreProductRequest, StoreProductRequestDto>();
 
-                // 🔁 StoreProductRequest ➝ StoreProductRequestDetailDto
                 profile.CreateMap<StoreProductRequest, StoreProductRequestDetailDto>();
 
-                // 🔁 StoreProductRequestCreateDto ➝ StoreProductRequest
                 profile.CreateMap<StoreProductRequestCreateDto, StoreProductRequest>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
@@ -634,12 +594,11 @@ namespace API.Mappings
                     .ForMember(dest => dest.ApprovedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.AdminNote, opt => opt.Ignore());
 
-                // 🔁 StoreProductRequestUpdateDto ➝ StoreProductRequest
                 profile.CreateMap<StoreProductRequestUpdateDto, StoreProductRequest>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.StoreId, opt => opt.Ignore())
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.UnitType, opt => opt.Ignore()) // Enum DTO'da yok
+                    .ForMember(dest => dest.UnitType, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Specifications, opt => opt.Ignore())
                     .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
                     .ForMember(dest => dest.CategoryId, opt => opt.Ignore())
@@ -655,11 +614,10 @@ namespace API.Mappings
                     .ForMember(dest => dest.ReviewedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.ApprovedAt, opt => opt.Ignore());
 
-                // 🆕 StoreProductRequest ➝ Product (Admin onay sonrası dönüşüm)
                 profile.CreateMap<StoreProductRequest, Product>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.ProductNumber, opt => opt.Ignore()) // Controller veya Service'de atanmalı
-                    .ForMember(dest => dest.Barcode, opt => opt.Ignore()) // Otomatik üretilecekse burada bırakılmalı
+                    .ForMember(dest => dest.ProductNumber, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.Barcode, opt => opt.Ignore()) 
                     .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
                     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.PreparationTime, opt => opt.Ignore())
@@ -672,7 +630,7 @@ namespace API.Mappings
         }
         #endregion
 
-        #region 8️⃣ BASKET Mappings
+        #region BASKET Mappings
         private static class BasketMappings
         {
             public static void RegisterMappings(Profile profile)
@@ -687,20 +645,21 @@ namespace API.Mappings
                 profile.CreateMap<BasketItem, BasketItemDto>().ReverseMap()
                     .ForMember(dest => dest.StoreProductImageUrl, opt => opt.MapFrom(src => src.StoreProductImageUrl));
 
-
                 profile.CreateMap<BasketAddToDto, BasketItem>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
                     .ForMember(dest => dest.BasketId, opt => opt.Ignore())
-                        .ForMember(dest => dest.StoreId, opt => opt.Ignore()) // ✔️ Doğru tercih
+                        .ForMember(dest => dest.StoreId, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Basket, opt => opt.Ignore())
                     .ForMember(dest => dest.ProductName, opt => opt.Ignore())
                     .ForMember(dest => dest.UnitPrice, opt => opt.Ignore())
                     .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
-                    .ForMember(dest => dest.StoreProductImageUrl, opt => opt.Ignore()); // 🔧 Bu eksikti!
-
+                    .ForMember(dest => dest.StoreProductImageUrl, opt => opt.Ignore()); 
             }
         }
         #endregion
+
+
+        #region Payment Mappings
 
         private static class PaymentMappings
         {
@@ -723,12 +682,14 @@ namespace API.Mappings
 
             }
         }
+        #endregion
+
+        #region Availability Mappings
 
         private static class AvailabilityMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                // Store -> AvailableStoreDto
                 profile.CreateMap<Store, AvailableStoreDto>()
                     .ForMember(dest => dest.StoreId, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName))
@@ -741,13 +702,40 @@ namespace API.Mappings
                     .ForMember(dest => dest.DistrictId, opt => opt.Ignore())
                     .ForMember(dest => dest.NeighborhoodId, opt => opt.Ignore());
 
-                // Store -> AvailableStoreWithProductsDto
                 profile.CreateMap<Store, AvailableStoreWithProductsDto>()
                     .IncludeBase<Store, AvailableStoreDto>()
-                    .ForMember(dest => dest.Products, opt => opt.Ignore()); // ❗ Yalnızca bu satır olmal
+                    .ForMember(dest => dest.Products, opt => opt.Ignore()); 
 
             }
-
         }
+        #endregion
+
+        #region Carrier  Mappings
+        private static class CarrierMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<Carrier, CarrierDto>()
+                    .ForMember(dest => dest.IntegrationType, opt => opt.MapFrom(src => src.IntegrationType.ToString()));
+
+                profile.CreateMap<CarrierCreateDto, Carrier>();
+            }
+        }
+        #endregion
+
+        #region StoreCarrier  Mappings
+        private static class StoreCarrierMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<StoreCarrier, StoreCarrierDto>()
+                    .ForMember(dest => dest.CarrierName, opt => opt.MapFrom(src => src.Carrier.Name))
+                    .ForMember(dest => dest.CarrierLogoUrl, opt => opt.MapFrom(src => src.Carrier.CarrierLogoUrl));
+
+                profile.CreateMap<StoreCarrierCreateDto, StoreCarrier>()
+                    .ForMember(dest => dest.IsEnabled, opt => opt.MapFrom(src => true)); 
+            }
+        }
+        #endregion
     }
 }
