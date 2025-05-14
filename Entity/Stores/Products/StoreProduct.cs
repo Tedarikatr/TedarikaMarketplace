@@ -38,7 +38,6 @@ namespace Entity.Stores.Products
         public string CategoryName { get; set; }
         public string CategorySubName { get; set; }
 
-        public virtual ICollection<StoreProductMarket> ProductMarkets { get; set; }
         public virtual ICollection<StoreProductShippingRegion> ShippingRegions { get; set; }
     }
 }

@@ -81,7 +81,6 @@ namespace Data.Databases
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
         public DbSet<StoreProduct> StoreProducts { get; set; }
-        public DbSet<StoreProductMarket> StoreProductMarkets { get; set; }
         public DbSet<StoreProductRequest> StoreProductRequests { get; set; }
         public DbSet<StoreProductShippingRegion> StoreProductShippingRegions { get; set; }
 

@@ -233,12 +233,6 @@ namespace Data.Databases
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreProductMarket>()
-                .HasOne(spm => spm.StoreProduct)
-                .WithMany(sp => sp.ProductMarkets)
-                .HasForeignKey(spm => spm.StoreProductId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private static void ConfigureOrderEntities(ModelBuilder modelBuilder)

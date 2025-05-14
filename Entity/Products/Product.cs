@@ -16,7 +16,8 @@ namespace Entity.Products
         public string Barcode { get; set; }
         public string Brand { get; set; }
         public string ImageUrl { get; set; }
-        
+
+        public string GTIPCode { get; set; } 
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

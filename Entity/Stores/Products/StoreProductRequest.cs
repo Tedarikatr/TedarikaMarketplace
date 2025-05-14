@@ -21,8 +21,6 @@ namespace Entity.Stores.Products
 
         public string ImageUrl { get; set; }
 
-
-
         public bool IsApproved { get; set; }
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
