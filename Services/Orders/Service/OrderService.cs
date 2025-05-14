@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Data.Dtos.Orders;
+using Domain.Orders.Events;
 using Entity.Orders;
 using Entity.Payments;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Baskets.IRepositorys;
@@ -19,21 +21,17 @@ namespace Services.Orders.Service
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(
-            IBasketRepository basketRepository,
-            IOrderRepository orderRepository,
-            IPaymentRepository paymentRepository,
-            IDeliveryAddressRepository deliveryAddressRepository,
-            IMapper mapper,
-            ILogger<OrderService> logger)
+        public OrderService(IDeliveryAddressRepository deliveryAddressRepository, IBasketRepository basketRepository, IOrderRepository orderRepository, IPaymentRepository paymentRepository, IMapper mapper, IMediator mediator, ILogger<OrderService> logger)
         {
+            _deliveryAddressRepository = deliveryAddressRepository;
             _basketRepository = basketRepository;
             _orderRepository = orderRepository;
             _paymentRepository = paymentRepository;
-            _deliveryAddressRepository = deliveryAddressRepository;
             _mapper = mapper;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -72,7 +70,6 @@ namespace Services.Orders.Service
                 }).ToList()
             };
 
-            // opsiyonel: sepetteki ürünler birden fazla mağazaya aitse gruplama yapılabilir
             if (basket.Items.Select(x => x.StoreId).Distinct().Count() > 1)
             {
                 _logger.LogWarning("Birden fazla mağazaya ait ürün var. Çoklu mağaza sipariş desteği yok.");
@@ -101,7 +98,15 @@ namespace Services.Orders.Service
 
             await _orderRepository.AddAsync(order);
 
-            // Sepeti temizle
+            try
+            {
+                await _mediator.Publish(new OrderCreatedEvent(order)); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "OrderCreatedEvent gönderimi sırasında hata oluştu.");
+            }
+
             basket.Items.Clear();
             basket.TotalAmount = 0;
             basket.UpdatedAt = DateTime.UtcNow;
