@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Repository.Carriers.IRepositorys;
-using Services.Carriers.IServices;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace Services.Carriers.Services
+namespace Domain.Orders.Services
 {
     public class CarrierWebhookService : ICarrierWebhookService
     {

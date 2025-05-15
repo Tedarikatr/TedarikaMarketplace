@@ -1,4 +1,4 @@
-﻿namespace Data.Dtos.Stores.Markets
+﻿namespace Data.Dtos.Stores.Locations
 {
     public class StoreMarketCountryCreateDto
     {
@@ -13,13 +13,6 @@
         public int StoreId { get; set; }
         public int CountryId { get; set; }
         public string CountryName { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
-
-    public class StoreMarketCountryUpdateDto
-    {
-        public int Id { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; }
     }
@@ -41,13 +34,6 @@
         public bool IsActive { get; set; }
     }
 
-    public class StoreMarketProvinceUpdateDto
-    {
-        public int Id { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
-
     public class StoreMarketDistrictCreateDto
     {
         public int StoreId { get; set; }
@@ -61,13 +47,6 @@
         public int StoreId { get; set; }
         public int DistrictId { get; set; }
         public string DistrictName { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
-
-    public class StoreMarketDistrictUpdateDto
-    {
-        public int Id { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; }
     }
@@ -89,14 +68,6 @@
         public bool IsActive { get; set; }
     }
 
-    public class StoreMarketNeighborhoodUpdateDto
-    {
-        public int Id { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
-
-
     public class StoreMarketRegionCreateDto
     {
         public int StoreId { get; set; }
@@ -114,12 +85,6 @@
         public bool IsActive { get; set; }
     }
 
-    public class StoreMarketRegionUpdateDto
-    {
-        public int Id { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
     public class StoreMarketStateCreateDto
     {
         public int StoreId { get; set; }
@@ -135,67 +100,6 @@
         public string StateName { get; set; }
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; }
-    }
-
-    public class StoreMarketStateUpdateDto
-    {
-        public int Id { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-        public bool IsActive { get; set; }
-    }
-
-
-    public class StoreMarketCountryMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> CountryIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketProvinceMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> ProvinceIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketDistrictMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> DistrictIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketNeighborhoodMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> NeighborhoodIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketRegionMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> RegionIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketStateMultiCreateDto
-    {
-        public int StoreId { get; set; }
-        public List<int> StateIds { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-    }
-
-    public class StoreMarketCountryCascadeCreateDto
-    {
-        public int StoreId { get; set; }
-        public int CountryId { get; set; }
-        public int DeliveryTimeFrame { get; set; }
-
-        public bool IncludeProvinces { get; set; } = true;
-        public bool IncludeDistricts { get; set; } = true;
-        public bool IncludeNeighborhoods { get; set; } = false; // opsiyonel
     }
 
     public class StoreMarketCoverageCompositeCreateDto
@@ -243,6 +147,7 @@
         public int DeliveryTimeFrame { get; set; }
         public bool IsActive { get; set; }
     }
+
     public enum CoverageType
     {
         Country,
@@ -252,6 +157,4 @@
         Region,
         State
     }
-
-
 }

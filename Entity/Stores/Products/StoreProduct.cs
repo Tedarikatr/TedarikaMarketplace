@@ -28,6 +28,7 @@ namespace Entity.Stores.Products
 
         public bool IsActive { get; set; }
         public bool IsOnSale { get; set; }
+        public bool BlockedByExportBan { get; set; } = false;
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
 

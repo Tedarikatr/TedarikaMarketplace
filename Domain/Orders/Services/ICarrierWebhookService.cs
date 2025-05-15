@@ -1,7 +1,7 @@
 ﻿using Entity.Carriers;
 using Entity.Orders;
 
-namespace Services.Carriers.IServices
+namespace Domain.Orders.Services
 {
     public interface ICarrierWebhookService
     {

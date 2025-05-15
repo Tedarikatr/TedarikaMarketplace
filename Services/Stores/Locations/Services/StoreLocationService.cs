@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Data.Dtos.Stores.Markets;
+using Data.Dtos.Stores.Locations;
 using Domain.Stores.Events;
 using Entity.Stores.Locations;
 using MediatR;

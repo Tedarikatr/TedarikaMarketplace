@@ -19,7 +19,7 @@ namespace Entity.Products
 
         public string GTIPCode { get; set; }
 
-        public ICollection<ProductExportRestriction> ProductExportRestrictions { get; set; }
+        public ICollection<ProductExportBanned> ProductExportRestrictions { get; set; }
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

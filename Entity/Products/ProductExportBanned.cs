@@ -1,6 +1,6 @@
 ﻿namespace Entity.Products
 {
-    public class ProductExportRestriction
+    public class ProductExportBanned
     {
         public int Id { get; set; }
 

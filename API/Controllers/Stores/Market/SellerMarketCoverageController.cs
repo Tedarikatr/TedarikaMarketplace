@@ -1,5 +1,5 @@
 ﻿using API.Helpers;
-using Data.Dtos.Stores.Markets;
+using Data.Dtos.Stores.Locations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Locations.IServices;

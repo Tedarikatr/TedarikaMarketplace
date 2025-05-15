@@ -43,14 +43,4 @@ namespace Data.Dtos.Product
     public class ProductUpdateDto : ProductCreateDto
     {
     }
-
-    public class ProductChangeLogDto
-    {
-        public int ProductId { get; set; }
-        public string ChangedField { get; set; }      
-        public string OldValue { get; set; }      
-        public string NewValue { get; set; }        
-        public DateTime ChangedAt { get; set; }   
-        public string ChangedBy { get; set; }       
-    }
 }

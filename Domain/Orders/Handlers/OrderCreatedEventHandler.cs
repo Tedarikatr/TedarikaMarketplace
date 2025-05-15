@@ -1,7 +1,7 @@
 ﻿using Domain.Orders.Events;
+using Domain.Orders.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Services.Carriers.IServices;
 
 namespace Domain.Orders.Handlers
 {

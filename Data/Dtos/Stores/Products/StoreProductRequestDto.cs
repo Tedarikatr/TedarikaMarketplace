@@ -26,7 +26,7 @@ namespace Data.Dtos.Stores.Products
         public bool AllowedDomestic { get; set; }
         public bool AllowedInternational { get; set; }
 
-        public int? CategoryId { get; set; }           // 🆕 EKLENECEK
+        public int? CategoryId { get; set; }    
         public int? CategorySubId { get; set; }
     }
 
