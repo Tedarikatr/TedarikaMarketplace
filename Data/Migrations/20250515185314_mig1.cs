@@ -96,7 +96,13 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CarrierCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApiEndpoint = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApiKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CarrierLogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IntegrationType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,6 +121,24 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Incoterms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShortCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Incoterms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,21 +164,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Regions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Regions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +196,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BasketId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StoreProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -222,28 +232,6 @@ namespace Data.Migrations
                         name: "FK_CategoriesSubs_Categories_MainCategoryId",
                         column: x => x.MainCategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Countries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RegionId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Countries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Countries_Regions_RegionId",
-                        column: x => x.RegionId,
-                        principalTable: "Regions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -304,6 +292,7 @@ namespace Data.Migrations
                     Barcode = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GTIPCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PreparationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -327,27 +316,6 @@ namespace Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "States",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CountryId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_States", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_States_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -386,41 +354,15 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Provinces",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StateId = table.Column<int>(type: "int", nullable: true),
-                    CountryId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Provinces", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Provinces_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Provinces_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "StoreCarriers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StoreId = table.Column<int>(type: "int", nullable: false),
-                    CarrierId = table.Column<int>(type: "int", nullable: false)
+                    CarrierId = table.Column<int>(type: "int", nullable: false),
+                    StoreApiKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -440,28 +382,31 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreLocationCountries",
+                name: "StoreCertificates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<int>(type: "int", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: false),
+                    CertificateType = table.Column<int>(type: "int", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
-                    CountryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    CountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegionId = table.Column<int>(type: "int", nullable: false),
+                    RegionCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    ApprovedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreLocationCountries", x => x.Id);
+                    table.PrimaryKey("PK_StoreCertificates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreLocationCountries_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StoreLocationCountries_Stores_StoreId",
+                        name: "FK_StoreCertificates_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -488,64 +433,6 @@ namespace Data.Migrations
                     table.PrimaryKey("PK_StoreLocationCoverages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_StoreLocationCoverages_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreLocationRegions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    RegionId = table.Column<int>(type: "int", nullable: false),
-                    RegionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreLocationRegions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StoreLocationRegions_Regions_RegionId",
-                        column: x => x.RegionId,
-                        principalTable: "Regions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StoreLocationRegions_Stores_StoreId",
-                        column: x => x.StoreId,
-                        principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreLocationStates",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    StateName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreLocationStates", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StoreLocationStates_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StoreLocationStates_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -643,6 +530,7 @@ namespace Data.Migrations
                     MaxOrderQuantity = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsOnSale = table.Column<bool>(type: "bit", nullable: false),
+                    BlockedByExportBan = table.Column<bool>(type: "bit", nullable: false),
                     AllowedDomestic = table.Column<bool>(type: "bit", nullable: false),
                     AllowedInternational = table.Column<bool>(type: "bit", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -661,6 +549,375 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StoreProducts_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EstimatedExportCosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductUnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LogisticsCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CustomsCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CertificateCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PackagingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PlatformCommission = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FXMarginCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Incoterm = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DestinationCountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CalculatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EstimatedExportCosts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EstimatedExportCosts_StoreProducts_StoreProductId",
+                        column: x => x.StoreProductId,
+                        principalTable: "StoreProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreProductCertificates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<int>(type: "int", nullable: false),
+                    StoreProductId = table.Column<int>(type: "int", nullable: false),
+                    CertificateType = table.Column<int>(type: "int", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegionId = table.Column<int>(type: "int", nullable: false),
+                    RegionCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    ApprovedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreProductCertificates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreProductCertificates_StoreProducts_StoreProductId",
+                        column: x => x.StoreProductId,
+                        principalTable: "StoreProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreProductIncoterms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreProductId = table.Column<int>(type: "int", nullable: false),
+                    IncotermId = table.Column<int>(type: "int", nullable: false),
+                    EstimatedDeliveryCost = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DestinationCountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreProductIncoterms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreProductIncoterms_Incoterms_IncotermId",
+                        column: x => x.IncotermId,
+                        principalTable: "Incoterms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StoreProductIncoterms_StoreProducts_StoreProductId",
+                        column: x => x.StoreProductId,
+                        principalTable: "StoreProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreProductShippingRegions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreProductId = table.Column<int>(type: "int", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EstimatedDeliveryDays = table.Column<int>(type: "int", nullable: false),
+                    AllowedCarriers = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreProductShippingRegions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreProductShippingRegions_StoreProducts_StoreProductId",
+                        column: x => x.StoreProductId,
+                        principalTable: "StoreProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreProductShowrooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreProductId = table.Column<int>(type: "int", nullable: false),
+                    MediaType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreProductShowrooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreProductShowrooms_StoreProducts_StoreProductId",
+                        column: x => x.StoreProductId,
+                        principalTable: "StoreProducts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Regions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    StoreCertificateId = table.Column<int>(type: "int", nullable: true),
+                    StoreProductCertificateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Regions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Regions_StoreCertificates_StoreCertificateId",
+                        column: x => x.StoreCertificateId,
+                        principalTable: "StoreCertificates",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Regions_StoreProductCertificates_StoreProductCertificateId",
+                        column: x => x.StoreProductCertificateId,
+                        principalTable: "StoreProductCertificates",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegionId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    StoreCertificateId = table.Column<int>(type: "int", nullable: true),
+                    StoreProductCertificateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Countries_Regions_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Regions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Countries_StoreCertificates_StoreCertificateId",
+                        column: x => x.StoreCertificateId,
+                        principalTable: "StoreCertificates",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Countries_StoreProductCertificates_StoreProductCertificateId",
+                        column: x => x.StoreProductCertificateId,
+                        principalTable: "StoreProductCertificates",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreLocationRegions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    RegionId = table.Column<int>(type: "int", nullable: false),
+                    RegionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreLocationRegions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationRegions_Regions_RegionId",
+                        column: x => x.RegionId,
+                        principalTable: "Regions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationRegions_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductExportBanneds",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    GTIPCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    IsExportBanned = table.Column<bool>(type: "bit", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductExportBanneds", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductExportBanneds_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductExportBanneds_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "States",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_States", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_States_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreLocationCountries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    CountryName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreLocationCountries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationCountries_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationCountries_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Provinces",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateId = table.Column<int>(type: "int", nullable: true),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Provinces_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Provinces_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreLocationStates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    StateName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryTimeFrame = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreLocationStates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationStates_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StoreLocationStates_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
@@ -713,49 +970,6 @@ namespace Data.Migrations
                         name: "FK_StoreLocationProvinces_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreProductMarkets",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreProductId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreProductMarkets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StoreProductMarkets_StoreProducts_StoreProductId",
-                        column: x => x.StoreProductId,
-                        principalTable: "StoreProducts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StoreProductShippingRegions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreProductId = table.Column<int>(type: "int", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EstimatedDeliveryDays = table.Column<int>(type: "int", nullable: false),
-                    AllowedCarriers = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StoreProductShippingRegions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StoreProductShippingRegions_StoreProducts_StoreProductId",
-                        column: x => x.StoreProductId,
-                        principalTable: "StoreProducts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1076,6 +1290,16 @@ namespace Data.Migrations
                 column: "RegionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Countries_StoreCertificateId",
+                table: "Countries",
+                column: "StoreCertificateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Countries_StoreProductCertificateId",
+                table: "Countries",
+                column: "StoreProductCertificateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddresses_BuyerUserId_IsDefault",
                 table: "DeliveryAddresses",
                 columns: new[] { "BuyerUserId", "IsDefault" },
@@ -1116,6 +1340,11 @@ namespace Data.Migrations
                 name: "IX_Districts_ProvinceId",
                 table: "Districts",
                 column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EstimatedExportCosts_StoreProductId",
+                table: "EstimatedExportCosts",
+                column: "StoreProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Neighborhoods_DistrictId",
@@ -1165,6 +1394,16 @@ namespace Data.Migrations
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductExportBanneds_CountryId",
+                table: "ProductExportBanneds",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductExportBanneds_ProductId",
+                table: "ProductExportBanneds",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_Barcode",
                 table: "Products",
                 column: "Barcode",
@@ -1199,6 +1438,16 @@ namespace Data.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Regions_StoreCertificateId",
+                table: "Regions",
+                column: "StoreCertificateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Regions_StoreProductCertificateId",
+                table: "Regions",
+                column: "StoreProductCertificateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_States_CountryId",
                 table: "States",
                 column: "CountryId");
@@ -1211,6 +1460,11 @@ namespace Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_StoreCarriers_StoreId",
                 table: "StoreCarriers",
+                column: "StoreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoreCertificates_StoreId",
+                table: "StoreCertificates",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
@@ -1295,8 +1549,18 @@ namespace Data.Migrations
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreProductMarkets_StoreProductId",
-                table: "StoreProductMarkets",
+                name: "IX_StoreProductCertificates_StoreProductId",
+                table: "StoreProductCertificates",
+                column: "StoreProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoreProductIncoterms_IncotermId",
+                table: "StoreProductIncoterms",
+                column: "IncotermId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoreProductIncoterms_StoreProductId",
+                table: "StoreProductIncoterms",
                 column: "StoreProductId");
 
             migrationBuilder.CreateIndex(
@@ -1330,6 +1594,11 @@ namespace Data.Migrations
                 column: "StoreProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StoreProductShowrooms_StoreProductId",
+                table: "StoreProductShowrooms",
+                column: "StoreProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stores_CompanyId",
                 table: "Stores",
                 column: "CompanyId");
@@ -1351,7 +1620,13 @@ namespace Data.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
+                name: "EstimatedExportCosts");
+
+            migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "ProductExportBanneds");
 
             migrationBuilder.DropTable(
                 name: "StoreCarriers");
@@ -1384,7 +1659,7 @@ namespace Data.Migrations
                 name: "StorePaymentMethods");
 
             migrationBuilder.DropTable(
-                name: "StoreProductMarkets");
+                name: "StoreProductIncoterms");
 
             migrationBuilder.DropTable(
                 name: "StoreProductRequests");
@@ -1393,13 +1668,16 @@ namespace Data.Migrations
                 name: "StoreProductShippingRegions");
 
             migrationBuilder.DropTable(
+                name: "StoreProductShowrooms");
+
+            migrationBuilder.DropTable(
                 name: "Baskets");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "StoreProducts");
+                name: "Incoterms");
 
             migrationBuilder.DropTable(
                 name: "Carriers");
@@ -1411,31 +1689,10 @@ namespace Data.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Stores");
-
-            migrationBuilder.DropTable(
                 name: "Neighborhoods");
 
             migrationBuilder.DropTable(
-                name: "CategoriesSubs");
-
-            migrationBuilder.DropTable(
-                name: "Companies");
-
-            migrationBuilder.DropTable(
                 name: "Districts");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "BuyerUsers");
-
-            migrationBuilder.DropTable(
-                name: "SellerUsers");
 
             migrationBuilder.DropTable(
                 name: "Provinces");
@@ -1448,6 +1705,36 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Regions");
+
+            migrationBuilder.DropTable(
+                name: "StoreCertificates");
+
+            migrationBuilder.DropTable(
+                name: "StoreProductCertificates");
+
+            migrationBuilder.DropTable(
+                name: "StoreProducts");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Stores");
+
+            migrationBuilder.DropTable(
+                name: "CategoriesSubs");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "BuyerUsers");
+
+            migrationBuilder.DropTable(
+                name: "SellerUsers");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Entity.Auths;
+﻿using Entity.Anohter;
+using Entity.Auths;
 using Entity.Baskets;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
@@ -233,6 +234,28 @@ namespace Data.Databases
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductExportBanned>()
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<ProductExportBanned>()
+                .Property(p => p.GTIPCode)
+                .IsRequired();
+
+            modelBuilder.Entity<ProductExportBanned>()
+                .Property(p => p.CountryCode)
+                .HasMaxLength(5); 
+
+            modelBuilder.Entity<ProductExportBanned>()
+                .HasOne(p => p.Product)
+                .WithMany(p => p.ProductExportRestrictions)
+                .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProductExportBanned>()
+                .HasOne(p => p.Country)
+                .WithMany()
+                .HasForeignKey(p => p.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private static void ConfigureOrderEntities(ModelBuilder modelBuilder)
@@ -349,6 +372,17 @@ namespace Data.Databases
 
             modelBuilder.Entity<StoreInvoice>().Property(si => si.TotalAmount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<StoreProduct>().Property(sp => sp.UnitPrice).HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.CertificateCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.CustomsCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.FXMarginCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.LogisticsCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.PackagingCost).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.PlatformCommission).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<EstimatedExportCost>().Property(e => e.ProductUnitPrice).HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<StoreProductIncoterm>().Property(e => e.EstimatedDeliveryCost).HasColumnType("decimal(18,2)");
+
         }
 
     }

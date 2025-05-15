@@ -22,6 +22,57 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Entity.Anohter.EstimatedExportCost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CalculatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CertificateCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("CustomsCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DestinationCountryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("FXMarginCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Incoterm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("LogisticsCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PackagingCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PlatformCommission")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ProductUnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("StoreProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreProductId");
+
+                    b.ToTable("EstimatedExportCosts");
+                });
+
             modelBuilder.Entity("Entity.Auths.AdminUser", b =>
                 {
                     b.Property<int>("Id")
@@ -469,6 +520,37 @@ namespace Data.Migrations
                     b.ToTable("DeliveryAddresses");
                 });
 
+            modelBuilder.Entity("Entity.Incoterms.Incoterm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Incoterms");
+                });
+
             modelBuilder.Entity("Entity.Locations.Country", b =>
                 {
                     b.Property<int>("Id")
@@ -489,9 +571,19 @@ namespace Data.Migrations
                     b.Property<int>("RegionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StoreCertificateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StoreProductCertificateId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RegionId");
+
+                    b.HasIndex("StoreCertificateId");
+
+                    b.HasIndex("StoreProductCertificateId");
 
                     b.ToTable("Countries");
                 });
@@ -593,7 +685,17 @@ namespace Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("StoreCertificateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StoreProductCertificateId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StoreCertificateId");
+
+                    b.HasIndex("StoreProductCertificateId");
 
                     b.ToTable("Regions");
                 });
@@ -856,7 +958,8 @@ namespace Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CountryCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -865,6 +968,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GTIPCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsExportBanned")
@@ -882,7 +986,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductExportBanned");
+                    b.ToTable("ProductExportBanneds");
                 });
 
             modelBuilder.Entity("Entity.Stores.Carriers.StoreCarrier", b =>
@@ -1291,6 +1395,98 @@ namespace Data.Migrations
                     b.ToTable("StoreProducts");
                 });
 
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductCertificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ApprovedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CertificateType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RegionCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreProductId");
+
+                    b.ToTable("StoreProductCertificates");
+                });
+
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductIncoterm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinationCountryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("EstimatedDeliveryCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("IncotermId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncotermId");
+
+                    b.HasIndex("StoreProductId");
+
+                    b.ToTable("StoreProductIncoterms");
+                });
+
             modelBuilder.Entity("Entity.Stores.Products.StoreProductRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -1403,6 +1599,42 @@ namespace Data.Migrations
                     b.ToTable("StoreProductShippingRegions");
                 });
 
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductShowroom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MediaType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MediaUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreProductId");
+
+                    b.ToTable("StoreProductShowrooms");
+                });
+
             modelBuilder.Entity("Entity.Stores.Store", b =>
                 {
                     b.Property<int>("Id")
@@ -1452,6 +1684,74 @@ namespace Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Stores");
+                });
+
+            modelBuilder.Entity("Entity.Stores.StoreCertificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ApprovedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CertificateType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RegionCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("StoreCertificates");
+                });
+
+            modelBuilder.Entity("Entity.Anohter.EstimatedExportCost", b =>
+                {
+                    b.HasOne("Entity.Stores.Products.StoreProduct", "StoreProduct")
+                        .WithMany()
+                        .HasForeignKey("StoreProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StoreProduct");
                 });
 
             modelBuilder.Entity("Entity.Auths.AdminUser", b =>
@@ -1570,6 +1870,14 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Entity.Stores.StoreCertificate", null)
+                        .WithMany("Countrys")
+                        .HasForeignKey("StoreCertificateId");
+
+                    b.HasOne("Entity.Stores.Products.StoreProductCertificate", null)
+                        .WithMany("Countrys")
+                        .HasForeignKey("StoreProductCertificateId");
+
                     b.Navigation("Region");
                 });
 
@@ -1611,6 +1919,17 @@ namespace Data.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("State");
+                });
+
+            modelBuilder.Entity("Entity.Locations.Region", b =>
+                {
+                    b.HasOne("Entity.Stores.StoreCertificate", null)
+                        .WithMany("Regions")
+                        .HasForeignKey("StoreCertificateId");
+
+                    b.HasOne("Entity.Stores.Products.StoreProductCertificate", null)
+                        .WithMany("Regions")
+                        .HasForeignKey("StoreProductCertificateId");
                 });
 
             modelBuilder.Entity("Entity.Locations.State", b =>
@@ -1711,7 +2030,7 @@ namespace Data.Migrations
                     b.HasOne("Entity.Locations.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Entity.Products.Product", "Product")
@@ -1918,6 +2237,36 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductCertificate", b =>
+                {
+                    b.HasOne("Entity.Stores.Products.StoreProduct", "StoreProduct")
+                        .WithMany()
+                        .HasForeignKey("StoreProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StoreProduct");
+                });
+
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductIncoterm", b =>
+                {
+                    b.HasOne("Entity.Incoterms.Incoterm", "Incoterm")
+                        .WithMany()
+                        .HasForeignKey("IncotermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity.Stores.Products.StoreProduct", "StoreProduct")
+                        .WithMany()
+                        .HasForeignKey("StoreProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Incoterm");
+
+                    b.Navigation("StoreProduct");
+                });
+
             modelBuilder.Entity("Entity.Stores.Products.StoreProductRequest", b =>
                 {
                     b.HasOne("Entity.Categories.Category", "Category")
@@ -1952,6 +2301,17 @@ namespace Data.Migrations
                     b.Navigation("StoreProduct");
                 });
 
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductShowroom", b =>
+                {
+                    b.HasOne("Entity.Stores.Products.StoreProduct", "StoreProduct")
+                        .WithMany()
+                        .HasForeignKey("StoreProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StoreProduct");
+                });
+
             modelBuilder.Entity("Entity.Stores.Store", b =>
                 {
                     b.HasOne("Entity.Companies.Company", "Company")
@@ -1969,6 +2329,17 @@ namespace Data.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("SellerUser");
+                });
+
+            modelBuilder.Entity("Entity.Stores.StoreCertificate", b =>
+                {
+                    b.HasOne("Entity.Stores.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Entity.Auths.BuyerUser", b =>
@@ -2045,6 +2416,13 @@ namespace Data.Migrations
                     b.Navigation("ShippingRegions");
                 });
 
+            modelBuilder.Entity("Entity.Stores.Products.StoreProductCertificate", b =>
+                {
+                    b.Navigation("Countrys");
+
+                    b.Navigation("Regions");
+                });
+
             modelBuilder.Entity("Entity.Stores.Store", b =>
                 {
                     b.Navigation("LocationCoverage");
@@ -2054,6 +2432,13 @@ namespace Data.Migrations
                     b.Navigation("StoreCarriers");
 
                     b.Navigation("StoreProducts");
+                });
+
+            modelBuilder.Entity("Entity.Stores.StoreCertificate", b =>
+                {
+                    b.Navigation("Countrys");
+
+                    b.Navigation("Regions");
                 });
 #pragma warning restore 612, 618
         }

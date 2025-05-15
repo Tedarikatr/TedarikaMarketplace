@@ -1,9 +1,11 @@
-﻿using Entity.Auths;
+﻿using Entity.Anohter;
+using Entity.Auths;
 using Entity.Baskets;
 using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
+using Entity.Incoterms;
 using Entity.Locations;
 using Entity.Orders;
 using Entity.Payments;
@@ -27,6 +29,9 @@ namespace Data.Databases
             return await base.SaveChangesAsync(cancellationToken);
         }
 
+        //Anohtrer
+        public DbSet<EstimatedExportCost> EstimatedExportCosts { get; set; }
+
         // Kullanıcılar
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<BuyerUser> BuyerUsers { get; set; }
@@ -49,7 +54,10 @@ namespace Data.Databases
         //Ekbilgiler
         public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
-        //Market
+        //Incornem
+        public DbSet<Incoterm> Incoterms { get; set; }
+
+        //Locations
         public DbSet<Country> Countries { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
@@ -66,10 +74,14 @@ namespace Data.Databases
 
         // Ürünler
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductExportBanned> ProductExportBanneds { get; set; }
 
         // Mağaza & Marketler
         public DbSet<Store> Stores { get; set; }
+        public DbSet<StoreCertificate> StoreCertificates { get; set; }
+
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
+
         public DbSet<StoreLocationCountry> StoreLocationCountries { get; set; }
         public DbSet<StoreLocationCoverage> StoreLocationCoverages { get; set; }
         public DbSet<StoreLocationDistrict> StoreLocationDistricts { get; set; }
@@ -80,9 +92,13 @@ namespace Data.Databases
 
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }
+
         public DbSet<StoreProduct> StoreProducts { get; set; }
         public DbSet<StoreProductRequest> StoreProductRequests { get; set; }
         public DbSet<StoreProductShippingRegion> StoreProductShippingRegions { get; set; }
+        public DbSet<StoreProductCertificate> StoreProductCertificates { get; set; }
+        public DbSet<StoreProductIncoterm> StoreProductIncoterms { get; set; }
+        public DbSet<StoreProductShowroom> StoreProductShowrooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
