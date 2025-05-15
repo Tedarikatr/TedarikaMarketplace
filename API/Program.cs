@@ -5,6 +5,7 @@ using AutoMapper;
 using Data.Databases;
 using Data.Seeders;
 using Domain.Companies.Events;
+using Domain.Orders.Services;
 using Domain.Products.Events;
 using Domain.Stores.Events;
 using Domain.Stores.Handlers;
@@ -17,6 +18,8 @@ using Repository.Auths.IRepositorys;
 using Repository.Auths.Repositorys;
 using Repository.Baskets.IRepositorys;
 using Repository.Baskets.Repositorys;
+using Repository.Carriers.IRepositorys;
+using Repository.Carriers.Repositorys;
 using Repository.Categories.IRepositorys;
 using Repository.Categories.Repositorys;
 using Repository.Companys.IRepositorys;
@@ -44,6 +47,8 @@ using Services.Availability.IServices;
 using Services.Availability.Services;
 using Services.Baskets.IServices;
 using Services.Baskets.Services;
+using Services.Carriers.IServices;
+using Services.Carriers.Services;
 using Services.Categories.IServices;
 using Services.Categories.Services;
 using Services.Companys.IServices;
@@ -141,9 +146,18 @@ builder.Services.AddScoped<AdminUserContextHelper>();
 builder.Services.AddScoped<BuyerUserContextHelper>();
 builder.Services.AddScoped<SellerUserContextHelper>();
 
+
+//Availability
+builder.Services.AddScoped<IStoreAvailabilityService, StoreAvailabilityService>();
+
 //Baskets
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<IBasketService, BasketService>();
+
+//Carriers
+builder.Services.AddScoped<ICarrierRepository, CarrierRepository>();
+builder.Services.AddScoped<ICarrierService, CarrierService>();
+builder.Services.AddScoped<ICarrierWebhookService, CarrierWebhookService>();
 
 
 //Categories
@@ -211,8 +225,6 @@ builder.Services.AddScoped<IStoreProductService, StoreProductService>();
 
 builder.Services.AddScoped<IStoreProductRequestRepository, StoreProductRequestRepository>();
 builder.Services.AddScoped<IStoreProductRequestService, StoreProductRequestService>();
-
-builder.Services.AddScoped<IStoreAvailabilityService, StoreAvailabilityService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();

@@ -31,6 +31,7 @@ namespace Data.Dtos.Product
         public string Brand { get; set; }
         public string ImageUrl { get; set; }
         public string Description { get; set; }
+        public string GTIPCode { get; set; }
         public DateTime? PreparationTime { get; set; }
         public DateTime? ExpirationDate { get; set; }
 

@@ -299,26 +299,41 @@ namespace API.Mappings
             {
                 profile.CreateMap<ProductCreateDto, Product>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.GTIPCode, opt => opt.MapFrom(src => src.GTIPCode))
                     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.UnitType, opt => opt.Ignore()) 
                     .ForMember(dest => dest.Category, opt => opt.Ignore()) 
                     .ForMember(dest => dest.CategorySub, opt => opt.Ignore()) 
                     .ForMember(dest => dest.CategoryName, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore()); 
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore())
+                    .ForMember(dest => dest.ProductExportRestrictions, opt => opt.Ignore());
 
                 profile.CreateMap<ProductUpdateDto, Product>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.GTIPCode, opt => opt.MapFrom(src => src.GTIPCode))
                     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.UnitType, opt => opt.Ignore())
                     .ForMember(dest => dest.Category, opt => opt.Ignore())
                     .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
                     .ForMember(dest => dest.CategoryName, opt => opt.Ignore())
-                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore());
+                    .ForMember(dest => dest.CategorySubName, opt => opt.Ignore())
+                    .ForMember(dest => dest.ProductExportRestrictions, opt => opt.Ignore());
 
                 profile.CreateMap<Product, ProductDto>()
                     .ForMember(dest => dest.UnitTypes, opt => opt.MapFrom(src => src.UnitTypes));
+
+                profile.CreateMap<ProductExportBanned, ProductExportBannedDto>();
+
+                profile.CreateMap<ProductExportBannedCreateDto, ProductExportBanned>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CountryId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Country, opt => opt.Ignore())
+                    .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.CountryCodes))
+                    .ForMember(dest => dest.IsExportBanned, opt => opt.MapFrom(_ => true))
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.Product, opt => opt.Ignore());
             }
         }
         #endregion
@@ -523,8 +538,8 @@ namespace API.Mappings
 
                 profile.CreateMap<StoreProductRequest, Product>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.ProductNumber, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.Barcode, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.ProductNumber, opt => opt.Ignore())
+                    .ForMember(dest => dest.Barcode, opt => opt.Ignore())
                     .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
                     .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
                     .ForMember(dest => dest.PreparationTime, opt => opt.Ignore())
@@ -532,7 +547,9 @@ namespace API.Mappings
                     .ForMember(dest => dest.Category, opt => opt.Ignore())
                     .ForMember(dest => dest.CategorySub, opt => opt.Ignore())
                     .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName))
-                    .ForMember(dest => dest.CategorySubName, opt => opt.MapFrom(src => src.CategorySubName));
+                    .ForMember(dest => dest.CategorySubName, opt => opt.MapFrom(src => src.CategorySubName))
+                    .ForMember(dest => dest.ProductExportRestrictions, opt => opt.Ignore())
+                    .ForMember(dest => dest.GTIPCode, opt => opt.Ignore());
             }
         }
         #endregion
@@ -624,7 +641,10 @@ namespace API.Mappings
                 profile.CreateMap<Carrier, CarrierDto>()
                     .ForMember(dest => dest.IntegrationType, opt => opt.MapFrom(src => src.IntegrationType.ToString()));
 
-                profile.CreateMap<CarrierCreateDto, Carrier>();
+                profile.CreateMap<CarrierCreateDto, Carrier>()
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true))
+                    .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore());
             }
         }
         #endregion
@@ -639,7 +659,10 @@ namespace API.Mappings
                     .ForMember(dest => dest.CarrierLogoUrl, opt => opt.MapFrom(src => src.Carrier.CarrierLogoUrl));
 
                 profile.CreateMap<StoreCarrierCreateDto, StoreCarrier>()
-                    .ForMember(dest => dest.IsEnabled, opt => opt.MapFrom(src => true)); 
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.Store, opt => opt.Ignore())
+                    .ForMember(dest => dest.Carrier, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsEnabled, opt => opt.MapFrom(_ => true));
             }
         }
         #endregion
