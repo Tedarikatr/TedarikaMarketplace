@@ -146,7 +146,6 @@ builder.Services.AddScoped<AdminUserContextHelper>();
 builder.Services.AddScoped<BuyerUserContextHelper>();
 builder.Services.AddScoped<SellerUserContextHelper>();
 
-
 //Availability
 builder.Services.AddScoped<IStoreAvailabilityService, StoreAvailabilityService>();
 
@@ -220,11 +219,23 @@ builder.Services.AddScoped<IStoreLocationStateRepository, StoreLocationStateRepo
 builder.Services.AddScoped<IStoreLocationCoverageRepository, StoreLocationCoverageRepository>();
 builder.Services.AddScoped<IStoreLocationService, StoreLocationService>();
 
+builder.Services.AddScoped<IStoreProductCertificateRepository, StoreProductCertificateRepository>();
+builder.Services.AddScoped<IStoreProductCertificateService, StoreProductCertificateService>();
+
+builder.Services.AddScoped<IStoreProductIncotermRepository, StoreProductIncotermRepository>();
+builder.Services.AddScoped<IStoreProductIncotermService, StoreProductIncotermService>();
+
 builder.Services.AddScoped<IStoreProductRepository, StoreProductRepository>();
 builder.Services.AddScoped<IStoreProductService, StoreProductService>();
 
 builder.Services.AddScoped<IStoreProductRequestRepository, StoreProductRequestRepository>();
 builder.Services.AddScoped<IStoreProductRequestService, StoreProductRequestService>();
+
+builder.Services.AddScoped<IStoreProductShippingRegionRepository, StoreProductShippingRegionRepository>();
+builder.Services.AddScoped<IStoreProductShippingRegionService, StoreProductShippingRegionService>();
+
+builder.Services.AddScoped<IStoreProductShowroomRepository, StoreProductShowroomRepository>();
+builder.Services.AddScoped<IStoreProductShowroomService, StoreProductShowroomService>();
 
 // **FluentValidation Eklenmesi**
 builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();

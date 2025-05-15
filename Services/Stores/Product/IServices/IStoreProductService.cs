@@ -14,6 +14,5 @@ namespace Services.Stores.Product.IServices
         Task<string> SetAllowedRegionsAsync(int storeId, int productId, bool allowedDomestic, bool allowedInternational);
         Task<string> UploadAndSetStoreImageAsync(int storeId, int productId, IFormFile file);
         Task<bool> UpdateMinMaxOrderQuantityAsync(int shopDirectId, int productId, int minOrderQuantity, int maxOrderQuantity);
-
     }
 }

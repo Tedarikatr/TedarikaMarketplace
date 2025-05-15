@@ -10,7 +10,5 @@ namespace Repository.Stores.Product.Repositorys
         public StoreProductRequestRepository(ApplicationDbContext context) : base(context)
         {
         }
-
-     
     }
 }
