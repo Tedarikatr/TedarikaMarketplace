@@ -30,7 +30,7 @@ namespace API.Controllers.DeliveryAddress
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("get-my-addresses")]
         public async Task<IActionResult> GetMyAddresses()
         {
             try
@@ -48,7 +48,7 @@ namespace API.Controllers.DeliveryAddress
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-addresses-detail-id")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -68,7 +68,7 @@ namespace API.Controllers.DeliveryAddress
             }
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddAddress([FromBody] DeliveryAddressCreateDto dto)
         {
             if (!ModelState.IsValid)
@@ -92,7 +92,7 @@ namespace API.Controllers.DeliveryAddress
             }
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateAddress([FromBody] DeliveryAddressUpdateDto dto)
         {
             if (!ModelState.IsValid)
@@ -116,7 +116,7 @@ namespace API.Controllers.DeliveryAddress
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
             try
@@ -137,7 +137,7 @@ namespace API.Controllers.DeliveryAddress
             }
         }
 
-        [HttpPost("{id}/set-default")]
+        [HttpPost("set-default")]
         public async Task<IActionResult> SetAsDefault(int id)
         {
             try

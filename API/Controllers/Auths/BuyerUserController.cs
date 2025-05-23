@@ -53,12 +53,12 @@ namespace API.Controllers.Auths
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> GetBuyerById(int id)
+        public async Task<IActionResult> GetBuyerUserInfoById(int id)
         {
             try
             {
                 _logger.LogInformation("Alıcı bilgisi alınıyor. ID: {UserId}", id);
-                var user = await _buyerUserService.GetBuyerUserByIdAsync(id);
+                var user = await _buyerUserService.GetUserInfoAsync(id);
                 return Ok(user);
             }
             catch (Exception ex)

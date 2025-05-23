@@ -5,20 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Locations.IServices;
 using Services.Stores.Locations.IServices;
 
-namespace API.Controllers.Stores.Market
+namespace API.Controllers.Stores.Locations
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "seller")]
     [Authorize]
-    public class SellerMarketCoverageController : ControllerBase
+    public class SellerLocationCoverageController : ControllerBase
     {
         private readonly IStoreLocationService _coverageService;
         private readonly ILocationService _marketLocationService;
         private readonly SellerUserContextHelper _userHelper;
-        private readonly ILogger<SellerMarketCoverageController> _logger;
+        private readonly ILogger<SellerLocationCoverageController> _logger;
 
-        public SellerMarketCoverageController(IStoreLocationService coverageService, ILocationService marketLocationService, SellerUserContextHelper userHelper, ILogger<SellerMarketCoverageController> logger)
+        public SellerLocationCoverageController(IStoreLocationService coverageService, ILocationService marketLocationService, SellerUserContextHelper userHelper, ILogger<SellerLocationCoverageController> logger)
         {
             _coverageService = coverageService;
             _marketLocationService = marketLocationService;
