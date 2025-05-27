@@ -6,6 +6,7 @@ using Entity.Companies;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Repository.Companys.IRepositorys;
+using Repository.Auths.IRepositorys;
 using Services.Companys.IServices;
 
 namespace Services.Companys.Services
@@ -16,13 +17,18 @@ namespace Services.Companys.Services
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger<CompanyService> _logger;
+        private readonly IBuyerUserRepository _buyerUserRepository;
+        private readonly ISellerUserRepository _sellerUserRepository;
 
-        public CompanyService(ICompanyRepository companyRepository, IMediator mediator, IMapper mapper, ILogger<CompanyService> logger)
+        public CompanyService(ICompanyRepository companyRepository, IMediator mediator, IMapper mapper, ILogger<CompanyService> logger,
+            IBuyerUserRepository buyerUserRepository, ISellerUserRepository sellerUserRepository)
         {
             _companyRepository = companyRepository;
             _mediator = mediator;
             _mapper = mapper;
             _logger = logger;
+            _buyerUserRepository = buyerUserRepository;
+            _sellerUserRepository = sellerUserRepository;
         }
 
         public async Task<string> RegisterCompanyAsync(CompanyCreateDto companyCreateDto, int userId, Entity.Auths.UserType userType)
@@ -84,7 +90,20 @@ namespace Services.Companys.Services
 
                 await _companyRepository.AddAsync(newCompany);
                 _logger.LogInformation("Şirket kaydı başarıyla tamamlandı: {CompanyNumber}", newCompany.CompanyNumber);
-                await _mediator.Publish(new CompanyCreatedEvent(newCompany.Id, userId, userType));
+
+                string userArn = string.Empty;
+                if (userType == UserType.Buyer)
+                {
+                    var buyer = await _buyerUserRepository.GetByIdAsync(userId);
+                    userArn = buyer?.AwsIamUserArn;
+                }
+                else if (userType == UserType.Seller)
+                {
+                    var seller = await _sellerUserRepository.GetByIdAsync(userId);
+                    userArn = seller?.AwsIamUserArn;
+                }
+
+                await _mediator.Publish(new CompanyCreatedEvent(newCompany.Id, userId, userType, userArn));
 
                 return "Şirket kaydı başarılı!";
             }
