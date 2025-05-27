@@ -14,6 +14,8 @@ namespace Entity.Auths
         public string UserNumber { get; set; }
         public Guid UserGuidNumber { get; set; }
 
+        public string AwsIamUserArn { get; set; }
+
         public bool Status { get; set; }
         public bool IsSuperAdmin { get; set; }
 

@@ -41,6 +41,11 @@ namespace Domain.Companies.Handlers
                         _logger.LogInformation("Alıcının CompanyId güncellendi: {UserId}", notification.UserId);
                     }
                 }
+
+                if (!string.IsNullOrEmpty(notification.AwsIamUserArn))
+                {
+                    _logger.LogInformation("AWS IAM ARN: {Arn}", notification.AwsIamUserArn);
+                }
             }
             catch (Exception ex)
             {

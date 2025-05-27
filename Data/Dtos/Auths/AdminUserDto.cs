@@ -9,6 +9,7 @@
         public string Phone { get; set; }
         public bool IsActive { get; set; }
         public bool IsSuperAdmin { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 
     public class AdminLoginDto
@@ -25,5 +26,6 @@
         public string Phone { get; set; }
         public string Password { get; set; }
         public string SuperAdminEmail { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 }

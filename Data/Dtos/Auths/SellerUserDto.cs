@@ -8,6 +8,7 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public string UserNumber { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 
     public class SellerRegisterDto
@@ -17,6 +18,7 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Password { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 
     public class SellerLoginDto

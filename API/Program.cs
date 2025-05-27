@@ -96,7 +96,7 @@ builder.Services.AddMediatR(cfg =>
     );
 });
 
-// **AutoMapper Konfigürasyonu**
+// **AutoMapper KonfigÃ¼rasyonu**
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 try
@@ -106,8 +106,8 @@ try
 }
 catch (Exception ex)
 {
-    Log.Error(ex, "AutoMapper konfigurasyon hatasý");
-    Console.WriteLine("AutoMapper konfigurasyon hatasý:");
+builder.Services.AddScoped<IJwtService, AwsIamJwtService>();
+    Console.WriteLine("AutoMapper konfigurasyon hatasÃ½:");
     Console.WriteLine(ex.Message);
     Console.WriteLine(ex.StackTrace);
     throw;
@@ -124,7 +124,7 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
-// **Database Baðlantýsý**
+// **Database BaÃ°lantÃ½sÃ½**
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
@@ -249,7 +249,7 @@ builder.Services.AddHttpContextAccessor();
 // **SignalR Eklenmesi**
 builder.Services.AddSignalR();
 
-// **Swagger Konfigurasyonu (Seller, Buyer, Admin Ayrýmý)**
+// **Swagger Konfigurasyonu (Seller, Buyer, Admin AyrÃ½mÃ½)**
 builder.Services.AddSwaggerGen(c =>
 {
     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -290,7 +290,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// **CORS Politikasý Güncellemesi**
+// **CORS PolitikasÃ½ GÃ¼ncellemesi**
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
@@ -337,7 +337,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// **Veritabaný Baþlangýç Verileri (Seeder)**
+// **VeritabanÃ½ BaÃ¾langÃ½Ã§ Verileri (Seeder)**
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();

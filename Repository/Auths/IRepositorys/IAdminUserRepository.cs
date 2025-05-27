@@ -8,5 +8,6 @@ namespace Repository.Auths.IRepositorys
         Task<AdminUser> GetAdminByEmailAsync(string email);
         Task<AdminUser> GetSuperAdminAsync();
         Task<bool> IsSuperAdminExistsAsync();
+        Task<AdminUser> GetByAwsIamArnAsync(string arn);
     }
 }
