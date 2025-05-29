@@ -12,17 +12,13 @@ namespace Services.Notification.Service
         private readonly IWebSocketSender _webSocketSender;
         private readonly IEmailTemplateService _emailTemplateService;
 
-
-        public NotificationService(
-            IEmailSender emailSender,
-            ISmsSender smsSender,
-            IPushSender pushSender,
-            IWebSocketSender webSocketSender)
+        public NotificationService(IEmailSender emailSender, ISmsSender smsSender, IPushSender pushSender, IWebSocketSender webSocketSender, IEmailTemplateService emailTemplateService)
         {
             _emailSender = emailSender;
             _smsSender = smsSender;
             _pushSender = pushSender;
             _webSocketSender = webSocketSender;
+            _emailTemplateService = emailTemplateService;
         }
 
         public async Task WelcomeBuyerSendEmailAsync(string to, string userName)
