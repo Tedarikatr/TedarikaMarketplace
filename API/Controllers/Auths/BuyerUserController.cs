@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Auths.IServices;
+using System.Security.Claims;
 
 namespace API.Controllers.Auths
 {
@@ -51,20 +52,22 @@ namespace API.Controllers.Auths
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("profile")]
         [Authorize]
-        public async Task<IActionResult> GetBuyerUserInfoById(int id)
+        public async Task<IActionResult> GetProfile()
         {
             try
             {
-                _logger.LogInformation("Alıcı bilgisi alınıyor. ID: {UserId}", id);
-                var user = await _buyerUserService.GetUserInfoAsync(id);
-                return Ok(user);
+                var buyerId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+                _logger.LogInformation("Alıcı profili alınıyor. BuyerId: {BuyerId}", buyerId);
+
+                var profile = await _buyerUserService.GetBuyerProfileAsync(buyerId);
+                return Ok(profile);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Alıcı bilgisi alınırken hata oluştu. ID: {UserId}", id);
-                return StatusCode(500, "Sunucu hatası.");
+                _logger.LogError(ex, "Alıcı profil bilgisi alınırken hata oluştu.");
+                return StatusCode(500, "Profil bilgisi alınamadı.");
             }
         }
     }

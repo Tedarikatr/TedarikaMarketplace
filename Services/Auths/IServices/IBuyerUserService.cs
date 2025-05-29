@@ -10,6 +10,7 @@ namespace Services.Auths.IServices
         Task<bool> DeleteBuyerUserAsync(int id);
         Task<BuyerUserDto> GetBuyerUserByIdAsync(int userId);
         Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
-        Task<BuyerUserInfoDto> GetUserInfoAsync(int userId);
+        Task<BuyerProfileDto> GetBuyerProfileAsync(int buyerId);
+
     }
 }

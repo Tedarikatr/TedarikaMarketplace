@@ -79,6 +79,12 @@ namespace API.Mappings
                     .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
                     .ForMember(dest => dest.Company, opt => opt.Ignore());
 
+                profile.CreateMap<BuyerUser, BuyerProfileDto>()
+                    .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.UserType))
+    .ReverseMap()
+    .ForMember(dest => dest.UserType, opt => opt.MapFrom(src => src.Role));
+
+
                 profile.CreateMap<SellerUser, SellerUserDto>().ReverseMap();
 
                 profile.CreateMap<SellerRegisterDto, SellerUser>()

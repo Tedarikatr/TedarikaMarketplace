@@ -25,11 +25,10 @@ namespace Data.Dtos.Payments
         public decimal TotalAmount { get; set; }
         public string Currency { get; set; } = "TRY";
 
-        public string? CardHolderName { get; set; }     // optional
-        public string? CardNumber { get; set; }         // optional
-        public string? ExpiryDate { get; set; }         // optional (MM/YY)
-        public string? Cvc { get; set; }                // optional
+        public string? CardHolderName { get; set; }  
+        public string? CardNumber { get; set; }         
+        public string? ExpiryDate { get; set; }       
+        public string? Cvc { get; set; }              
 
-        // online ödeme yapılacaksa, yukarıdakiler zorunlu olabilir.
     }
 }

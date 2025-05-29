@@ -1,4 +1,6 @@
-﻿namespace Data.Dtos.Auths
+﻿using Entity.Auths;
+
+namespace Data.Dtos.Auths
 {
     public class BuyerUserDto
     {
@@ -34,5 +36,14 @@
     {
         public string EmailOrPhone { get; set; }
         public string Password { get; set; }
+    }
+
+    public class BuyerProfileDto
+    {
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public UserType Role { get; set; }
     }
 }

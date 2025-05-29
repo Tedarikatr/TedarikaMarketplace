@@ -60,6 +60,7 @@ using Services.Files.Services;
 using Services.Locations.IServices;
 using Services.Locations.Services;
 using Services.Notification.HelperService;
+using Services.Notification.HelperService.MailTemplates;
 using Services.Notification.IServices;
 using Services.Notification.Service;
 using Services.Orders.IServices;
@@ -130,7 +131,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<DatabaseSeeder>();
+//builder.Services.AddScoped<DatabaseSeeder>();
 
 builder.Services.AddScoped<StoreLocationCoverageUpdatedHelper>();
 
@@ -188,11 +189,11 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 
 //Notifications
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<ISmsSender, SmsSender>();
 builder.Services.AddScoped<IPushSender, PushSender>();
 builder.Services.AddScoped<IWebSocketSender, WebSocketSender>();
-builder.Services.AddSignalR();
 
 //Ordes
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -337,12 +338,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// **Veritabaný Baþlangýç Verileri (Seeder)**
-using (var scope = app.Services.CreateScope())
-{
-    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-    await seeder.SeedAsync();
-}
+//// **Veritabaný Baþlangýç Verileri (Seeder)**
+//using (var scope = app.Services.CreateScope())
+//{
+//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+//    await seeder.SeedAsync();
+//}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

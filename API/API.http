@@ -4,3 +4,4 @@ GET {{API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+POST https://localhost:5135/api/testemail/send?to=onurceymen@yahoo.com

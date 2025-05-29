@@ -29,10 +29,10 @@ namespace Services.Auths.Services
             {
                 _logger.LogInformation("Yeni satıcı kaydı yapılıyor: {Email}", sellerRegisterDto.Email);
 
-                var existingUser = await _sellerUserRepository.FindAsync(u => u.Email == sellerRegisterDto.Email);
+                var existingUser = await _sellerUserRepository.FindAsync(u => u.Email == sellerRegisterDto.Email || u.Phone == sellerRegisterDto.Phone);
                 if (existingUser.Any())
                 {
-                    throw new Exception("Bu e-posta adresi zaten kayıtlı.");
+                    throw new Exception("Bu e-posta veya telefon numarası zaten kayıtlı.");
                 }
 
                 var sellerUser = _mapper.Map<SellerUser>(sellerRegisterDto);

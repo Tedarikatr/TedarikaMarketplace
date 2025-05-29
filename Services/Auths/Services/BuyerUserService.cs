@@ -157,16 +157,26 @@ namespace Services.Auths.Services
             }
         }
 
-        public async Task<BuyerUserInfoDto> GetUserInfoAsync(int userId)
+        public async Task<BuyerProfileDto> GetBuyerProfileAsync(int buyerId)
         {
             try
             {
-                var user = await _buyerUserRepository.GetByIdAsync(userId);
-                return _mapper.Map<BuyerUserInfoDto>(user);
+                var buyer = await _buyerUserRepository.GetByIdAsync(buyerId);
+                if (buyer == null)
+                    throw new Exception("Alıcı bulunamadı.");
+
+                return new BuyerProfileDto
+                {
+                    Name = buyer.Name,
+                    LastName = buyer.LastName,
+                    Email = buyer.Email,
+                    Phone = buyer.Phone,
+                    Role = buyer.UserType
+                };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Alıcı bilgisi getirme sırasında hata oluştu: {UserId}", userId);
+                _logger.LogError(ex, "Alıcı profil bilgisi alınırken hata oluştu: {BuyerId}", buyerId);
                 throw;
             }
         }
