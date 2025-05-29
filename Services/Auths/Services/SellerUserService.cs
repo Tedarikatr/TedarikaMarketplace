@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Repository.Auths.IRepositorys;
 using Services.Auths.Helper;
 using Services.Auths.IServices;
+using Services.Notification.IServices;
 
 namespace Services.Auths.Services
 {
@@ -14,13 +15,20 @@ namespace Services.Auths.Services
         private readonly IMapper _mapper;
         private readonly IJwtService _jwtService;
         private readonly ILogger<SellerUserService> _logger;
+        private readonly INotificationService _notificationService;
 
-        public SellerUserService(ISellerUserRepository sellerUserRepository, IMapper mapper, IJwtService jwtService, ILogger<SellerUserService> logger)
+        public SellerUserService(
+            ISellerUserRepository sellerUserRepository,
+            IMapper mapper,
+            IJwtService jwtService,
+            ILogger<SellerUserService> logger,
+            INotificationService notificationService)
         {
             _sellerUserRepository = sellerUserRepository;
             _mapper = mapper;
             _jwtService = jwtService;
             _logger = logger;
+            _notificationService = notificationService;
         }
 
         public async Task<string> RegisterSellerUserAsync(SellerRegisterDto sellerRegisterDto)
@@ -43,6 +51,8 @@ namespace Services.Auths.Services
 
                 await _sellerUserRepository.AddAsync(sellerUser);
                 _logger.LogInformation("Satıcı başarıyla kayıt oldu: {Email}", sellerRegisterDto.Email);
+
+                await _notificationService.WelcomeSellerSendEmailAsync(sellerUser.Email, sellerUser.Name);
 
                 return "Kayıt başarılı!";
             }

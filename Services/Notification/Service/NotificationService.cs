@@ -1,4 +1,5 @@
 ﻿using Services.Notification.HelperService;
+using Services.Notification.HelperService.MailTemplates;
 using Services.Notification.IServices;
 
 namespace Services.Notification.Service
@@ -9,6 +10,8 @@ namespace Services.Notification.Service
         private readonly ISmsSender _smsSender;
         private readonly IPushSender _pushSender;
         private readonly IWebSocketSender _webSocketSender;
+        private readonly IEmailTemplateService _emailTemplateService;
+
 
         public NotificationService(
             IEmailSender emailSender,
@@ -22,50 +25,32 @@ namespace Services.Notification.Service
             _webSocketSender = webSocketSender;
         }
 
-        public Task SendEmailAsync(string to, string subject, string body)
-            => _emailSender.SendEmailAsync(to, subject, body);
-
-        public Task SendSmsAsync(string toPhone, string message)
-            => _smsSender.SendSmsAsync(toPhone, message);
-
-        public Task SendPushAsync(int userId, string message)
-            => _pushSender.SendPushAsync(userId, message);
-
-        public Task SendWebSocketAsync(int userId, string message)
-            => _webSocketSender.SendWebSocketAsync(userId, message);
-
-        public async Task NotifyOrderCreatedAsync(int userId, int orderId)
+        public async Task WelcomeBuyerSendEmailAsync(string to, string userName)
         {
-            var message = $"Siparişiniz başarıyla oluşturuldu. Sipariş No: {orderId}";
-            await NotifyUserAsync(userId, message);
+            var subject = "Tedarika'ya Hoş Geldiniz!";
+            var body = _emailTemplateService.GetWelcomeBuyerTemplate(userName);
+            await SafeSendEmailAsync(to, subject, body);
         }
 
-        public async Task NotifyOrderApprovedAsync(int userId, int orderId)
+        public async Task WelcomeSellerSendEmailAsync(string to, string userName)
         {
-            var message = $"Siparişiniz onaylandı. Sipariş No: {orderId}";
-            await NotifyUserAsync(userId, message);
+            var subject = "Tedarika'ya Hoş Geldiniz!";
+            var body = _emailTemplateService.GetWelcomeSellerTemplate(userName);
+            await SafeSendEmailAsync(to, subject, body);
         }
 
-        public async Task NotifyOrderRejectedAsync(int userId, int orderId)
+        private async Task SafeSendEmailAsync(string to, string subject, string body)
         {
-            var message = $"Siparişiniz reddedildi. Sipariş No: {orderId}";
-            await NotifyUserAsync(userId, message);
+            try
+            {
+                await _emailSender.SendEmailAsync(to, subject, body);
+            }
+            catch (Exception ex)
+            {
+                // Hata loglanır, ama sistem akışı etkilenmez
+                Console.WriteLine($"[ERROR] Mail gönderilemedi: {ex.Message}");
+            }
         }
 
-        public async Task NotifyOrderShippedAsync(int userId, int orderId)
-        {
-            var message = $"Siparişiniz kargoya verildi. Sipariş No: {orderId}";
-            await NotifyUserAsync(userId, message);
-        }
-
-        private async Task NotifyUserAsync(int userId, string message)
-        {
-            await Task.WhenAll(
-                SendPushAsync(userId, message),
-                SendWebSocketAsync(userId, message),
-                SendSmsAsync("dummy-phone", message),
-                SendEmailAsync("dummy@example.com", "Sipariş Bildirimi", message)
-            );
-        }
     }
 }
