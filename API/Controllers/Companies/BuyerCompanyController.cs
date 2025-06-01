@@ -24,6 +24,30 @@ namespace API.Controllers.Companies
             _logger = logger;
         }
 
+        [HttpGet("my-company")]
+        public async Task<IActionResult> GetMyCompany()
+        {
+            try
+            {
+                var buyerUserId = _buyerUserContextHelper.GetBuyerId(User);
+                var company = await _companyService.GetCompanyByBuyerUserIdAsync(buyerUserId);
+
+                if (company == null)
+                {
+                    _logger.LogWarning("Şirket bulunamadı. BuyerUserId: {BuyerUserId}", buyerUserId);
+                    return NotFound(new { message = "Şirket bilgisi bulunamadı." });
+                }
+
+                return Ok(company);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Şirket bilgisi alınırken hata oluştu.");
+                return StatusCode(500, new { error = "Şirket bilgisi alınamadı." });
+            }
+        }
+
+
         [HttpPost("register")]
         public async Task<IActionResult> RegisterBuyerCompany([FromBody] CompanyCreateDto companyCreateDto)
         {

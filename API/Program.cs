@@ -3,7 +3,6 @@ using API.Helpers;
 using API.Mappings;
 using AutoMapper;
 using Data.Databases;
-using Data.Seeders;
 using Domain.Companies.Events;
 using Domain.Orders.Services;
 using Domain.Products.Events;
@@ -26,6 +25,8 @@ using Repository.Companys.IRepositorys;
 using Repository.Companys.Repositorys;
 using Repository.DeliveryAddresses.IRepositorys;
 using Repository.DeliveryAddresses.Repositorys;
+using Repository.Forms.IRepositorys;
+using Repository.Forms.Repositorys;
 using Repository.Locations.IRepositorys;
 using Repository.Locations.Repositorys;
 using Repository.Orders.IRepositorys;
@@ -57,6 +58,8 @@ using Services.DeliveryAddress.IService;
 using Services.DeliveryAddress.Services;
 using Services.Files.IServices;
 using Services.Files.Services;
+using Services.Forms.IServices;
+using Services.Forms.Services;
 using Services.Locations.IServices;
 using Services.Locations.Services;
 using Services.Notification.HelperService;
@@ -159,7 +162,6 @@ builder.Services.AddScoped<ICarrierRepository, CarrierRepository>();
 builder.Services.AddScoped<ICarrierService, CarrierService>();
 builder.Services.AddScoped<ICarrierWebhookService, CarrierWebhookService>();
 
-
 //Categories
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -173,6 +175,10 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 //DeliveryAddress
 builder.Services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
 builder.Services.AddScoped<IDeliveryAddressService, DeliveryAddressService>();
+
+//Forms
+builder.Services.AddScoped<ISellerApplicationRepository, SellerApplicationRepository>();
+builder.Services.AddScoped<ISellerApplicationService, SellerApplicationService>();
 
 //Files
 builder.Services.AddScoped<IFilesService, AzureBlobService>();

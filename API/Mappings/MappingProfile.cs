@@ -6,6 +6,7 @@ using Data.Dtos.Carriers;
 using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.DeliveryAddresses;
+using Data.Dtos.Forms;
 using Data.Dtos.Locations;
 using Data.Dtos.Payments;
 using Data.Dtos.Product;
@@ -19,6 +20,7 @@ using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
+using Entity.Forms;
 using Entity.Locations;
 using Entity.Payments;
 using Entity.Products;
@@ -40,6 +42,7 @@ namespace API.Mappings
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
+            StoreApplicationMappings.RegisterMappings(this);
             LocationMappings.RegisterMappings(this);
             MarketMappings.RegisterMappings(this);
             StoreProductRequestMappings.RegisterMappings(this);
@@ -379,6 +382,25 @@ namespace API.Mappings
                     .ForMember(dest => dest.Province, opt => opt.Ignore())
                     .ForMember(dest => dest.District, opt => opt.Ignore())
                     .ForMember(dest => dest.Neighborhood, opt => opt.Ignore());
+            }
+        }
+        #endregion
+
+        #region SellerApplication  Mappings
+        private static class StoreApplicationMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<SellerApplicationCreateDto, SellerApplication>();
+
+                profile.CreateMap<SellerApplication, SellerApplicationListDto>();
+
+                profile.CreateMap<SellerApplication, SellerApplicationDetailDto>();
+
+                profile.CreateMap<SellerApplicationUpdateApprovalDto, SellerApplication>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.IsApproved, opt => opt.MapFrom(src => src.IsApproved))
+                    .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
             }
         }
         #endregion

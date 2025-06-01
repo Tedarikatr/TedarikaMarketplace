@@ -5,6 +5,7 @@ using Entity.Carriers;
 using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
+using Entity.Forms;
 using Entity.Incoterms;
 using Entity.Locations;
 using Entity.Orders;
@@ -51,8 +52,11 @@ namespace Data.Databases
         // Company
         public DbSet<Company> Companies { get; set; }
 
-        //Ekbilgiler
+        //DeliveryAddress
         public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
+
+        //Forms
+        public DbSet<SellerApplication> SellerApplications { get; set; }
 
         //Incornem
         public DbSet<Incoterm> Incoterms { get; set; }
