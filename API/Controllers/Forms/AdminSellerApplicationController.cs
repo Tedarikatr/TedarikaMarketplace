@@ -6,6 +6,7 @@ namespace API.Controllers.Forms
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     public class AdminSellerApplicationController : ControllerBase
     {
         private readonly ISellerApplicationService _service;

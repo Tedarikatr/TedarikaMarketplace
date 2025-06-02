@@ -57,6 +57,7 @@ namespace Data.Databases
 
         //Forms
         public DbSet<SellerApplication> SellerApplications { get; set; }
+        public DbSet<BuyerApplication> BuyerApplications { get; set; }
 
         //Incornem
         public DbSet<Incoterm> Incoterms { get; set; }

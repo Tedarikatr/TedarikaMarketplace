@@ -1,5 +1,4 @@
 ﻿using Data.Dtos.Forms;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Forms.IServices;
 
@@ -7,6 +6,7 @@ namespace API.Controllers.Forms
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "admin")]
     public class SellerApplicationController : ControllerBase
     {
         private readonly ISellerApplicationService _service;

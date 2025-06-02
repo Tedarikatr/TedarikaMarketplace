@@ -42,7 +42,7 @@ namespace API.Mappings
             StoreMappings.RegisterMappings(this);
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
-            StoreApplicationMappings.RegisterMappings(this);
+            FormApplicationMappings.RegisterMappings(this);
             LocationMappings.RegisterMappings(this);
             MarketMappings.RegisterMappings(this);
             StoreProductRequestMappings.RegisterMappings(this);
@@ -386,21 +386,69 @@ namespace API.Mappings
         }
         #endregion
 
-        #region SellerApplication  Mappings
-        private static class StoreApplicationMappings
+        #region FormApplication  Mappings
+        private static class FormApplicationMappings
         {
             public static void RegisterMappings(Profile profile)
             {
-                profile.CreateMap<SellerApplicationCreateDto, SellerApplication>();
+                // SellerApplication - CREATE
+                profile.CreateMap<SellerApplicationCreateDto, SellerApplication>()
+                    .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreName))
+                    .ForMember(dest => dest.BusinessType, opt => opt.MapFrom(src => src.BusinessType))
+                    .ForMember(dest => dest.TaxNumber, opt => opt.MapFrom(src => src.TaxNumber))
+                    .ForMember(dest => dest.TaxOffice, opt => opt.MapFrom(src => src.TaxOffice))
+                    .ForMember(dest => dest.GTIPFocusArea, opt => opt.MapFrom(src => src.GTIPFocusArea))
+                    .ForMember(dest => dest.RepresentativeFullName, opt => opt.MapFrom(src => src.RepresentativeFullName))
+                    .ForMember(dest => dest.RepresentativePosition, opt => opt.MapFrom(src => src.RepresentativePosition))
+                    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                    .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+                    .ForMember(dest => dest.GuidId, opt => opt.Ignore())
+                    .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                    .ForMember(dest => dest.IsApproved, opt => opt.Ignore())
+                    .ForMember(dest => dest.Notes, opt => opt.Ignore());
+
+                profile.CreateMap<SellerApplicationUpdateApprovalDto, SellerApplication>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.IsApproved, opt => opt.MapFrom(src => src.IsApproved))
+                    .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+                    .ForAllMembers(opt => opt.Ignore());
+
 
                 profile.CreateMap<SellerApplication, SellerApplicationListDto>();
 
                 profile.CreateMap<SellerApplication, SellerApplicationDetailDto>();
 
-                profile.CreateMap<SellerApplicationUpdateApprovalDto, SellerApplication>()
-                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                    .ForMember(dest => dest.IsApproved, opt => opt.MapFrom(src => src.IsApproved))
-                    .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
+                profile.CreateMap<BuyerApplicationCreateDto, BuyerApplication>()
+                    .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+                    .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                    .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Unit))
+                    .ForMember(dest => dest.NeededBy, opt => opt.MapFrom(src => src.NeededBy))
+                    .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+                    .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province))
+                    .ForMember(dest => dest.District, opt => opt.MapFrom(src => src.District))
+                    .ForMember(dest => dest.AdditionalDetails, opt => opt.MapFrom(src => src.AdditionalDetails))
+                    // Sistem tarafından atanan alanlar:
+                    .ForMember(dest => dest.GuidId, opt => opt.MapFrom(_ => Guid.NewGuid()))
+                    .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                    .ForMember(dest => dest.IsFulfilled, opt => opt.MapFrom(_ => false))
+                    .ForMember(dest => dest.UserIpAddress, opt => opt.Ignore()) 
+                    .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+                profile.CreateMap<BuyerApplication, BuyerApplicationDto>()
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.GuidId)) 
+                    .ForMember(dest => dest.UserIpAddress, opt => opt.MapFrom(src => src.UserIpAddress))
+                    .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+                    .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                    .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Unit))
+                    .ForMember(dest => dest.NeededBy, opt => opt.MapFrom(src => src.NeededBy))
+                    .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+                    .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province))
+                    .ForMember(dest => dest.District, opt => opt.MapFrom(src => src.District))
+                    .ForMember(dest => dest.AdditionalDetails, opt => opt.MapFrom(src => src.AdditionalDetails))
+                    .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+                    .ForMember(dest => dest.IsFulfilled, opt => opt.MapFrom(src => src.IsFulfilled));
             }
         }
         #endregion
