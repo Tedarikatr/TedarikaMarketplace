@@ -3,6 +3,7 @@ using API.Helpers;
 using API.Mappings;
 using AutoMapper;
 using Data.Databases;
+using Data.Seeders;
 using Domain.Companies.Events;
 using Domain.Orders.Services;
 using Domain.Products.Events;
@@ -134,7 +135,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // **Dependency Injection - Repository & Services**
 builder.Services.AddScoped<IJwtService, JwtService>();
-//builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddScoped<DatabaseSeeder>();
 
 builder.Services.AddScoped<StoreLocationCoverageUpdatedHelper>();
 
@@ -344,12 +345,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-//// **Veritabaný Baþlangýç Verileri (Seeder)**
-//using (var scope = app.Services.CreateScope())
-//{
-//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-//    await seeder.SeedAsync();
-//}
+// **Veritabaný Baþlangýç Verileri (Seeder)**
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

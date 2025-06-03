@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250515185314_mig1")]
+    [Migration("20250603193739_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -521,6 +521,110 @@ namespace Data.Migrations
                         .HasFilter("[IsDefault] = 1");
 
                     b.ToTable("DeliveryAddresses");
+                });
+
+            modelBuilder.Entity("Entity.Forms.BuyerApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdditionalDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("GuidId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsFulfilled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("NeededBy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BuyerApplications");
+                });
+
+            modelBuilder.Entity("Entity.Forms.SellerApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BusinessType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GTIPFocusArea")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("GuidId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RepresentativeFullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RepresentativePosition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoreName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaxOffice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SellerApplications");
                 });
 
             modelBuilder.Entity("Entity.Incoterms.Incoterm", b =>
@@ -1064,7 +1168,13 @@ namespace Data.Migrations
                     b.Property<string>("CountryIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CountryNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DistrictIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DistrictNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdatedAt")
@@ -1073,13 +1183,25 @@ namespace Data.Migrations
                     b.Property<string>("NeighborhoodIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NeighborhoodNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProvinceIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProvinceNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RegionIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RegionNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StateIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StoreId")

@@ -33,23 +33,29 @@ namespace Domain.Stores.Helpers
             {
                 var coverage = await _coverageRepo.GetByStoreIdAsync(storeId) ?? new StoreLocationCoverage { StoreId = storeId };
 
-                coverage.RegionIds = (await _regionRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.RegionId).ToList();
+                var regions = await _regionRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.RegionIds = regions.Select(x => x.RegionId).ToList();
+                coverage.RegionNames = regions.Select(x => x.RegionName).ToList();
 
-                coverage.CountryIds = (await _countryRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.CountryId).ToList();
+                var countries = await _countryRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.CountryIds = countries.Select(x => x.CountryId).ToList();
+                coverage.CountryNames = countries.Select(x => x.CountryName).ToList();
 
-                coverage.StateIds = (await _stateRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.StateId).ToList();
+                var states = await _stateRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.StateIds = states.Select(x => x.StateId).ToList();
+                coverage.StateNames = states.Select(x => x.StateName).ToList();
 
-                coverage.ProvinceIds = (await _provinceRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.ProvinceId).ToList();
+                var provinces = await _provinceRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.ProvinceIds = provinces.Select(x => x.ProvinceId).ToList();
+                coverage.ProvinceNames = provinces.Select(x => x.ProvinceName).ToList();
 
-                coverage.DistrictIds = (await _districtRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.DistrictId).ToList();
+                var districts = await _districtRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.DistrictIds = districts.Select(x => x.DistrictId).ToList();
+                coverage.DistrictNames = districts.Select(x => x.DistrictName).ToList();
 
-                coverage.NeighborhoodIds = (await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId))
-                    .Select(x => x.NeighborhoodId).ToList();
+                var neighborhoods = await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId);
+                coverage.NeighborhoodIds = neighborhoods.Select(x => x.NeighborhoodId).ToList();
+                coverage.NeighborhoodNames = neighborhoods.Select(x => x.NeighborhoodName).ToList();
 
                 if (coverage.Id > 0)
                     await _coverageRepo.UpdateAsync(coverage);

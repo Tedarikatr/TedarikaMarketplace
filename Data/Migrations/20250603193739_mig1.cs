@@ -69,6 +69,30 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BuyerApplications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NeededBy = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFulfilled = table.Column<bool>(type: "bit", nullable: false),
+                    UserIpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BuyerApplications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BuyerUsers",
                 columns: table => new
                 {
@@ -164,6 +188,32 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SellerApplications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StoreName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BusinessType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TaxNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TaxOffice = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GTIPFocusArea = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepresentativeFullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RepresentativePosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SellerApplications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -426,6 +476,12 @@ namespace Data.Migrations
                     ProvinceIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DistrictIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NeighborhoodIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegionNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CountryNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProvinceNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DistrictNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NeighborhoodNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastUpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -1620,6 +1676,9 @@ namespace Data.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
+                name: "BuyerApplications");
+
+            migrationBuilder.DropTable(
                 name: "EstimatedExportCosts");
 
             migrationBuilder.DropTable(
@@ -1627,6 +1686,9 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductExportBanneds");
+
+            migrationBuilder.DropTable(
+                name: "SellerApplications");
 
             migrationBuilder.DropTable(
                 name: "StoreCarriers");

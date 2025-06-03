@@ -14,6 +14,7 @@ namespace Services.Stores.Locations.Services
     public class StoreLocationService : IStoreLocationService
     {
 
+        private readonly IStoreLocationCoverageRepository _covargeRepo;
         private readonly IStoreLocationCountryRepository _countryRepo;
         private readonly IStoreLocationProvinceRepository _provinceRepo;
         private readonly IStoreLocationDistrictRepository _districtRepo;
@@ -30,8 +31,9 @@ namespace Services.Stores.Locations.Services
         private readonly IMediator _mediator;
         private readonly ILogger<StoreLocationService> _logger;
 
-        public StoreLocationService(IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, IMediator mediator, ILogger<StoreLocationService> logger)
+        public StoreLocationService(IStoreLocationCoverageRepository covargeRepo, IStoreLocationCountryRepository countryRepo, IStoreLocationProvinceRepository provinceRepo, IStoreLocationDistrictRepository districtRepo, IStoreLocationNeighborhoodRepository neighborhoodRepo, IStoreLocationRegionRepository regionRepo, IStoreLocationStateRepository stateRepo, ICountryRepository masterCountryRepo, IProvinceRepository masterProvinceRepo, IDistrictRepository masterDistrictRepo, INeighborhoodRepository masterNeighborhoodRepo, IStateRepository masterStateRepo, IRegionRepository masterRegionRepo, IMapper mapper, IMediator mediator, ILogger<StoreLocationService> logger)
         {
+            _covargeRepo = covargeRepo;
             _countryRepo = countryRepo;
             _provinceRepo = provinceRepo;
             _districtRepo = districtRepo;
@@ -82,11 +84,7 @@ namespace Services.Stores.Locations.Services
 
                 addedIds.Add(entity.Id);
 
-                if (dto.CascadeProvinceFromCountry)
-                {
-                    var children = await _masterProvinceRepo.FindAsync(x => x.CountryId == countryId);
-                    dto.ProvinceIds.AddRange(children.Select(x => x.Id));
-                }
+           
             }
 
             // 2️⃣ PROVINCE
@@ -118,11 +116,6 @@ namespace Services.Stores.Locations.Services
 
                 addedIds.Add(entity.Id);
 
-                if (dto.CascadeDistrictFromProvince)
-                {
-                    var children = await _masterDistrictRepo.FindAsync(x => x.ProvinceId == provinceId);
-                    dto.DistrictIds.AddRange(children.Select(x => x.Id));
-                }
             }
 
             // 3️⃣ DISTRICT
@@ -154,11 +147,6 @@ namespace Services.Stores.Locations.Services
 
                 addedIds.Add(entity.Id);
 
-                if (dto.CascadeNeighborhoodFromDistrict)
-                {
-                    var children = await _masterNeighborhoodRepo.FindAsync(x => x.DistrictId == districtId);
-                    dto.NeighborhoodIds.AddRange(children.Select(x => x.Id));
-                }
             }
 
             // 4️⃣ NEIGHBORHOOD
@@ -263,32 +251,32 @@ namespace Services.Stores.Locations.Services
             try
             {
                 // Ülkeler
-                var countries = await _countryRepo.FindAsync(x => x.StoreId == storeId);
+                var countries = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.Countries = _mapper.Map<List<StoreMarketCountryDto>>(countries);
                 _logger.LogInformation("✅ {Count} ülke getirildi.", hierarchyDto.Countries.Count);
 
                 // İller
-                var provinces = await _provinceRepo.FindAsync(x => x.StoreId == storeId);
+                var provinces = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.Provinces = _mapper.Map<List<StoreMarketProvinceDto>>(provinces);
                 _logger.LogInformation("✅ {Count} il getirildi.", hierarchyDto.Provinces.Count);
 
                 // İlçeler
-                var districts = await _districtRepo.FindAsync(x => x.StoreId == storeId);
+                var districts = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.Districts = _mapper.Map<List<StoreMarketDistrictDto>>(districts);
                 _logger.LogInformation("✅ {Count} ilçe getirildi.", hierarchyDto.Districts.Count);
 
                 // Mahalleler
-                var neighborhoods = await _neighborhoodRepo.FindAsync(x => x.StoreId == storeId);
+                var neighborhoods = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.Neighborhoods = _mapper.Map<List<StoreMarketNeighborhoodDto>>(neighborhoods);
                 _logger.LogInformation("✅ {Count} mahalle getirildi.", hierarchyDto.Neighborhoods.Count);
 
                 // Eyaletler
-                var states = await _stateRepo.FindAsync(x => x.StoreId == storeId);
+                var states = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.States = _mapper.Map<List<StoreMarketStateDto>>(states);
                 _logger.LogInformation("✅ {Count} eyalet getirildi.", hierarchyDto.States.Count);
 
                 // Bölgeler
-                var regions = await _regionRepo.FindAsync(x => x.StoreId == storeId);
+                var regions = await _covargeRepo.FindAsync(x => x.StoreId == storeId);
                 hierarchyDto.Regions = _mapper.Map<List<StoreMarketRegionDto>>(regions);
                 _logger.LogInformation("✅ {Count} bölge getirildi.", hierarchyDto.Regions.Count);
 

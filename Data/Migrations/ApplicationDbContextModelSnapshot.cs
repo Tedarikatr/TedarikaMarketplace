@@ -1165,7 +1165,13 @@ namespace Data.Migrations
                     b.Property<string>("CountryIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CountryNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DistrictIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DistrictNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdatedAt")
@@ -1174,13 +1180,25 @@ namespace Data.Migrations
                     b.Property<string>("NeighborhoodIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NeighborhoodNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProvinceIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProvinceNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RegionIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RegionNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StateIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StoreId")

@@ -114,9 +114,6 @@
         public List<int> StateIds { get; set; } = new();
         public List<int> RegionIds { get; set; } = new();
 
-        public bool CascadeProvinceFromCountry { get; set; } = false;
-        public bool CascadeDistrictFromProvince { get; set; } = false;
-        public bool CascadeNeighborhoodFromDistrict { get; set; } = false;
     }
 
     public class StoreMarketCoverageCompositeDeleteDto
