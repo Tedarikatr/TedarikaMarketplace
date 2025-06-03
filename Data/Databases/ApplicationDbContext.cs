@@ -87,13 +87,8 @@ namespace Data.Databases
 
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
 
-        public DbSet<StoreLocationCountry> StoreLocationCountries { get; set; }
-        public DbSet<StoreLocationCoverage> StoreLocationCoverages { get; set; }
-        public DbSet<StoreLocationDistrict> StoreLocationDistricts { get; set; }
-        public DbSet<StoreLocationNeighborhood> StoreLocationNeighborhoods { get; set; }
-        public DbSet<StoreLocationProvince> StoreLocationProvinces { get; set; }
-        public DbSet<StoreLocationRegion> StoreLocationRegions { get; set; }
-        public DbSet<StoreLocationState> StoreLocationStates { get; set; }
+        public DbSet<StoreCovargeLocation> StoreCovargeLocations { get; set; }
+
 
         public DbSet<StoreInvoice> StoreInvoices { get; set; }
         public DbSet<StorePaymentMethod> StorePaymentMethods { get; set; }

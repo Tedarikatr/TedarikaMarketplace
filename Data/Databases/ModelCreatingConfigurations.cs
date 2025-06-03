@@ -12,8 +12,6 @@ using Entity.Stores.Locations;
 using Entity.Stores.Payments;
 using Entity.Stores.Products;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Text.Json;
 
 namespace Data.Databases
 {
@@ -30,7 +28,6 @@ namespace Data.Databases
             ConfigureProductEntities(modelBuilder);
             ConfigureOrderEntities(modelBuilder);
             ConfigurePaymentEntities(modelBuilder);
-            ConfigureStoreMarketEntities(modelBuilder);
             ConfigureDecimal(modelBuilder);
         }
 
@@ -139,12 +136,6 @@ namespace Data.Databases
                 .HasForeignKey<Store>(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Store>()
-                .HasOne(s => s.LocationCoverage)
-                .WithOne(c => c.Store)
-                .HasForeignKey<StoreLocationCoverage>(c => c.StoreId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<StoreProduct>()
                 .HasOne(sp => sp.Store)
                 .WithMany(s => s.StoreProducts)
@@ -219,7 +210,7 @@ namespace Data.Databases
                 .HasForeignKey(s => s.CountryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreLocationCoverage>()
+            modelBuilder.Entity<StoreCovargeLocation>()
                    .HasIndex(c => c.StoreId)
                    .IsUnique();
         }
@@ -315,45 +306,6 @@ namespace Data.Databases
             modelBuilder.Entity<Payment>()
                 .Property(p => p.OrderNumber)
                 .HasMaxLength(50);
-        }
-
-        private static void ConfigureStoreMarketEntities(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StoreLocationCountry>()
-                .HasOne(smc => smc.Country)
-                .WithMany()
-                .HasForeignKey(smc => smc.CountryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreLocationProvince>()
-                .HasOne(smp => smp.Province)
-                .WithMany()
-                .HasForeignKey(smp => smp.ProvinceId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreLocationDistrict>()
-                .HasOne(smd => smd.District)
-                .WithMany()
-                .HasForeignKey(smd => smd.DistrictId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreLocationNeighborhood>()
-                .HasOne(smn => smn.Neighborhood)
-                .WithMany()
-                .HasForeignKey(smn => smn.NeighborhoodId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreLocationState>()
-                .HasOne(sms => sms.State)
-                .WithMany()
-                .HasForeignKey(sms => sms.StateId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StoreLocationRegion>()
-                .HasOne(smr => smr.Region)
-                .WithMany()
-                .HasForeignKey(smr => smr.RegionId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private static void ConfigureDecimal(ModelBuilder modelBuilder)

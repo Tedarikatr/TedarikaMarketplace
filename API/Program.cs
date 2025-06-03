@@ -8,8 +8,6 @@ using Domain.Companies.Events;
 using Domain.Orders.Services;
 using Domain.Products.Events;
 using Domain.Stores.Events;
-using Domain.Stores.Handlers;
-using Domain.Stores.Helpers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -96,8 +94,7 @@ builder.Services.AddMediatR(cfg =>
         Assembly.GetExecutingAssembly(),                  
         typeof(CompanyCreatedEvent).Assembly,                
         typeof(ProductCategoryUpdatedEvent).Assembly,         
-        typeof(StoreCreatedEvent).Assembly,
-        typeof(StoreLocationCoverageChangedHandler).Assembly    
+        typeof(StoreCreatedEvent).Assembly
     );
 });
 
@@ -137,7 +134,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<DatabaseSeeder>();
 
-builder.Services.AddScoped<StoreLocationCoverageUpdatedHelper>();
 
 //Auth
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
@@ -218,14 +214,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 
-builder.Services.AddScoped<IStoreLocationCountryRepository, StoreLocationCountryRepository>();
-builder.Services.AddScoped<IStoreLocationProvinceRepository, StoreLocationProvinceRepository>();
-builder.Services.AddScoped<IStoreLocationDistrictRepository, StoreLocationDistrictRepository>();
-builder.Services.AddScoped<IStoreLocationNeighborhoodRepository, StoreLocationNeighborhoodRepository>();
-builder.Services.AddScoped<IStoreLocationRegionRepository, StoreLocationRegionRepository>();
-builder.Services.AddScoped<IStoreLocationStateRepository, StoreLocationStateRepository>();
 builder.Services.AddScoped<IStoreLocationCoverageRepository, StoreLocationCoverageRepository>();
-builder.Services.AddScoped<IStoreLocationService, StoreLocationService>();
+builder.Services.AddScoped<IStoreCovargeLocationService, StoreCovargeLocationService>();
 
 builder.Services.AddScoped<IStoreProductCertificateRepository, StoreProductCertificateRepository>();
 builder.Services.AddScoped<IStoreProductCertificateService, StoreProductCertificateService>();

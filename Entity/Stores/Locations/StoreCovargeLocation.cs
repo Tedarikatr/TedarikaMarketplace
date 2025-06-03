@@ -1,6 +1,6 @@
 ﻿namespace Entity.Stores.Locations
 {
-    public class StoreLocationCoverage
+    public class StoreCovargeLocation
     {
         public int Id { get; set; }
 

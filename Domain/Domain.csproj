@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Markets\Events\" />
-    <Folder Include="Markets\Handlers\" />
+    <Folder Include="Stores\Helpers\" />
   </ItemGroup>
 
 </Project>

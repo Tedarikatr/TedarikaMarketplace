@@ -43,8 +43,6 @@ namespace API.Mappings
             ProductMappings.RegisterMappings(this);
             DeliveryAddressMappings.RegisterMappings(this);
             FormApplicationMappings.RegisterMappings(this);
-            LocationMappings.RegisterMappings(this);
-            MarketMappings.RegisterMappings(this);
             StoreProductRequestMappings.RegisterMappings(this);
             BasketMappings.RegisterMappings(this);
             PaymentMappings.RegisterMappings(this);
@@ -266,7 +264,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
-                    .ForMember(dest => dest.LocationCoverage, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreUpdateDto, Store>()
@@ -280,7 +277,6 @@ namespace API.Mappings
                     .ForMember(dest => dest.StoreProducts, opt => opt.Ignore())
                     .ForMember(dest => dest.StoreCarriers, opt => opt.Ignore())
                     .ForMember(dest => dest.Orders, opt => opt.Ignore())
-                    .ForMember(dest => dest.LocationCoverage, opt => opt.Ignore())
                     .ReverseMap();
 
                 profile.CreateMap<StoreStatusDto, Store>()
@@ -453,118 +449,7 @@ namespace API.Mappings
         }
         #endregion
 
-        #region Locations  Mappings
-        private static class LocationMappings
-        {
-            public static void RegisterMappings(Profile profile)
-            {
-                profile.CreateMap<Country, CountryDto>().ReverseMap();
-                profile.CreateMap<CountryCreateDto, Country>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
-                    .ForMember(dest => dest.Region, opt => opt.Ignore())
-                    .ForMember(dest => dest.Provinces, opt => opt.Ignore())
-                    .ForMember(dest => dest.States, opt => opt.Ignore());
-
-                profile.CreateMap<State, StateDto>()
-                    .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country.Name));
-                profile.CreateMap<StateCreateDto, State>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Country, opt => opt.Ignore())
-                    .ForMember(dest => dest.Provinces, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
-
-                profile.CreateMap<Province, ProvinceDto>().ReverseMap();
-                profile.CreateMap<ProvinceCreateDto, Province>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Country, opt => opt.Ignore())
-                    .ForMember(dest => dest.State, opt => opt.Ignore()) 
-                    .ForMember(dest => dest.Districts, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));
-
-                profile.CreateMap<District, DistrictDto>().ReverseMap();
-                profile.CreateMap<DistrictCreateDto, District>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Province, opt => opt.Ignore())
-                    .ForMember(dest => dest.Neighborhoods, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
-                    .ForSourceMember(src => src.ProvinceName, opt => opt.DoNotValidate());
-
-                profile.CreateMap<Neighborhood, NeighborhoodDto>().ReverseMap();
-                profile.CreateMap<NeighborhoodCreateDto, Neighborhood>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.District, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
-                    .ForSourceMember(src => src.DistrictName, opt => opt.DoNotValidate());
-            }
-        }
-        #endregion
-
-        #region STOREMARKET COVERAGE Mappings
-        private static class MarketMappings
-        {
-            public static void RegisterMappings(Profile profile)
-            {
-                profile.CreateMap<StoreMarketCountryCreateDto, StoreLocationCountry>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.Country, opt => opt.Ignore())
-                    .ForMember(dest => dest.CountryName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-
-                profile.CreateMap<StoreLocationCountry, StoreMarketCountryDto>()
-                    .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null));
-
-                profile.CreateMap<StoreMarketProvinceCreateDto, StoreLocationProvince>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.Province, opt => opt.Ignore())
-                    .ForMember(dest => dest.ProvinceName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-
-                profile.CreateMap<StoreLocationProvince, StoreMarketProvinceDto>()
-                    .ForMember(dest => dest.ProvinceName, opt => opt.MapFrom(src => src.Province != null ? src.Province.Name : null));
-
-                profile.CreateMap<StoreMarketDistrictCreateDto, StoreLocationDistrict>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.District, opt => opt.Ignore())
-                    .ForMember(dest => dest.DistrictName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-
-                profile.CreateMap<StoreLocationDistrict, StoreMarketDistrictDto>()
-                    .ForMember(dest => dest.DistrictName, opt => opt.MapFrom(src => src.District != null ? src.District.Name : null));
-
-                profile.CreateMap<StoreMarketNeighborhoodCreateDto, StoreLocationNeighborhood>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.Neighborhood, opt => opt.Ignore())
-                    .ForMember(dest => dest.NeighborhoodName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-
-                profile.CreateMap<StoreLocationNeighborhood, StoreMarketNeighborhoodDto>()
-                    .ForMember(dest => dest.NeighborhoodName, opt => opt.MapFrom(src => src.Neighborhood != null ? src.Neighborhood.Name : null));
-
-                profile.CreateMap<StoreMarketRegionCreateDto, StoreLocationRegion>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.Region, opt => opt.Ignore())
-                    .ForMember(dest => dest.RegionName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-
-                profile.CreateMap<StoreLocationRegion, StoreMarketRegionDto>()
-                    .ForMember(dest => dest.RegionName, opt => opt.MapFrom(src => src.Region != null ? src.Region.Name : null));
-
-                profile.CreateMap<StoreMarketStateCreateDto, StoreLocationState>()
-                    .ForMember(dest => dest.Id, opt => opt.Ignore())
-                    .ForMember(dest => dest.Store, opt => opt.Ignore())
-                    .ForMember(dest => dest.State, opt => opt.Ignore())
-                    .ForMember(dest => dest.StateName, opt => opt.Ignore())
-                    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true));
-            }
-        }
-        #endregion
-
+     
         #region StoreProductRequestMappings Mappings
 
         private static class StoreProductRequestMappings

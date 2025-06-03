@@ -3,17 +3,9 @@ using Entity.Stores.Locations;
 
 namespace Repository.Stores.Locations.IRepositorys
 {
-    public interface IStoreLocationCoverageRepository : IGenericRepository<StoreLocationCoverage>
+    public interface IStoreLocationCoverageRepository : IGenericRepository<StoreCovargeLocation>
     {
-        Task<StoreLocationCoverage> GetByStoreIdAsync(int storeId);
+        Task<StoreCovargeLocation> GetByStoreIdAsync(int storeId);
     }
 
-    public interface IStoreLocationCountryRepository : IGenericRepository<StoreLocationCountry> { }
-    public interface IStoreLocationProvinceRepository : IGenericRepository<StoreLocationProvince> { }
-    public interface IStoreLocationDistrictRepository : IGenericRepository<StoreLocationDistrict> { }
-    public interface IStoreLocationNeighborhoodRepository : IGenericRepository<StoreLocationNeighborhood> { }
-    public interface IStoreLocationRegionRepository : IGenericRepository<StoreLocationRegion> { }
-    public interface IStoreLocationStateRepository : IGenericRepository<StoreLocationState> { }
-
 }
-

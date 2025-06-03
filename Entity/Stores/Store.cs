@@ -32,7 +32,7 @@ namespace Entity.Stores
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }
 
-        public StoreLocationCoverage LocationCoverage { get; set; }
+        public StoreCovargeLocation StoreCovargeLocations { get; set; }
 
     }
 }
