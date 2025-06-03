@@ -31,8 +31,5 @@ namespace Entity.Stores
         public ICollection<StoreProduct> StoreProducts { get; set; }
         public ICollection<StoreCarrier> StoreCarriers { get; set; }
         public ICollection<Order> Orders { get; set; }
-
-        public StoreCovargeLocation StoreCovargeLocations { get; set; }
-
     }
 }

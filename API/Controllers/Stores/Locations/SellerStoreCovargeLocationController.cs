@@ -25,23 +25,23 @@ namespace API.Controllers.Stores.Locations
             _logger = logger;
         }
 
-        [HttpPost("add-coverage")]
-        public async Task<IActionResult> AddCoverage([FromBody] StoreMarketCoverageCreateDto dto)
-        {
-            return null;
-        }
+        //[HttpPost("add-coverage")]
+        //public async Task<IActionResult> AddCoverage([FromBody] StoreMarketCoverageCreateDto dto)
+        //{
+        //    return null;
+        //}
 
-        [HttpGet("get-my-coverage/{type}")]
-        public async Task<IActionResult> GetMyCoverage([FromRoute]  [FromBody] StoreMarketCoverageList dto)
-        {
-            return null;
+        //[HttpGet("get-my-coverage/{type}")]
+        //public async Task<IActionResult> GetMyCoverage([FromRoute]  [FromBody] StoreMarketCoverageList dto)
+        //{
+        //    return null;
 
-        }
+        //}
 
-        [HttpPost("delete-coverage")]
-        public async Task<IActionResult> DeleteCompositeCoverage([FromBody] StoreMarketCoverageCompositeDeleteDto dto)
-        {
-            return null;
-        }
+        //[HttpPost("delete-coverage")]
+        //public async Task<IActionResult> DeleteCompositeCoverage([FromBody] StoreMarketCoverageCompositeDeleteDto dto)
+        //{
+        //    return null;
+        //}
     }
 }

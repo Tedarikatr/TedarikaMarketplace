@@ -7,12 +7,10 @@ using Data.Dtos.Categories;
 using Data.Dtos.Companies;
 using Data.Dtos.DeliveryAddresses;
 using Data.Dtos.Forms;
-using Data.Dtos.Locations;
 using Data.Dtos.Payments;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Data.Dtos.Stores.Carriers;
-using Data.Dtos.Stores.Locations;
 using Data.Dtos.Stores.Products;
 using Entity.Auths;
 using Entity.Baskets;
@@ -21,7 +19,6 @@ using Entity.Categories;
 using Entity.Companies;
 using Entity.DeliveryAddresses;
 using Entity.Forms;
-using Entity.Locations;
 using Entity.Payments;
 using Entity.Products;
 using Entity.Stores;
@@ -82,8 +79,8 @@ namespace API.Mappings
 
                 profile.CreateMap<BuyerUser, BuyerProfileDto>()
                     .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.UserType))
-    .ReverseMap()
-    .ForMember(dest => dest.UserType, opt => opt.MapFrom(src => src.Role));
+                    .ReverseMap()
+                    .ForMember(dest => dest.UserType, opt => opt.MapFrom(src => src.Role));
 
 
                 profile.CreateMap<SellerUser, SellerUserDto>().ReverseMap();

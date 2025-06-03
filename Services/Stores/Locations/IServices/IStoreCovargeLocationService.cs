@@ -1,14 +1,12 @@
-﻿using Data.Dtos.Stores.Locations;
-
-namespace Services.Stores.Locations.IServices
+﻿namespace Services.Stores.Locations.IServices
 {
     public interface IStoreCovargeLocationService
     {
-        Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto);
+        //Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto);
 
-        Task<StoreMarketCoverageHierarchyDto> GetCoverageHierarchyByStoreIdAsync(int storeId);
+        //Task<StoreMarketCoverageHierarchyDto> GetCoverageHierarchyByStoreIdAsync(int storeId);
 
-        Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto);
+        //Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto);
 
     }
 }

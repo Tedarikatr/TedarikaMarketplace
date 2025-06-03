@@ -22,20 +22,5 @@ namespace Services.Stores.Locations.Services
             _logger = logger;
         }
 
-        public Task<List<int>> AddCompositeCoverageAsync(StoreMarketCoverageCompositeCreateDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> DeleteCompositeCoverageAsync(StoreMarketCoverageCompositeDeleteDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<StoreMarketCoverageHierarchyDto> GetCoverageHierarchyByStoreIdAsync(int storeId)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

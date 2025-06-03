@@ -167,50 +167,6 @@ namespace Services.Locations.Services
             return true;
         }
 
-        public async Task<MarketLocationHierarchyDto> GetFullLocationHierarchyAsync()
-        {
-            try
-            {
-                _logger.LogInformation("📍 Lokasyon hiyerarşisi çekme işlemi başlatıldı.");
-
-                var regions = await _regionRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} bölge yüklendi.", regions.Count());
-
-                var countries = await _countryRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} ülke yüklendi.", countries.Count());
-
-                var states = await _stateRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} eyalet yüklendi.", states.Count());
-
-                var provinces = await _provinceRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} il yüklendi.", provinces.Count());
-
-                var districts = await _districtRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} ilçe yüklendi.", districts.Count());
-
-                var neighborhoods = await _neighborhoodRepo.GetAllAsync();
-                _logger.LogInformation("✅ {Count} mahalle yüklendi.", neighborhoods.Count());
-
-                var result = new MarketLocationHierarchyDto
-                {
-                    Regions = regions.Select(r => new RegionDto { Id = r.Id, Name = r.Name }).ToList(),
-                    Countries = countries.Select(c => new CountryDto { Id = c.Id, Name = c.Name, Code = c.Code }).ToList(),
-                    States = states.Select(s => new StateDto { Id = s.Id, Name = s.Name, CountryId = s.CountryId }).ToList(),
-                    Provinces = provinces.Select(p => new ProvinceDto { Id = p.Id, Name = p.Name, CountryId = p.CountryId }).ToList(),
-                    Districts = districts.Select(d => new DistrictDto { Id = d.Id, Name = d.Name, ProvinceId = d.ProvinceId }).ToList(),
-                    Neighborhoods = neighborhoods.Select(n => new NeighborhoodDto { Id = n.Id, Name = n.Name, DistrictId = n.DistrictId }).ToList()
-                };
-
-                _logger.LogInformation("✅ Lokasyon hiyerarşisi başarıyla oluşturuldu.");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "❌ Lokasyon hiyerarşisi alınırken bir hata oluştu.");
-                throw new InvalidOperationException("Lokasyon verileri alınırken hata oluştu. Lütfen tekrar deneyiniz.", ex);
-            }
-        }
-
         public async Task<List<RegionDto>> GetRegions()
         {
             var regions = await _regionRepo.GetAllAsync();

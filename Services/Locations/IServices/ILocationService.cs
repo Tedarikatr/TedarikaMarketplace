@@ -16,16 +16,12 @@ namespace Services.Locations.IServices
         Task<bool> ToggleNeighborhoodStatusAsync(int neighborhoodId, bool isActive);
         Task<bool> ToggleStateStatusAsync(int stateId, bool isActive);
 
-        Task<MarketLocationHierarchyDto> GetFullLocationHierarchyAsync();
-
-
         Task<List<RegionDto>> GetRegions();
         Task<List<CountryDto>> GetCountriesByRegionIdAsync(int regionId);
         Task<List<ProvinceDto>> GetProvincesByCountryIdAsync(int countryId);
         Task<List<DistrictDto>> GetDistrictsByProvinceIdAsync(int provinceId);
         Task<List<NeighborhoodDto>> GetNeighborhoodsByDistrictIdAsync(int districtId);
         Task<List<StateDto>> GetStatesByCountryIdAsync(int countryId);
-
 
         Task<bool> DeleteCountryAsync(int id);
         Task<bool> DeleteProvinceAsync(int id);
