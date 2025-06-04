@@ -20,10 +20,12 @@ namespace Repository.Stores.Locations.Repositorys
         public async Task DeleteCascadeForStoreAsync(int storeId, int? countryId, int? provinceId)
         {
             var entries = _context.StoreCoverages.Where(c => c.StoreId == storeId);
+
             if (countryId.HasValue)
-                entries = entries.Where(c => c.CountryId == countryId);
+                entries = entries.Where(c => c.CountryIds.Contains(countryId.Value));
+
             if (provinceId.HasValue)
-                entries = entries.Where(c => c.ProvinceId == provinceId);
+                entries = entries.Where(c => c.ProvinceIds.Contains(provinceId.Value));
 
             _context.StoreCoverages.RemoveRange(entries);
             await _context.SaveChangesAsync();
