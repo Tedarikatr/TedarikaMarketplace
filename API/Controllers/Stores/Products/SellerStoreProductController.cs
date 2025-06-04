@@ -142,22 +142,6 @@ namespace API.Controllers.Stores.Products
             }
         }
 
-        [HttpPut("set-allowed-regions")]
-        public async Task<IActionResult> SetAllowedRegionsAsync(int productId, bool allowedDomestic, bool allowedInternational)
-        {
-            try
-            {
-                int storeId = await _userHelper.GetStoreId(User);
-                var result = await _storeProductService.SetAllowedRegionsAsync(storeId, productId, allowedDomestic, allowedInternational);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge izinleri güncellenemedi.");
-                return StatusCode(500, "İşlem başarısız.");
-            }
-        }
-
         [HttpPost("upload-image")]
         public async Task<IActionResult> UploadImageAsync(int productId, IFormFile file)
         {

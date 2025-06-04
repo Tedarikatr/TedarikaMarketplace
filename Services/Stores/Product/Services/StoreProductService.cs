@@ -160,26 +160,6 @@ namespace Services.Stores.Product.Services
             }
         }
 
-        public async Task<string> SetAllowedRegionsAsync(int storeId, int productId, bool allowedDomestic, bool allowedInternational)
-        {
-            try
-            {
-                var sp = await _storeProductRepo.GetByStoreAndProductIdAsync(storeId, productId);
-                if (sp == null) return "Ürün mağazada bulunamadı.";
-
-                sp.AllowedDomestic = allowedDomestic;
-                sp.AllowedInternational = allowedInternational;
-
-                await _storeProductRepo.UpdateAsync(sp);
-                return "Bölgesel izinler güncellendi.";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Bölge güncelleme hatası.");
-                throw;
-            }
-        }
-
         public async Task<string> UploadAndSetStoreImageAsync(int storeId, int productId, IFormFile file)
         {
             try
