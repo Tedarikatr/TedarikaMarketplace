@@ -6,6 +6,7 @@ namespace Services.Stores.Locations.IServices
     {
         Task<int> AddCoverageAsync(StoreCoverageCreateDto dto, int storeId);
         Task<bool> DeleteCoverageAsync(StoreCoverageDeleteDto dto, int storeId);
-        Task<List<StoreCoverageDto>> GetCoverageByStoreIdAsync(int storeId);
+        Task<List<StoreCoverageHierarchyDto>> GetCoverageByStoreIdAsync(int storeId);
+
     }
 }

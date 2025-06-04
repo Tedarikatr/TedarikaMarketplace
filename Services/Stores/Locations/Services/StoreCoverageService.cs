@@ -138,10 +138,21 @@ namespace Services.Stores.Locations.Services
             return true;
         }
 
-        public async Task<List<StoreCoverageDto>> GetCoverageByStoreIdAsync(int storeId)
+        public async Task<List<StoreCoverageHierarchyDto>> GetCoverageByStoreIdAsync(int storeId)
         {
-            var coverage = await _coverageRepo.GetByStoreIdAsync(storeId);
-            return coverage.Select(c => _mapper.Map<StoreCoverageDto>(c)).ToList();
+            var coverages = await _coverageRepo.GetByStoreIdAsync(storeId);
+
+            return coverages.Select(c => new StoreCoverageHierarchyDto
+            {
+                Id = c.Id,
+                StoreId = c.StoreId,
+                Regions = c.RegionIds
+                    .Select((id, index) => new IdNameDto { Id = id, Name = c.RegionNames.ElementAtOrDefault(index) })
+                    .ToList(),
+                Countries = c.CountryIds
+                    .Select((id, index) => new IdNameDto { Id = id, Name = c.CountryNames.ElementAtOrDefault(index) })
+                    .ToList(),
+            }).ToList();
         }
 
     }
