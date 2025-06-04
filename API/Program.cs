@@ -1,6 +1,7 @@
 using API.Filter;
 using API.Helpers;
 using API.Mappings;
+using API.Validators.Stores.StoreCoverageValidator;
 using AutoMapper;
 using Data.Databases;
 using Data.Seeders;
@@ -78,7 +79,9 @@ using Services.Stores.Product.IServices;
 using Services.Stores.Product.Services;
 using System.Reflection;
 using System.Text;
+using FluentValidation.AspNetCore;
 using static API.Validators.Auth.AuthValidator;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -236,10 +239,15 @@ builder.Services.AddScoped<IStoreProductShowroomRepository, StoreProductShowroom
 builder.Services.AddScoped<IStoreProductShowroomService, StoreProductShowroomService>();
 
 // **FluentValidation Eklenmesi**
-builder.Services.AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<BuyerLoginValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<SellerRegisterValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<SellerLoginValidator>();
+// **FluentValidation Eklenmesi**
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddValidatorsFromAssemblyContaining<BuyerUserCreateValidator>()
+    .AddValidatorsFromAssemblyContaining<BuyerLoginValidator>()
+    .AddValidatorsFromAssemblyContaining<SellerRegisterValidator>()
+    .AddValidatorsFromAssemblyContaining<SellerLoginValidator>()
+    .AddValidatorsFromAssemblyContaining<StoreCoverageValidator>();
+
 
 // **HttpContextAccessor Eklenmesi**
 builder.Services.AddHttpContextAccessor();

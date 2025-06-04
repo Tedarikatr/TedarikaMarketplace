@@ -1,4 +1,5 @@
 ﻿using API.Helpers;
+using API.Validators.Stores.StoreCoverageValidator;
 using Data.Dtos.Stores.Locations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,12 @@ namespace API.Controllers.Stores.Locations
         [HttpPost("add")]
         public async Task<IActionResult> AddCoverage([FromBody] StoreCoverageCreateDto dto)
         {
+            var validator = new StoreCoverageValidator.StoreCoverageCreateValidator();
+            var validationResult = await validator.ValidateAsync(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+            }
             try
             {
                 var storeId = await _userHelper.GetStoreId(User);
@@ -56,9 +63,17 @@ namespace API.Controllers.Stores.Locations
         [HttpPost("delete")]
         public async Task<IActionResult> DeleteCoverage([FromBody] StoreCoverageDeleteDto dto)
         {
+            var validator = new StoreCoverageValidator.StoreCoverageDeleteValidator();
+            var validationResult = await validator.ValidateAsync(dto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+            }
+
             var storeId = await _userHelper.GetStoreId(User);
             var success = await _coverageService.DeleteCoverageAsync(dto, storeId);
             if (!success) return NotFound();
             return Ok();
         }
-    } }
+    } 
+}

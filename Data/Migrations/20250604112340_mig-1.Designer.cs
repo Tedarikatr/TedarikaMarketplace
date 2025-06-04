@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250603210513_mig1")]
+    [Migration("20250604112340_mig-1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -1125,7 +1125,7 @@ namespace Data.Migrations
                     b.ToTable("StoreCarriers");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Locations.StoreCovargeLocation", b =>
+            modelBuilder.Entity("Entity.Stores.Locations.StoreCoverage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1134,19 +1134,22 @@ namespace Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CountryIds")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CountryNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DistrictIds")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DistrictNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LocationHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NeighborhoodIds")
                         .HasColumnType("nvarchar(max)");
@@ -1155,13 +1158,13 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProvinceIds")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProvinceNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RegionIds")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RegionNames")
                         .HasColumnType("nvarchar(max)");
@@ -1180,7 +1183,11 @@ namespace Data.Migrations
                     b.HasIndex("StoreId")
                         .IsUnique();
 
-                    b.ToTable("StoreCovargeLocations");
+                    b.HasIndex("StoreId", "RegionIds", "CountryIds", "ProvinceIds", "DistrictIds")
+                        .IsUnique()
+                        .HasFilter("[RegionIds] IS NOT NULL AND [CountryIds] IS NOT NULL AND [ProvinceIds] IS NOT NULL AND [DistrictIds] IS NOT NULL");
+
+                    b.ToTable("StoreCoverages");
                 });
 
             modelBuilder.Entity("Entity.Stores.Payments.StoreInvoice", b =>
@@ -1996,17 +2003,6 @@ namespace Data.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("Entity.Stores.Locations.StoreCovargeLocation", b =>
-                {
-                    b.HasOne("Entity.Stores.Store", "Store")
-                        .WithOne("StoreCovargeLocations")
-                        .HasForeignKey("Entity.Stores.Locations.StoreCovargeLocation", "StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-                });
-
             modelBuilder.Entity("Entity.Stores.Payments.StoreInvoice", b =>
                 {
                     b.HasOne("Entity.Companies.Company", "Company")
@@ -2247,8 +2243,6 @@ namespace Data.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("StoreCarriers");
-
-                    b.Navigation("StoreCovargeLocations");
 
                     b.Navigation("StoreProducts");
                 });

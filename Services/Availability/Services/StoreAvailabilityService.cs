@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Data.Dtos.Availability;
 using Data.Dtos.Stores.Products;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.DeliveryAddresses.IRepositorys;
-using Repository.Stores;
 using Repository.Stores.Locations.IRepositorys;
 using Repository.Stores.Product.IRepositorys;
 using Services.Availability.IServices;
-using System.Linq;
 
 namespace Services.Availability.Services
 {
@@ -17,73 +14,123 @@ namespace Services.Availability.Services
         private readonly IStoreCoverageRepository _storeCoverageRepository;
         private readonly IDeliveryAddressRepository _deliveryAddressRepository;
         private readonly IStoreProductRepository _storeProductRepository;
-        private readonly IStoreRepository _storeRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<StoreAvailabilityService> _logger;
 
-        public StoreAvailabilityService(IStoreCoverageRepository storeCoverageRepository, IDeliveryAddressRepository deliveryAddressRepository, IStoreProductRepository storeProductRepository, IStoreRepository storeRepository, IMapper mapper, ILogger<StoreAvailabilityService> logger)
+        public StoreAvailabilityService(IStoreCoverageRepository storeCoverageRepository, IDeliveryAddressRepository deliveryAddressRepository, IStoreProductRepository storeProductRepository, IMapper mapper, ILogger<StoreAvailabilityService> logger)
         {
             _storeCoverageRepository = storeCoverageRepository;
             _deliveryAddressRepository = deliveryAddressRepository;
             _storeProductRepository = storeProductRepository;
-            _storeRepository = storeRepository;
             _mapper = mapper;
             _logger = logger;
         }
 
         public async Task<List<AvailableStoreDto>> GetAvailableStoresByAddressAsync(int buyerId)
         {
-            var address = await _deliveryAddressRepository.GetDefaultWithLocationByBuyerIdAsync(buyerId);
-            if (address == null) return new List<AvailableStoreDto>();
-
-            var coverages = await _storeCoverageRepository.GetQueryable().ToListAsync();
-
-            var filtered = coverages.Where(c =>
-                (c.RegionIds.Count == 0 || c.RegionIds.Contains(address.RegionId)) &&
-                (c.CountryIds.Count == 0 || c.CountryIds.Contains(address.CountryId)));
-
-            var result = new List<AvailableStoreDto>();
-
-            foreach (var cov in filtered)
+            var storesWithProducts = await GetAvailableStoresWithProductsByAddressAsync(buyerId);
+            return storesWithProducts.Select(x => new AvailableStoreDto
             {
-                var store = await _storeRepository.GetByIdAsync(cov.StoreId);
-                if (store == null) continue;
-
-                var dto = _mapper.Map<AvailableStoreDto>(store);
-                dto.RegionId = address.RegionId;
-                dto.CountryId = address.CountryId;
-                dto.StateId = address.StateId;
-                dto.ProvinceId = address.ProvinceId;
-                dto.DistrictId = address.DistrictId;
-                dto.NeighborhoodId = address.NeighborhoodId;
-                result.Add(dto);
-            }
-
-            return result;
+                StoreId = x.StoreId,
+                StoreName = x.StoreName,
+                StoreDescription = x.StoreDescription,
+                LogoUrl = x.LogoUrl,
+                DeliveryTimeFrame = x.DeliveryTimeFrame,
+                RegionId = x.RegionId,
+                CountryId = x.CountryId,
+                StateId = x.StateId,
+                ProvinceId = x.ProvinceId,
+                DistrictId = x.DistrictId,
+                NeighborhoodId = x.NeighborhoodId,
+            }).ToList();
         }
 
         public async Task<List<AvailableStoreWithProductsDto>> GetAvailableStoresWithProductsByAddressAsync(int buyerId)
         {
-            var stores = await GetAvailableStoresByAddressAsync(buyerId);
-            var storeIds = stores.Select(s => s.StoreId).ToList();
-            if (!storeIds.Any()) return new List<AvailableStoreWithProductsDto>();
+            var availableStores = new List<AvailableStoreWithProductsDto>();
 
-            var products = await _storeProductRepository.GetProductsByStoreIdsAsync(storeIds);
-
-            var grouped = products.GroupBy(p => p.StoreId).ToDictionary(g => g.Key, g => g.ToList());
-
-            var result = new List<AvailableStoreWithProductsDto>();
-            foreach (var store in stores)
+            try
             {
-                var dto = _mapper.Map<AvailableStoreWithProductsDto>(store);
-                if (grouped.TryGetValue(store.StoreId, out var prods))
+                var address = await _deliveryAddressRepository.GetDefaultWithLocationByBuyerIdAsync(buyerId);
+                if (address == null)
                 {
-                    dto.Products = prods.Select(p => _mapper.Map<StoreProductListDto>(p)).ToList();
+                    _logger.LogWarning("Teslimat adresi bulunamadı. BuyerId: {BuyerId}", buyerId);
+                    return availableStores;
                 }
-                result.Add(dto);
+
+                _logger.LogInformation(
+                    "Buyer teslimat adresi -> BuyerId: {BuyerId}, CountryId: {CountryId}, StateId: {StateId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}, NeighborhoodId: {NeighborhoodId}, RegionId: {RegionId}",
+                    buyerId,
+                    address.CountryId,
+                    address.StateId,
+                    address.ProvinceId,
+                    address.DistrictId,
+                    address.NeighborhoodId,
+                    address.RegionId);
+
+                var allCoverages = await _storeCoverageRepository.GetAllAsync();
+
+                foreach (var coverage in allCoverages)
+                {
+                    _logger.LogInformation(
+                        "Store Coverage kontrol ediliyor -> StoreId: {StoreId}, RegionIds: {RegionIds}, CountryIds: {CountryIds}, StateIds: {StateIds}, ProvinceIds: {ProvinceIds}, DistrictIds: {DistrictIds}, NeighborhoodIds: {NeighborhoodIds}",
+                        coverage.StoreId,
+                        string.Join(",", coverage.RegionIds),
+                        string.Join(",", coverage.CountryIds),
+                        string.Join(",", coverage.StateIds),
+                        string.Join(",", coverage.ProvinceIds),
+                        string.Join(",", coverage.DistrictIds),
+                        string.Join(",", coverage.NeighborhoodIds));
+
+                    bool isMatch =
+                        (address.NeighborhoodId.HasValue && coverage.NeighborhoodIds.Contains(address.NeighborhoodId.Value)) ||
+                        (address.DistrictId.HasValue && coverage.DistrictIds.Contains(address.DistrictId.Value)) ||
+                        (address.ProvinceId.HasValue && coverage.ProvinceIds.Contains(address.ProvinceId.Value)) ||
+                        (address.StateId.HasValue && coverage.StateIds.Contains(address.StateId.Value)) ||
+                        (address.CountryId != default && coverage.CountryIds.Contains(address.CountryId)) ||
+                        (address.RegionId.HasValue && coverage.RegionIds.Contains(address.RegionId.Value));
+
+                    _logger.LogInformation("StoreId {StoreId} için eşleşme sonucu: {IsMatch}", coverage.StoreId, isMatch);
+
+                    if (isMatch)
+                    {
+                        var products = await _storeProductRepository.GetProductsByStoreIdsAsync(new List<int> { coverage.StoreId });
+                        _logger.LogInformation("StoreId {StoreId} için {ProductCount} ürün bulundu", coverage.StoreId, products.Count);
+
+                        var productDtos = _mapper.Map<List<StoreProductListDto>>(products);
+                        var store = products.FirstOrDefault()?.Store;
+                        if (store == null)
+                        {
+                            _logger.LogWarning("StoreId {StoreId} için Store nesnesi null döndü", coverage.StoreId);
+                            continue;
+                        }
+
+                        var storeDto = new AvailableStoreWithProductsDto
+                        {
+                            StoreId = store.Id,
+                            StoreName = store.StoreName,
+                            StoreDescription = store.StoreDescription,
+                            LogoUrl = store.ImageUrl,
+                            RegionId = address.RegionId,
+                            CountryId = address.CountryId,
+                            StateId = address.StateId,
+                            ProvinceId = address.ProvinceId,
+                            DistrictId = address.DistrictId,
+                            NeighborhoodId = address.NeighborhoodId,
+                            Products = productDtos
+                        };
+
+                        availableStores.Add(storeDto);
+                        _logger.LogInformation("StoreId {StoreId} başarılı şekilde AvailableStore listesine eklendi.", store.Id);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Mağaza erişilebilirliği kontrol edilirken hata oluştu.");
             }
 
-            return result;
+            return availableStores;
         }
     }
 }

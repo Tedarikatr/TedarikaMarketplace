@@ -144,11 +144,6 @@ namespace Services.Stores.Locations.Services
             return coverage.Select(c => _mapper.Map<StoreCoverageDto>(c)).ToList();
         }
 
-        private string BuildHash(int storeId, int? regionId, int? countryId, int? provinceId, int? districtId)
-        {
-            return $"{storeId}-{regionId}-{countryId}-{provinceId}-{districtId}";
-        }
-
     }
 }
 
