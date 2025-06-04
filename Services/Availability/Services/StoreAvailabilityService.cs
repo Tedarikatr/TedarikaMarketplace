@@ -11,15 +11,15 @@ namespace Services.Availability.Services
 {
     public class StoreAvailabilityService : IStoreAvailabilityService
     {
-        private readonly IStoreLocationCoverageRepository _storeLocationCoverageRepository;
+        private readonly IStoreCoverageRepository _storeCoverageRepository;
         private readonly IDeliveryAddressRepository _deliveryAddressRepository;
         private readonly IStoreProductRepository _storeProductRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<StoreAvailabilityService> _logger;
 
-        public StoreAvailabilityService(IStoreLocationCoverageRepository storeLocationCoverageRepository, IDeliveryAddressRepository deliveryAddressRepository, IStoreProductRepository storeProductRepository, IMapper mapper, ILogger<StoreAvailabilityService> logger)
+        public StoreAvailabilityService(IStoreCoverageRepository storeCoverageRepository, IDeliveryAddressRepository deliveryAddressRepository, IStoreProductRepository storeProductRepository, IMapper mapper, ILogger<StoreAvailabilityService> logger)
         {
-            _storeLocationCoverageRepository = storeLocationCoverageRepository;
+            _storeCoverageRepository = storeCoverageRepository;
             _deliveryAddressRepository = deliveryAddressRepository;
             _storeProductRepository = storeProductRepository;
             _mapper = mapper;
@@ -41,26 +41,18 @@ namespace Services.Availability.Services
                 _logger.LogInformation("Buyer teslimat adresi -> BuyerId: {BuyerId}, CountryId: {CountryId}, StateId: {StateId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}, NeighborhoodId: {NeighborhoodId}, RegionId: {RegionId}",
                     buyerId, address.CountryId, address.StateId, address.ProvinceId, address.DistrictId, address.NeighborhoodId, address.Country?.RegionId);
 
-                var allCoverages = await _storeLocationCoverageRepository.GetAllAsync();
+                var allCoverages = await _storeCoverageRepository.GetAllAsync();
 
                 foreach (var coverage in allCoverages)
                 {
-                    _logger.LogInformation("Store Coverage kontrol ediliyor -> StoreId: {StoreId}, RegionIds: {RegionIds}, CountryIds: {CountryIds}, StateIds: {StateIds}, ProvinceIds: {ProvinceIds}, DistrictIds: {DistrictIds}, NeighborhoodIds: {NeighborhoodIds}",
-                        coverage.StoreId,
-                        string.Join(",", coverage.RegionIds),
-                        string.Join(",", coverage.CountryIds),
-                        string.Join(",", coverage.StateIds),
-                        string.Join(",", coverage.ProvinceIds),
-                        string.Join(",", coverage.DistrictIds),
-                        string.Join(",", coverage.NeighborhoodIds));
+                    _logger.LogInformation("Store Coverage kontrol ediliyor -> StoreId: {StoreId}, RegionId: {RegionId}, CountryId: {CountryId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}",
+                        coverage.StoreId, coverage.RegionId, coverage.CountryId, coverage.ProvinceId, coverage.DistrictId);
 
                     bool isMatch =
-                        (address.NeighborhoodId.HasValue && coverage.NeighborhoodIds.Contains(address.NeighborhoodId.Value)) ||
-                        (address.DistrictId.HasValue && coverage.DistrictIds.Contains(address.DistrictId.Value)) ||
-                        (address.ProvinceId.HasValue && coverage.ProvinceIds.Contains(address.ProvinceId.Value)) ||
-                        (address.StateId.HasValue && coverage.StateIds.Contains(address.StateId.Value)) ||
-                        (coverage.CountryIds.Contains(address.CountryId)) ||
-                        (address.Country?.RegionId != null && coverage.RegionIds.Contains(address.Country.RegionId));
+                        (!coverage.RegionId.HasValue || coverage.RegionId == address.Country?.RegionId) &&
+                        (!coverage.CountryId.HasValue || coverage.CountryId == address.CountryId) &&
+                        (!coverage.ProvinceId.HasValue || (address.ProvinceId.HasValue && coverage.ProvinceId == address.ProvinceId.Value)) &&
+                        (!coverage.DistrictId.HasValue || (address.DistrictId.HasValue && coverage.DistrictId == address.DistrictId.Value));
 
                     _logger.LogInformation("StoreId {StoreId} için eşleşme sonucu: {IsMatch}", coverage.StoreId, isMatch);
 

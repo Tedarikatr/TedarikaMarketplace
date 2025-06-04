@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Stores\Locations\" />
     <Folder Include="UnitOfWorks\" />
   </ItemGroup>
 

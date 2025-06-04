@@ -87,7 +87,7 @@ namespace Data.Databases
 
         public DbSet<StoreCarrier> StoreCarriers { get; set; }
 
-        public DbSet<StoreCovargeLocation> StoreCovargeLocations { get; set; }
+        public DbSet<StoreCoverage> StoreCoverages { get; set; }
 
 
         public DbSet<StoreInvoice> StoreInvoices { get; set; }

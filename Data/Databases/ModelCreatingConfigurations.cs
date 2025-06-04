@@ -210,9 +210,13 @@ namespace Data.Databases
                 .HasForeignKey(s => s.CountryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StoreCovargeLocation>()
+            modelBuilder.Entity<StoreCoverage>()
                    .HasIndex(c => c.StoreId)
                    .IsUnique();
+
+            modelBuilder.Entity<StoreCoverage>()
+                .HasIndex(c => new { c.StoreId, c.RegionIds, c.CountryIds, c.ProvinceIds, c.DistrictIds })
+                .IsUnique();
         }
 
         private static void ConfigureProductEntities(ModelBuilder modelBuilder)

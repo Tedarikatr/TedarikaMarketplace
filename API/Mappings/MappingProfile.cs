@@ -11,6 +11,7 @@ using Data.Dtos.Payments;
 using Data.Dtos.Product;
 using Data.Dtos.Stores;
 using Data.Dtos.Stores.Carriers;
+using Data.Dtos.Stores.Locations;
 using Data.Dtos.Stores.Products;
 using Entity.Auths;
 using Entity.Baskets;
@@ -45,6 +46,8 @@ namespace API.Mappings
             PaymentMappings.RegisterMappings(this);
             AvailabilityMappings.RegisterMappings(this);
             StoreCarrierMappings.RegisterMappings(this);
+            StoreCoverageMappings.RegisterMappings(this);
+
         }
 
         #region AUTH Mappings
@@ -621,6 +624,16 @@ namespace API.Mappings
                     .ForMember(dest => dest.Store, opt => opt.Ignore())
                     .ForMember(dest => dest.Carrier, opt => opt.Ignore())
                     .ForMember(dest => dest.IsEnabled, opt => opt.MapFrom(_ => true));
+            }
+        }
+        #endregion
+
+        #region StoreCoverage Mappings
+        private static class StoreCoverageMappings
+        {
+            public static void RegisterMappings(Profile profile)
+            {
+                profile.CreateMap<StoreCoverage, StoreCoverageDto>().ReverseMap();
             }
         }
         #endregion

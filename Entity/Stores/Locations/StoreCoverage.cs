@@ -1,9 +1,8 @@
 ﻿namespace Entity.Stores.Locations
 {
-    public class StoreCovargeLocation
+    public class StoreCoverage
     {
         public int Id { get; set; }
-
         public int StoreId { get; set; }
 
         public List<int> RegionIds { get; set; } = new();
@@ -22,6 +21,8 @@
         public List<string> DistrictNames { get; set; } = new();
         public List<string> NeighborhoodNames { get; set; } = new();
 
+
+        public string LocationHash { get; set; }
 
         public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
     }

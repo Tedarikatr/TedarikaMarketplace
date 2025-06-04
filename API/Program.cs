@@ -214,8 +214,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 
-builder.Services.AddScoped<IStoreLocationCoverageRepository, StoreLocationCoverageRepository>();
-builder.Services.AddScoped<IStoreCovargeLocationService, StoreCovargeLocationService>();
+builder.Services.AddScoped<IStoreCoverageRepository, StoreCoverageRepository>();
+builder.Services.AddScoped<IStoreCoverageService, StoreCoverageService>();
 
 builder.Services.AddScoped<IStoreProductCertificateRepository, StoreProductCertificateRepository>();
 builder.Services.AddScoped<IStoreProductCertificateService, StoreProductCertificateService>();
