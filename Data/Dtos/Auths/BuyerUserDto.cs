@@ -10,6 +10,7 @@ namespace Data.Dtos.Auths
         public string Email { get; set; }
         public string Phone { get; set; }
         public string UserNumber { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 
     public class BuyerUserCreateDto
@@ -19,6 +20,7 @@ namespace Data.Dtos.Auths
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Password { get; set; }
+        public string AwsIamUserArn { get; set; }
     }
 
     public class BuyerUserInfoDto

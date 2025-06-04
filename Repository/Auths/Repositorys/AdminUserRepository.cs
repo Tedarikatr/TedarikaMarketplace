@@ -24,5 +24,10 @@ namespace Repository.Auths.Repositorys
         {
             return await _dbSet.AnyAsync(a => a.IsSuperAdmin);
         }
+
+        public async Task<AdminUser> GetByAwsIamArnAsync(string arn)
+        {
+            return await _dbSet.FirstOrDefaultAsync(a => a.AwsIamUserArn == arn);
+        }
     }
 }
