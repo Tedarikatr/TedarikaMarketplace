@@ -25,97 +25,15 @@ namespace Services.Availability.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<List<AvailableStoreWithProductsDto>> GetAvailableStoresWithProductsByAddressAsync(int buyerId)
+
+        public Task<List<AvailableStoreDto>> GetAvailableStoresByAddressAsync(int buyerId)
         {
-            var availableStores = new List<AvailableStoreWithProductsDto>();
-
-            try
-            {
-                var address = await _deliveryAddressRepository.GetDefaultWithLocationByBuyerIdAsync(buyerId);
-                if (address == null)
-                {
-                    _logger.LogWarning("Teslimat adresi bulunamadı. BuyerId: {BuyerId}", buyerId);
-                    return availableStores;
-                }
-
-                _logger.LogInformation("Buyer teslimat adresi -> BuyerId: {BuyerId}, CountryId: {CountryId}, StateId: {StateId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}, NeighborhoodId: {NeighborhoodId}, RegionId: {RegionId}",
-                    buyerId, address.CountryId, address.StateId, address.ProvinceId, address.DistrictId, address.NeighborhoodId, address.Country?.RegionId);
-
-                var allCoverages = await _storeCoverageRepository.GetAllAsync();
-
-                foreach (var coverage in allCoverages)
-                {
-                    _logger.LogInformation("Store Coverage kontrol ediliyor -> StoreId: {StoreId}, RegionId: {RegionId}, CountryId: {CountryId}, ProvinceId: {ProvinceId}, DistrictId: {DistrictId}",
-                        coverage.StoreId, coverage.RegionId, coverage.CountryId, coverage.ProvinceId, coverage.DistrictId);
-
-                    bool isMatch =
-                        (!coverage.RegionId.HasValue || coverage.RegionId == address.Country?.RegionId) &&
-                        (!coverage.CountryId.HasValue || coverage.CountryId == address.CountryId) &&
-                        (!coverage.ProvinceId.HasValue || (address.ProvinceId.HasValue && coverage.ProvinceId == address.ProvinceId.Value)) &&
-                        (!coverage.DistrictId.HasValue || (address.DistrictId.HasValue && coverage.DistrictId == address.DistrictId.Value));
-
-                    _logger.LogInformation("StoreId {StoreId} için eşleşme sonucu: {IsMatch}", coverage.StoreId, isMatch);
-
-                    if (isMatch)
-                    {
-                        var products = await _storeProductRepository.GetProductsByStoreIdsAsync(new List<int> { coverage.StoreId });
-                        _logger.LogInformation("StoreId {StoreId} için {ProductCount} ürün bulundu", coverage.StoreId, products.Count);
-
-                        var productDtos = _mapper.Map<List<StoreProductListDto>>(products);
-                        var store = products.FirstOrDefault()?.Store;
-                        if (store == null)
-                        {
-                            _logger.LogWarning("StoreId {StoreId} için Store nesnesi null döndü", coverage.StoreId);
-                            continue;
-                        }
-
-                        var storeDto = new AvailableStoreWithProductsDto
-                        {
-                            StoreId = store.Id,
-                            StoreName = store.StoreName,
-                            StoreDescription = store.StoreDescription,
-                            LogoUrl = store.ImageUrl,
-                            RegionId = address.Country?.RegionId,
-                            CountryId = address.CountryId,
-                            StateId = address.StateId,
-                            ProvinceId = address.ProvinceId,
-                            DistrictId = address.DistrictId,
-                            NeighborhoodId = address.NeighborhoodId,
-                            Products = productDtos
-                        };
-
-                        availableStores.Add(storeDto);
-                        _logger.LogInformation("StoreId {StoreId} başarılı şekilde AvailableStore listesine eklendi.", store.Id);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Mağaza erişilebilirliği kontrol edilirken hata oluştu.");
-            }
-
-            return availableStores;
+            throw new NotImplementedException();
         }
 
-
-
-        public async Task<List<AvailableStoreDto>> GetAvailableStoresByAddressAsync(int buyerId)
+        public Task<List<AvailableStoreWithProductsDto>> GetAvailableStoresWithProductsByAddressAsync(int buyerId)
         {
-            var storesWithProducts = await GetAvailableStoresWithProductsByAddressAsync(buyerId);
-            return storesWithProducts.Select(x => new AvailableStoreDto
-            {
-                StoreId = x.StoreId,
-                StoreName = x.StoreName,
-                StoreDescription = x.StoreDescription,
-                LogoUrl = x.LogoUrl,
-                DeliveryTimeFrame = x.DeliveryTimeFrame,
-                RegionId = x.RegionId,
-                CountryId = x.CountryId,
-                StateId = x.StateId,
-                ProvinceId = x.ProvinceId,
-                DistrictId = x.DistrictId,
-                NeighborhoodId = x.NeighborhoodId,
-            }).ToList();
+            throw new NotImplementedException();
         }
     }
 }
