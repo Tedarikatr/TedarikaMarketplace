@@ -8,6 +8,7 @@ using Entity.DeliveryAddresses;
 using Entity.Forms;
 using Entity.Incoterms;
 using Entity.Locations;
+using Entity.OrderOffers;
 using Entity.Orders;
 using Entity.Payments;
 using Entity.Products;
@@ -73,6 +74,11 @@ namespace Data.Databases
         //Siparişler
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+
+        //Siparişler
+        public DbSet<QuotationRequest> QuotationRequests { get; set; }
+        public DbSet<QuotationResponse> QuotationResponses { get; set; }
+
 
         // Ödemeler & Faturalar
         public DbSet<Payment> Payments { get; set; }

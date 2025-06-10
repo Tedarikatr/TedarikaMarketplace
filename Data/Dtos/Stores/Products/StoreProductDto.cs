@@ -30,4 +30,17 @@
         public string Brand { get; set; }
         public string StoreProductImageUrl { get; set; }
     }
+    public class SetActiveStatusRequest
+    {
+        public int ProductId { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class SetOnSaleStatusRequest
+    {
+        public int ProductId { get; set; }
+        public bool IsOnSale { get; set; }
+    }
+
+
 }

@@ -1,4 +1,5 @@
 ﻿using API.Helpers;
+using Data.Dtos.Stores.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Product.IServices;
@@ -78,7 +79,7 @@ namespace API.Controllers.Stores.Products
             }
         }
 
-        [HttpPut("update-price")]
+        [HttpPut("update-price-productId={productId}&price={price}")]
         public async Task<IActionResult> UpdatePriceAsync(int productId, decimal price)
         {
             try
@@ -94,13 +95,14 @@ namespace API.Controllers.Stores.Products
             }
         }
 
+
         [HttpPut("set-active-status")]
-        public async Task<IActionResult> SetActiveStatusAsync(int productId, bool isActive)
+        public async Task<IActionResult> SetActiveStatusAsync([FromBody] SetActiveStatusRequest request)
         {
             try
             {
                 int storeId = await _userHelper.GetStoreId(User);
-                var result = await _storeProductService.SetProductActiveStatusAsync(storeId, productId, isActive);
+                var result = await _storeProductService.SetProductActiveStatusAsync(storeId, request.ProductId, request.IsActive);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -111,12 +113,12 @@ namespace API.Controllers.Stores.Products
         }
 
         [HttpPut("set-on-sale")]
-        public async Task<IActionResult> SetOnSaleStatusAsync(int productId, bool isOnSale)
+        public async Task<IActionResult> SetOnSaleStatusAsync([FromBody] SetOnSaleStatusRequest request)
         {
             try
             {
                 int storeId = await _userHelper.GetStoreId(User);
-                var result = await _storeProductService.SetProductOnSaleStatusAsync(storeId, productId, isOnSale);
+                var result = await _storeProductService.SetProductOnSaleStatusAsync(storeId, request.ProductId, request.IsOnSale);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -126,7 +128,8 @@ namespace API.Controllers.Stores.Products
             }
         }
 
-        [HttpPut("set-quantity-limits")]
+
+        [HttpPut("set-quantity-limits-productId={productId}&minQty={minQty}&maxQty={maxQty}")]
         public async Task<IActionResult> SetQuantityLimitsAsync(int productId, int minQty, int maxQty)
         {
             try
@@ -158,25 +161,6 @@ namespace API.Controllers.Stores.Products
             {
                 _logger.LogError(ex, "Görsel yükleme işlemi başarısız.");
                 return StatusCode(500, "Görsel yüklenirken bir hata oluştu.");
-            }
-        }
-
-        [HttpPut("update-order-quantity")]
-        public async Task<IActionResult> UpdateOrderQuantityAsync(int productId, int minOrderQuantity, int maxOrderQuantity)
-        {
-            try
-            {
-                int storeId = await _userHelper.GetStoreId(User);
-                var success = await _storeProductService.UpdateMinMaxOrderQuantityAsync(storeId, productId, minOrderQuantity, maxOrderQuantity);
-                if (!success)
-                    return NotFound("Ürün mağazada bulunamadı.");
-
-                return Ok("Sipariş miktar aralığı güncellendi.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Sipariş miktar aralığı güncellenemedi.");
-                return StatusCode(500, "İşlem başarısız.");
             }
         }
     }
