@@ -595,12 +595,142 @@ namespace Data.Seeders
                     {
                         _logger.LogWarning("Store bulunamadı, StoreProduct eklenemedi.");
                     }
-                }
-                
+                }                
                 else
                 {
                     _logger.LogInformation("Seller and/or buyer data already exists, skipping creation.");
                 }
+
+                if (await _context.Products.AnyAsync() && !await _context.SellerUsers.AnyAsync(s => s.UserNumber.StartsWith("S200")))
+                {
+                    var products = await _context.Products.ToListAsync();
+                    var random = new Random();
+                    int sellerCounter = 200;
+
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        var seller = new SellerUser
+                        {
+                            Name = $"Mağaza{i}Yetkilisi",
+                            LastName = $"Soyadı{i}",
+                            Email = $"magaza{i}@tedarika.com",
+                            Phone = $"+90555555{i:D4}",
+                            Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+                            UserNumber = $"S{sellerCounter++}",
+                            UserGuidNumber = Guid.NewGuid(),
+                            Status = true,
+                            UserType = UserType.Seller
+                        };
+                        await _context.SellerUsers.AddAsync(seller);
+                        await _context.SaveChangesAsync();
+
+                        var company = new Company
+                        {
+                            Name = $"Mağaza {i} Ticaret Ltd. Şti.",
+                            TaxNumber = $"12345678{i:D2}",
+                            TaxOffice = "E-Ticaret Vergi Dairesi",
+                            Country = "Türkiye",
+                            City = "İstanbul",
+                            Address = $"E-Ticaret Caddesi No:{i}",
+                            Email = $"info.magaza{i}@tedarika.com",
+                            Phone = $"+90212123{i:D4}",
+                            CompanyNumber = $"C20{i:D2}",
+                            Industry = "Perakende",
+                            IsVerified = true,
+                            IsActive = true,
+                            BuyerAccount = false,
+                            SellerAccount = true,
+                            Type = CompanyType.Seller,
+                            SellerUserId = seller.Id
+                        };
+                        await _context.Companies.AddAsync(company);
+                        await _context.SaveChangesAsync();
+
+                        var stores = new Store
+                        {
+                            StoreName = $"Mağaza {i}",
+                            StoreDescription = "Otomatik oluşturulmuş örnek mağaza.",
+                            ImageUrl = "https://todayapipictures.blob.core.windows.net/your-container-name/a5c918a7-45d8-47df-8220-fa4cdc1ef730.png",
+                            StorePhone = $"+90212123{i:D4}",
+                            StoreMail = $"destek.magaza{i}@tedarika.com",
+                            StoreProvince = "İstanbul",
+                            StoreDistrict = "Kadıköy",
+                            SellerId = seller.Id,
+                            IsApproved = true,
+                            IsActive = true,
+                            CompanyId = company.Id
+                        };
+                        await _context.Stores.AddAsync(stores);
+                        await _context.SaveChangesAsync();
+
+                        var selectedProducts = products.OrderBy(p => Guid.NewGuid()).Take(10).ToList();
+
+                        var storeProducts = selectedProducts.Select(p => new StoreProduct
+                        {
+                            Name = p.Name,
+                            Description = p.Description,
+                            Brand = p.Brand,
+                            ProductNumber = p.ProductNumber,
+                            UnitTypes = (int)p.UnitType,
+                            UnitType = p.UnitType,
+                            ProductId = p.Id,
+                            StoreId = store.Id,
+                            UnitPrice = random.Next(20, 200),
+                            StockQuantity = 200,
+                            MinOrderQuantity = 1,
+                            MaxOrderQuantity = 100,
+                            IsActive = true,
+                            IsOnSale = true,
+                            AllowedDomestic = true,
+                            AllowedInternational = false,
+                            ImageUrl = p.ImageUrl,
+                            StoreProductImageUrl = p.ImageUrl,
+                            CategoryName = p.CategoryName,
+                            CategorySubName = p.CategorySubName
+                        }).ToList();
+
+                        await _context.StoreProducts.AddRangeAsync(storeProducts);
+                        await _context.SaveChangesAsync();
+
+                        _logger.LogInformation("Mağaza {StoreName} için 10 ürün başarıyla eklendi.", store.StoreName);
+                    
+
+                    var regionEU = await _context.Regions.FirstOrDefaultAsync(r => r.Code == "EU");
+                    var countries = await _context.Countries
+                        .Where(c => new[] { "TR", "DE", "FR" }.Contains(c.Code))
+                        .ToListAsync();
+
+                    if (regionEU != null && countries.Count == 3)
+                    {
+                        var storeCoverage = new StoreCoverage
+                        {
+                            StoreId = stores.Id,
+
+                            RegionIds = new List<int> { regionEU.Id },
+                            RegionNames = new List<string> { regionEU.Name },
+
+                            CountryIds = countries.Select(c => c.Id).ToList(),
+                            CountryNames = countries.Select(c => c.Name).ToList(),
+
+                            LocationHash = $"EU-{string.Join("-", countries.Select(c => c.Code))}-{store.Id}",
+                            LastUpdatedAt = DateTime.UtcNow
+                        };
+
+                        await _context.Set<StoreCoverage>().AddAsync(storeCoverage);
+                        await _context.SaveChangesAsync();
+
+                        _logger.LogInformation("Mağaza {StoreId} için Avrupa hizmet bölgesi başarıyla eklendi.", store.Id);
+                    }
+
+                   }
+
+                    _logger.LogInformation("10 yeni mağaza ve her biri için tüm veriler başarıyla oluşturuldu.");
+                }
+                else
+                {
+                    _logger.LogInformation("Zaten ürünler mevcut veya 10 örnek mağaza daha önce oluşturulmuş.");
+                }
+
             }
             catch (Exception ex)
             {

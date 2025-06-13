@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250604112340_mig-1")]
+    [Migration("20250613085746_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -829,6 +829,79 @@ namespace Data.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("States");
+                });
+
+            modelBuilder.Entity("Entity.OrderOffers.QuotationRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BuyerUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerUserId");
+
+                    b.HasIndex("StoreProductId");
+
+                    b.ToTable("QuotationRequests");
+                });
+
+            modelBuilder.Entity("Entity.OrderOffers.QuotationResponse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MinOrderQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("OfferedUnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("QuotationRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RespondedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SellerUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuotationRequestId");
+
+                    b.HasIndex("SellerUserId");
+
+                    b.ToTable("QuotationResponses");
                 });
 
             modelBuilder.Entity("Entity.Orders.Order", b =>
@@ -1883,6 +1956,44 @@ namespace Data.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("Entity.OrderOffers.QuotationRequest", b =>
+                {
+                    b.HasOne("Entity.Auths.BuyerUser", "BuyerUser")
+                        .WithMany()
+                        .HasForeignKey("BuyerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity.Stores.Products.StoreProduct", "StoreProduct")
+                        .WithMany()
+                        .HasForeignKey("StoreProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BuyerUser");
+
+                    b.Navigation("StoreProduct");
+                });
+
+            modelBuilder.Entity("Entity.OrderOffers.QuotationResponse", b =>
+                {
+                    b.HasOne("Entity.OrderOffers.QuotationRequest", "QuotationRequest")
+                        .WithMany("Responses")
+                        .HasForeignKey("QuotationRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity.Auths.SellerUser", "SellerUser")
+                        .WithMany()
+                        .HasForeignKey("SellerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuotationRequest");
+
+                    b.Navigation("SellerUser");
+                });
+
             modelBuilder.Entity("Entity.Orders.Order", b =>
                 {
                     b.HasOne("Entity.Companies.Company", "BuyerCompany")
@@ -2214,6 +2325,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Entity.Locations.State", b =>
                 {
                     b.Navigation("Provinces");
+                });
+
+            modelBuilder.Entity("Entity.OrderOffers.QuotationRequest", b =>
+                {
+                    b.Navigation("Responses");
                 });
 
             modelBuilder.Entity("Entity.Orders.Order", b =>
