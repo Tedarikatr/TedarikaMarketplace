@@ -15,8 +15,12 @@ namespace Domain.Orders.Services
         private readonly ICarrierRepository _carrierRepository;
         private readonly ILogger<CarrierWebhookService> _logger;
 
-        public CarrierWebhookService(ILogger<CarrierWebhookService> logger)
+        public CarrierWebhookService(IHttpClientFactory httpClientFactory,
+                                     ICarrierRepository carrierRepository,
+                                     ILogger<CarrierWebhookService> logger)
         {
+            _httpClientFactory = httpClientFactory;
+            _carrierRepository = carrierRepository;
             _logger = logger;
         }
 
